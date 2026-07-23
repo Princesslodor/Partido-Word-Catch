@@ -1,0 +1,554 @@
+[gd_scene format=3 uid="uid://b7rb163l11uag"]
+
+[ext_resource type="Script" uid="uid://um4csf71sc4q" path="res://node_2d.gd" id="1_wtcfe"]
+[ext_resource type="Texture2D" uid="uid://dcul8q131go7u" path="res://Gemini_Generated_Image_livda0livda0livd.png" id="2_0e48y"]
+[ext_resource type="FontFile" uid="uid://dv1hd0pihk510" path="res://Fredoka-Bold.ttf" id="3_epypp"]
+[ext_resource type="Texture2D" uid="uid://e8817vusx1u" path="res://boy.png" id="3_q6r6c"]
+[ext_resource type="Texture2D" uid="uid://cqrr07rfnc8w" path="res://hans-swan-feather-16307.jpg" id="4_0hol4"]
+[ext_resource type="Script" uid="uid://bp5c3x0mfispk" path="res://LetterTile.gd" id="5_d21ai"]
+[ext_resource type="Script" uid="uid://1her1txh0m6q" path="res://AnswerSlot.gd" id="5_kdubu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1enaw"]
+content_margin_left = 20.0
+bg_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ph8vy"]
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.54509807, 0.3529412, 0.16862746, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_epypp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kdubu"]
+bg_color = Color(0.93333334, 0.99215686, 0.6431373, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+corner_detail = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0hol4"]
+bg_color = Color(1, 0.99215686, 0.8156863, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_q6r6c"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0e48y"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d21ai"]
+bg_color = Color(1, 0.99215686, 0.8156863, 0.9529412)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_epypp"]
+bg_color = Color(1, 1, 0.8156863, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kdubu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x8pjm"]
+bg_color = Color(0.7755807, 0.5455407, 0.13224861, 1)
+border_color = Color(1, 1, 0.8666667, 1)
+corner_detail = 20
+
+[node name="Node2D" type="Node2D" unique_id=1699444475]
+script = ExtResource("1_wtcfe")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1447703769]
+
+[node name="BackgroundPic" type="Sprite2D" parent="CanvasLayer" unique_id=2002679098]
+position = Vector2(363, 646)
+scale = Vector2(0.84598213, 1.1094674)
+texture = ExtResource("2_0e48y")
+
+[node name="Boy" type="Sprite2D" parent="CanvasLayer/BackgroundPic" unique_id=849573490]
+position = Vector2(307.74146, 518.21027)
+scale = Vector2(1.6986197, 0.8717201)
+texture = ExtResource("3_q6r6c")
+
+[node name="TopBar" type="Control" parent="CanvasLayer" unique_id=1113237676]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 10.0
+offset_top = 5.0
+offset_right = 71.0
+offset_bottom = -1214.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LiveLabel" type="Label" parent="CanvasLayer/TopBar" unique_id=1414456624]
+layout_mode = 0
+offset_left = 129.0
+offset_top = 37.0
+offset_right = 222.0
+offset_bottom = 70.0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_constants/outline_size = -2
+theme_override_constants/shadow_outline_size = 32
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_1enaw")
+text = "❤️ 4"
+
+[node name="LevelLabel" type="Label" parent="CanvasLayer/TopBar" unique_id=1855853359]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.80300003
+offset_left = -118.5
+offset_top = 20.0
+offset_right = 72.5
+offset_bottom = 55.017
+grow_horizontal = 2
+theme_override_constants/outline_size = 8
+theme_override_constants/shadow_outline_size = 39
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxFlat_ph8vy")
+text = "LEVEL 1"
+
+[node name="CoinsLabel" type="Label" parent="CanvasLayer/TopBar" unique_id=1742384636]
+layout_mode = 0
+offset_left = 506.0
+offset_top = 40.0
+offset_right = 612.0
+offset_bottom = 73.0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("StyleBoxFlat_1enaw")
+text = "🪙 20"
+
+[node name="SettingsButton" type="Button" parent="CanvasLayer/TopBar" unique_id=535787052]
+layout_mode = 0
+offset_left = 627.0
+offset_top = 19.0
+offset_right = 701.0
+offset_bottom = 99.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_epypp")
+text = "⚙️"
+
+[node name="VBoxContainer" type="Control" parent="CanvasLayer" unique_id=1805182897]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 29.0
+offset_top = 372.0
+offset_right = -9.0
+offset_bottom = -665.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TagalogHintText" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=1454216513]
+layout_mode = 0
+offset_top = 100.0
+offset_right = 673.0
+offset_bottom = 262.0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_kdubu")
+text = "\"Ito ay ang balahibo ng mga ibon o manok na nagbibigay ng init at proteksyon sa kanila.\""
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="ScrambledLettersGrid" type="GridContainer" parent="CanvasLayer" unique_id=344379939]
+offset_left = 57.0
+offset_top = 873.0
+offset_right = 690.0
+offset_bottom = 1055.0
+size_flags_horizontal = 4
+theme_override_constants/h_separation = 8
+theme_override_constants/v_separation = 16
+columns = 7
+
+[node name="Button" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=583192963]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button2" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=2040801881]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_d21ai")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button3" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=252924766]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button4" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=1117088745]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button5" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=228263834]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button6" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=930903345]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button7" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=1043587576]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button8" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=1830677845]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button9" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=150471842]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button10" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=2041294903]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button11" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=2090967980]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button12" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=1354856247]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button13" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=1440493655]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="Button14" type="Button" parent="CanvasLayer/ScrambledLettersGrid" unique_id=661019971]
+custom_minimum_size = Vector2(80, 80)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_0hol4")
+theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
+script = ExtResource("5_d21ai")
+
+[node name="AnswerSlotsRow" type="HBoxContainer" parent="CanvasLayer" unique_id=1574909156]
+custom_minimum_size = Vector2(60, 60)
+offset_left = -17.0
+offset_top = 690.0
+offset_right = 738.0
+offset_bottom = 765.0
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="Button" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=850356015]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button2" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=1409939361]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button3" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=2091662412]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button4" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=2135585112]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button5" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=1815586065]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button6" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=1472085372]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button7" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=1169682446]
+custom_minimum_size = Vector2(70, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer" unique_id=828514074]
+offset_left = 159.0
+offset_top = 167.0
+offset_right = 553.0
+offset_bottom = 421.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_x8pjm")
+
+[node name="HintPicture" type="TextureRect" parent="CanvasLayer" unique_id=10134427]
+custom_minimum_size = Vector2(120, 120)
+offset_left = 171.0
+offset_top = 178.0
+offset_right = 540.0
+offset_bottom = 409.0
+size_flags_horizontal = 0
+texture = ExtResource("4_0hol4")
+expand_mode = 1
