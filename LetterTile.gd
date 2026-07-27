@@ -1,6 +1,11 @@
 extends Button
 
+# Function para madaling lagyan ng titik ang tile mula sa main script
+func set_letter(new_letter: String):
+	text = new_letter
+
 func _get_drag_data(_at_position):
+	# Huwag payagang i-drag kung walang nakasulat na letra
 	if text == "":
 		return null
 		
@@ -9,10 +14,10 @@ func _get_drag_data(_at_position):
 		"letter": text
 	}
 	
-	# 1. Kopyahin ang MISMONG Button (duplicate) para eksaktong puting tile at font styling ang lumabas!
+	# 1. Kopyahin ang MISMONG Button (duplicate) para sa drag preview
 	var preview_button = self.duplicate()
 	
-	# Siguraduhing maayos ang laki at hindi nakaharang sa click
+	# Siguraduhing maayos ang laki
 	preview_button.custom_minimum_size = size
 	preview_button.size = size
 	
@@ -24,7 +29,7 @@ func _get_drag_data(_at_position):
 	
 	set_drag_preview(control)
 	
-	# 2. Instant Hide: Mawawala agad ang text sa lumang pwesto habang dino-drag
+	# 2. Instant Hide: Mawawala ang text sa lumang pwesto habang dino-drag
 	text = ""
 	
 	return drag_data

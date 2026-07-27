@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dcul8q131go7u" path="res://Gemini_Generated_Image_livda0livda0livd.png" id="2_0e48y"]
 [ext_resource type="FontFile" uid="uid://dv1hd0pihk510" path="res://Fredoka-Bold.ttf" id="3_epypp"]
 [ext_resource type="Texture2D" uid="uid://e8817vusx1u" path="res://boy.png" id="3_q6r6c"]
-[ext_resource type="Texture2D" uid="uid://cqrr07rfnc8w" path="res://hans-swan-feather-16307.jpg" id="4_0hol4"]
+[ext_resource type="Texture2D" uid="uid://cqrr07rfnc8w" path="res://balukag.jpg" id="4_0hol4"]
 [ext_resource type="Script" uid="uid://bp5c3x0mfispk" path="res://LetterTile.gd" id="5_d21ai"]
 [ext_resource type="Script" uid="uid://1her1txh0m6q" path="res://AnswerSlot.gd" id="5_kdubu"]
 
@@ -69,6 +69,8 @@ bg_color = Color(0.7755807, 0.5455407, 0.13224861, 1)
 border_color = Color(1, 1, 0.8666667, 1)
 corner_detail = 20
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_20yl2"]
+
 [node name="Node2D" type="Node2D" unique_id=1699444475]
 script = ExtResource("1_wtcfe")
 
@@ -111,6 +113,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_1enaw")
 text = "❤️ 4"
 
 [node name="LevelLabel" type="Label" parent="CanvasLayer/TopBar" unique_id=1855853359]
+unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.5
@@ -163,6 +166,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TagalogHintText" type="Label" parent="CanvasLayer/VBoxContainer" unique_id=1454216513]
+unique_name_in_owner = true
 layout_mode = 0
 offset_top = 100.0
 offset_right = 673.0
@@ -175,6 +179,7 @@ horizontal_alignment = 1
 autowrap_mode = 2
 
 [node name="ScrambledLettersGrid" type="GridContainer" parent="CanvasLayer" unique_id=344379939]
+unique_name_in_owner = true
 offset_left = 57.0
 offset_top = 873.0
 offset_right = 690.0
@@ -408,7 +413,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_q6r6c")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_0e48y")
 script = ExtResource("5_d21ai")
 
-[node name="AnswerSlotsRow" type="HBoxContainer" parent="CanvasLayer" unique_id=1574909156]
+[node name="AnswerSlotsContainer" type="HBoxContainer" parent="CanvasLayer" unique_id=1574909156]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(60, 60)
 offset_left = -17.0
 offset_top = 690.0
@@ -417,7 +423,8 @@ offset_bottom = 765.0
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="Button" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=850356015]
+[node name="Button" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=850356015]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 focus_mode = 0
@@ -434,7 +441,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
 script = ExtResource("5_kdubu")
 
-[node name="Button2" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=1409939361]
+[node name="Button2" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1409939361]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 focus_mode = 0
@@ -451,7 +459,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
 script = ExtResource("5_kdubu")
 
-[node name="Button3" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=2091662412]
+[node name="Button3" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=2091662412]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 focus_mode = 0
@@ -468,7 +477,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
 script = ExtResource("5_kdubu")
 
-[node name="Button4" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=2135585112]
+[node name="Button4" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=2135585112]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 focus_mode = 0
@@ -485,7 +495,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
 script = ExtResource("5_kdubu")
 
-[node name="Button5" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=1815586065]
+[node name="Button5" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1815586065]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 focus_mode = 0
@@ -502,7 +513,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
 script = ExtResource("5_kdubu")
 
-[node name="Button6" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=1472085372]
+[node name="Button6" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1472085372]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 focus_mode = 0
@@ -519,7 +531,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
 theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
 script = ExtResource("5_kdubu")
 
-[node name="Button7" type="Button" parent="CanvasLayer/AnswerSlotsRow" unique_id=1169682446]
+[node name="Button7" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1169682446]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(70, 70)
 layout_mode = 2
 focus_mode = 0
@@ -552,3 +565,40 @@ offset_bottom = 409.0
 size_flags_horizontal = 0
 texture = ExtResource("4_0hol4")
 expand_mode = 1
+
+[node name="VictoryPopup" type="Control" parent="CanvasLayer" unique_id=252567573]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/VictoryPopup" unique_id=300962938]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.95686275, 0.94509804, 0.58431375, 1)
+
+[node name="WordLabel" type="VBoxContainer" parent="CanvasLayer/VictoryPopup" unique_id=42206712]
+layout_mode = 0
+offset_left = 165.0
+offset_top = 179.0
+offset_right = 548.0
+offset_bottom = 261.0
+
+[node name="Label" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=277106590]
+layout_mode = 0
+offset_left = 217.0
+offset_top = 43.0
+offset_right = 600.0
+offset_bottom = 104.0
+theme_override_colors/font_color = Color(0.10725095, 0.06587418, 0.04932172, 1)
+theme_override_fonts/font = ExtResource("3_epypp")
+theme_override_font_sizes/font_size = 50
+theme_override_styles/normal = SubResource("StyleBoxEmpty_20yl2")
+text = "MAHUSAY!"
