@@ -7,7 +7,7 @@ var levels = {
 		"clue": "Ito ay alagang hayop na kilala sa pagiging tapat sa tao.",
 		"audio": "ido.mp3",
 		"meaning": "Aso sa wikang Bikol.",
-		"cultural_note": "Ang 'ido' ay itinuturing na matalik na kaibigan at tagapag-alaga ng tahanan sa pamilyang Bikolano."
+		"cultural_note": "Ang 'ido' ay itinuturing na matalik na kaibigan at tagapag-bantay ng tahanan sa pamilyang Bikolano."
 	},
 	2: {
 		"unit": "Yunit 1: Sarili at Pamilya",

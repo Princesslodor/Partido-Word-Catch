@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c5hnhk11wsm1f"
+path="res://.godot/imported/NAGSUSULO NIN KILAY.mp3-91cff15aa749d8dfb5d587c99bf137d2.mp3str"
+
+[deps]
+
+source_file="res://audio/NAGSUSULO NIN KILAY.mp3"
+dest_files=["res://.godot/imported/NAGSUSULO NIN KILAY.mp3-91cff15aa749d8dfb5d587c99bf137d2.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

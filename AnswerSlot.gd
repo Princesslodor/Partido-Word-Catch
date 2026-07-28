@@ -1,51 +1,45 @@
 extends Button
 
-# Status kung naka-lock na (gaya ng pre-filled letters)
 var is_locked: bool = false
-
-# Dito natin itatago kung saang tile sa baba nanggaling 'yung letter
-var stored_origin_button: Button = null
+var current_origin_button: Button = null
 
 func _can_drop_data(_at_position, data):
-	# Kung locked na ang slot, bawal nang lagyan ng panibagong letter
 	if is_locked:
 		return false
 	return data is Dictionary and data.has("letter")
 
 func _drop_data(_at_position, data):
-	var origin_button = data["origin_button"]
+	var dropped_letter = data["letter"]
+	var origin_btn = data["origin_button"]
 	
-	# Kung may nakalagay nang letter sa slot na 'to dati, ibalik muna sa pinanggalingan nito
-	if stored_origin_button != null and stored_origin_button != origin_button:
-		stored_origin_button.text = text
+	# Kung may laman na ang slot na ito dati, ibalik muna ang lumang letter sa pinanggalingan nito
+	if text != "" and current_origin_button != null:
+		current_origin_button.text = current_origin_button.cached_letter
 	
-	# 1. Kunin ang letter at ilagay sa slot na ito
-	text = data["letter"]
-	stored_origin_button = origin_button
+	# Ilagay ang bagong letter sa slot
+	text = dropped_letter
+	current_origin_button = origin_btn
 	
-	# 2. CLEAR THE ORIGIN: Burahin ang letra sa pinanggalingang tile sa baba!
-	if origin_button and origin_button != self:
-		origin_button.text = ""
+	# Siguraduhing blangko ang pinanggalingang tile sa baba (may maiwang space)
+	if origin_btn:
+		origin_btn.text = ""
 	
-	# 3. Tawagin ang main script para i-check kung buo na ang salita
+	# I-check ang sagot sa main scene
 	var main_node = get_tree().current_scene
 	if main_node.has_method("check_answer"):
 		main_node.check_answer()
 
-# 'PAG KINLICK ANG ANSWERSLOT: Ibalik ang letter sa pinanggalingan sa baba!
 func _pressed():
-	if is_locked:
+	if is_locked or text == "":
 		return
 		
-	if text != "" and stored_origin_button != null:
-		# Ibabalik ang text sa dating tile sa baba
-		stored_origin_button.text = text
+	# Kapag pinindot ang AnswerSlot para tanggalin ang letter, ibalik ito sa pinanggalingang tile
+	if current_origin_button != null:
+		current_origin_button.text = current_origin_button.cached_letter
 		
-		# Lilinisin ang Answer Slot na ito
-		text = ""
-		stored_origin_button = null
-		
-		# I-check ulit ang answer pagkatapos alisin ang letter
-		var main_node = get_tree().current_scene
-		if main_node.has_method("check_answer"):
-			main_node.check_answer()
+	text = ""
+	current_origin_button = null
+	
+	var main_node = get_tree().current_scene
+	if main_node.has_method("check_answer"):
+		main_node.check_answer()

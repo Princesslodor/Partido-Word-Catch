@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bovm7r7f2lq00"
+path="res://.godot/imported/speechma_audio_Blessica_at_1_12_33 PM_on_July_27th_2026.mp3-858916a17487cbe8aab8e44fe481af3e.mp3str"
+
+[deps]
+
+source_file="res://speechma_audio_Blessica_at_1_12_33 PM_on_July_27th_2026.mp3"
+dest_files=["res://.godot/imported/speechma_audio_Blessica_at_1_12_33 PM_on_July_27th_2026.mp3-858916a17487cbe8aab8e44fe481af3e.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

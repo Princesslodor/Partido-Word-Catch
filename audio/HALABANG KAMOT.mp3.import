@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://3wvbk7huhl33"
+path="res://.godot/imported/HALABANG KAMOT.mp3-011c6fbc19e58ff6785cb4b44909e827.mp3str"
+
+[deps]
+
+source_file="res://audio/HALABANG KAMOT.mp3"
+dest_files=["res://.godot/imported/HALABANG KAMOT.mp3-011c6fbc19e58ff6785cb4b44909e827.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

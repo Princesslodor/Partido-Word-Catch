@@ -26,8 +26,13 @@ func load_current_level():
 	if has_node("%VictoryPopup"):
 		%VictoryPopup.visible = false
 		
-	var level_info = LevelData.levels[current_level]
-	current_word = level_info["word"].to_upper() # e.g., "IDO"
+	var lvl_key = int(current_level)
+	if not LevelData.levels.has(lvl_key):
+		print("Tapos na ang lahat ng levels!")
+		return
+		
+	var level_info = LevelData.levels[lvl_key]
+	current_word = level_info["word"].to_upper()
 	
 	current_placed_letters.clear()
 	for i in range(current_word.length()):
@@ -40,42 +45,103 @@ func load_current_level():
 		%LevelLabel.text = "LEVEL " + str(current_level)
 		
 	if has_node("%CoinsLabel"):
-		%CoinsLabel.text = str(player_coins)
+		%CoinsLabel.text = "🪙 " + str(player_coins)
 	
-	update_level_image(current_word.to_lower())
+	update_level_image(current_level)
 	setup_answer_slots(current_word)
 	setup_scrambled_letters(current_word)
 
-func update_level_image(word_lower: String):
-	var image_path = "res://images/" + word_lower + ".png"
-	if ResourceLoader.exists(image_path) and has_node("%BackgroundPic"):
-		%BackgroundPic.texture = load(image_path)
+func update_level_image(lvl: int):
+	var folder_path = "res://Picture_HintLevel/"
+	var dir = DirAccess.open(folder_path)
+	
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		var found_file = ""
+		
+		while file_name != "":
+			if not dir.current_is_dir():
+				var target_str = "level_" + str(lvl)
+				if target_str in file_name.to_lower():
+					found_file = file_name
+					break
+			file_name = dir.get_next()
+		
+		dir.list_dir_end()
+		
+		if found_file != "":
+			var full_path = folder_path + found_file
+			var tex = load(full_path)
+			if tex:
+				if has_node("%HintPicture"):
+					%HintPicture.texture = tex
+					%HintPicture.visible = true
+					%HintPicture.show()
+					print("DIREKTANG NAKUHA SA FOLDER: ", full_path)
+				elif has_node("HintPicture"):
+					$HintPicture.texture = tex
+					$HintPicture.visible = true
+					$HintPicture.show()
+					print("DIREKTANG NAKUHA SA FOLDER: ", full_path)
+		else:
+			print("BABALA: Walang nakitang larawan sa loob ng folder para sa level: ", lvl)
+	else:
+		print("ERROR: Hindi mabuksan ang folder na: ", folder_path)
 
 func setup_answer_slots(word: String):
-	var word_length = word.length()
 	var slot_container = _get_answer_slot_container()
+	if not slot_container:
+		return
 		
-	if slot_container:
-		var slots = slot_container.get_children()
-		var hint_index = word_length - 1  # Pre-filled hint (e.g. 'O')
+	var slots = slot_container.get_children()
+	
+	for slot in slots:
+		slot.visible = false
+		_clear_tile_text(slot)
+		if "is_locked" in slot:
+			slot.is_locked = false
+		if slot.has_method("set_as_space"):
+			slot.set_as_space(false)
+
+	var hint_count = get_hint_count_for_level(current_level)
+	
+	var valid_indices = []
+	for i in range(word.length()):
+		if word[i] != " ":
+			valid_indices.append(i)
+	
+	valid_indices.shuffle()
+	
+	var hint_indices = []
+	for i in range(min(hint_count, valid_indices.size())):
+		hint_indices.append(valid_indices[i])
+
+	for char_idx in range(word.length()):
+		if char_idx >= slots.size():
+			break
+			
+		var slot = slots[char_idx]
+		var char = word[char_idx]
 		
-		for i in range(slots.size()):
-			if i < word_length:
-				slots[i].visible = true
-				slots[i].stored_origin_button = null
+		slot.visible = true
+		_clear_tile_text(slot)
+		if "is_locked" in slot:
+			slot.is_locked = false
+			
+		if char == " ":
+			if slot.has_method("set_as_space"):
+				slot.set_as_space(true)
+			slot.visible = false
+		else:
+			if slot.has_method("set_as_space"):
+				slot.set_as_space(false)
 				
-				if i == hint_index:
-					var hint_char = String(word[i])
-					current_placed_letters[i] = hint_char
-					_set_tile_text(slots[i], hint_char)
-					if "is_locked" in slots[i]:
-						slots[i].is_locked = true
-				else:
-					_clear_tile_text(slots[i])
-					if "is_locked" in slots[i]:
-						slots[i].is_locked = false
-			else:
-				slots[i].visible = false
+			if char_idx in hint_indices:
+				current_placed_letters[char_idx] = char
+				_set_tile_text(slot, char)
+				if "is_locked" in slot:
+					slot.is_locked = true
 
 func setup_scrambled_letters(word: String):
 	var grid = _get_scrambled_grid()
@@ -83,10 +149,15 @@ func setup_scrambled_letters(word: String):
 		return
 		
 	var tiles = grid.get_children()
-	var letters: Array = []
 	
+	for tile in tiles:
+		tile.visible = false
+		_clear_tile_text(tile)
+
+	var letters: Array = []
 	for c in word:
-		letters.append(c)
+		if c != " ":
+			letters.append(c)
 		
 	var needed_extras = tiles.size() - letters.size()
 	for i in range(needed_extras):
@@ -103,36 +174,9 @@ func setup_scrambled_letters(word: String):
 			var tile = tiles[i]
 			var letter_val = letters[i]
 			
-			if tile is Button or tile is TextureButton:
-				if tile.is_connected("pressed", Callable(self, "_on_letter_tile_pressed")):
-					tile.disconnect("pressed", Callable(self, "_on_letter_tile_pressed"))
-				
-				tile.pressed.connect(func(): _on_letter_tile_pressed(tile, letter_val))
+			if tile.has_method("setup_tile"):
+				tile.setup_tile(letter_val)
 
-# --- 🎯 CLICKING & DRAGGING CHECKING LOGIC ---
-
-func _on_letter_tile_pressed(tile_button: Node, letter: String):
-	var empty_index = -1
-	for i in range(current_word.length()):
-		if current_placed_letters[i] == "":
-			empty_index = i
-			break
-			
-	if empty_index != -1:
-		current_placed_letters[empty_index] = letter
-		
-		var slot_container = _get_answer_slot_container()
-		if slot_container:
-			var slots = slot_container.get_children()
-			_set_tile_text(slots[empty_index], letter)
-			if "stored_origin_button" in slots[empty_index]:
-				slots[empty_index].stored_origin_button = tile_button
-			
-		tile_button.visible = false
-		
-		check_answer()
-
-# TINAWAG NITO AT NG ANSWERSLOT.GD (Pang-Drag & Drop at Click)
 func check_answer():
 	var slot_container = _get_answer_slot_container()
 	if slot_container == null:
@@ -142,38 +186,42 @@ func check_answer():
 	var constructed_word = ""
 	var is_full = true
 
-	# Basahin ang aktwal na nakasulat sa Answer Slots
-	for i in range(current_word.length()):
-		var slot_text = ""
-		if "text" in slots[i]:
-			slot_text = slots[i].text.strip_edges().to_upper()
-		elif slots[i].has_node("Label"):
-			slot_text = slots[i].get_node("Label").text.strip_edges().to_upper()
-
-		if slot_text == "":
+	for char_idx in range(current_word.length()):
+		if char_idx >= slots.size():
 			is_full = false
 			break
-		constructed_word += slot_text
+			
+		var slot = slots[char_idx]
+		var target_char = current_word[char_idx]
+		
+		if target_char == " ":
+			constructed_word += " "
+		else:
+			var slot_text = ""
+			if "text" in slot:
+				slot_text = slot.text.strip_edges().to_upper()
+			elif slot.has_node("Label"):
+				slot_text = slot.get_node("Label").text.strip_edges().to_upper()
 
-	# I-update din ang tracking array
-	for i in range(current_word.length()):
-		if i < constructed_word.length():
-			current_placed_letters[i] = constructed_word[i]
+			if slot_text == "":
+				is_full = false
+				break
+			constructed_word += slot_text
 
-	if is_full:
+	if is_full and constructed_word.length() == current_word.length():
 		if constructed_word == current_word:
 			print("TAMA ANG SAGOT!")
 			show_victory_popup()
 		else:
 			print("MALING SAGOT! Subukan ulit.")
 
-# --- 🏆 VICTORY POPUP LOGIC ---
 func show_victory_popup():
-	var level_info = LevelData.levels[current_level]
+	var lvl_key = int(current_level)
+	var level_info = LevelData.levels[lvl_key]
 	
 	player_coins += 10
 	if has_node("%CoinsLabel"):
-		%CoinsLabel.text = str(player_coins)
+		%CoinsLabel.text = "🪙 " + str(player_coins)
 	if has_node("%RewardCoinsLabel"):
 		%RewardCoinsLabel.text = "+10 COINS"
 	
@@ -194,12 +242,24 @@ func show_victory_popup():
 
 func play_audio(audio_filename: String):
 	var audio_path = "res://audio/" + audio_filename
-	if ResourceLoader.exists(audio_path) and has_node("%AudioPlayer"):
-		%AudioPlayer.stream = load(audio_path)
-		%AudioPlayer.play()
+	if ResourceLoader.exists(audio_path):
+		var player = null
+		if has_node("%AudioPlayer"):
+			player = %AudioPlayer
+		elif has_node("%AudioStreamPlay"):
+			player = %AudioStreamPlay
+		elif has_node("SpeakerButton/AudioStreamPlay"):
+			player = $SpeakerButton/AudioStreamPlay
+		elif has_node("SpeakerButton/AudioStreamPlayer2D"):
+			player = $SpeakerButton/AudioStreamPlayer2D
+			
+		if player:
+			player.stream = load(audio_path)
+			player.play()
 
 func _on_speaker_button_pressed():
-	var level_info = LevelData.levels[current_level]
+	var lvl_key = int(current_level)
+	var level_info = LevelData.levels[lvl_key]
 	if level_info.has("audio"):
 		play_audio(level_info["audio"])
 
@@ -207,6 +267,10 @@ func _on_next_level_button_pressed():
 	current_level += 1
 	if current_level <= LevelData.levels.size():
 		load_current_level()
+		if has_node("%CoinsLabel"):
+			%CoinsLabel.text = "🪙 " + str(player_coins)
+	else:
+		print("Natapos na ang lahat ng levels!")
 
 # --- HELPER FUNCTIONS ---
 func _get_answer_slot_container() -> Node:
@@ -216,6 +280,8 @@ func _get_answer_slot_container() -> Node:
 		return $VBoxContainer/AnswerSlotsContainer
 	elif has_node("VBoxContainer/AnswerSlot"):
 		return $VBoxContainer/AnswerSlot
+	elif has_node("AnswerSlotsContainer"):
+		return $AnswerSlotsContainer
 	return null
 
 func _get_scrambled_grid() -> Node:
@@ -223,7 +289,30 @@ func _get_scrambled_grid() -> Node:
 		return %ScrambledLettersGrid
 	elif has_node("VBoxContainer/ScrambledLettersGrid"):
 		return $VBoxContainer/ScrambledLettersGrid
+	elif has_node("ScrambledLettersGrid"):
+		return $ScrambledLettersGrid
 	return null
+
+func get_hint_count_for_level(lvl: int) -> int:
+	if lvl >= 1 and lvl <= 2:
+		return 1
+	elif lvl >= 3 and lvl <= 5:
+		return 1
+	elif lvl >= 6 and lvl <= 9:
+		return 2
+	elif lvl == 10:
+		return 2
+	elif lvl >= 11 and lvl <= 15:
+		return 2
+	elif lvl == 16:
+		return 3
+	elif lvl == 17:
+		return 3
+	elif lvl >= 18 and lvl <= 19:
+		return 4
+	elif lvl >= 20:
+		return 5
+	return 1
 
 func _clear_tile_text(tile_node: Node):
 	_set_tile_text(tile_node, "")
@@ -239,3 +328,6 @@ func _set_tile_text(tile_node: Node, val: String):
 	for child in tile_node.get_children():
 		if child is Label:
 			child.text = val
+
+func _on_next_level_pressed() -> void:
+	_on_next_level_button_pressed()
