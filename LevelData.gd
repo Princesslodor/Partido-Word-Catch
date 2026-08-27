@@ -131,34 +131,34 @@ var levels = {
 	},
 	17: {
 		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
+		"word": "NAGSAKDO",
+		"clue": "Ito ay pagkuha ng tubig mula sa balon o lalagyan gamit ang timba.",
+		"audio": "nagsakdo.mp3",
+		"meaning": "Pagsalok o pagkuha ng tubig.",
+		"cultural_note": "Isang nakagawiang gawaing pang-araw-araw sa mga nayon kung saan ang mga kabataan o magulang ay pumupunta sa balon."
+	},
+	18: {
+		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
+		"word": "NAGLALAKAW",
+		"clue": "Ito ay kilos o galaw ng pag-usad pasulong gamit ang mga paa.",
+		"audio": "naglalakaw.mp3",
+		"meaning": "Pag-usad o pagpapatuloy sa pag-hakbang.",
+		"cultural_note": "Sumisimbolo sa matiyagang paghakbang at pagtahak ng mga Bikolano sa kanilang pang-araw-araw na paglalakbay sa buhay."
+	},
+	19: {
+		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
+		"word": "NAGKURAHAW",
+		"clue": "Ito ay pagsigaw nang malakas upang marinig ng iba.",
+		"audio": "nagkurahaw.mp3",
+		"meaning": "Paghiyaw o pagtawag nang malakas.",
+		"cultural_note": "Karaniwang ginagamit sa mga kwentong bayan kapag may ibinabalita o binabalaan ang mga kabaryo mula sa malayo."
+	},
+	20: {
+		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
 		"word": "BUTBOTKUWAW",
 		"clue": "Isa itong ibon na gising sa gabi.",
 		"audio": "butbotkuwaw.mp3",
 		"meaning": "Kuwago (Owl).",
 		"cultural_note": "Sa mga kwentong bayan, inuugnay ang kwago sa mga kwentong kababalaghan sa gabi."
 	},
-	18: {
-		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
-		"word": "HALABANG KAMOT",
-		"clue": "Tumutukoy sa taong kumukuha ng gamit ng iba nang walang pahintulot.",
-		"audio": "halabang_kamot.mp3",
-		"meaning": "Idyoma na nangangahulugang magnanakaw.",
-		"cultural_note": "Isang idyomang Bikol na nagtuturo ng pagiging tapat at pag-iwas sa pagkuha ng hindi pagmamay-ari."
-	},
-	19: {
-		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
-		"word": "MAHAMIS AN DILA",
-		"clue": "Tumutukoy sa taong mahusay magsalita at madaling makapanghikayat ng iba.",
-		"audio": "mahamis_an_dila.mp3",
-		"meaning": "Idyoma na nangangahulugang mabulaklak magsalita o bolero.",
-		"cultural_note": "Inilalarawan nito ang mga taong magaling makipag-usap at manghikayat."
-	},
-	20: {
-		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
-		"word": "NAGSUSULO NIN KIRAY",
-		"clue": "Tumutukoy sa taong nagpupuyat at nagsisikap upang mag-aral o matapos ang gawain.",
-		"audio": "nagsusulo_nin_kiray.mp3",
-		"meaning": "Idyoma na katumbas ng 'nagsusunog ng kilay' (nagsisikap mag-aral).",
-		"cultural_note": "Simbolo ng pagsusumikap ng mga estudyanteng Bikolano para sa kanilang kinabukasan."
-	}
 }
