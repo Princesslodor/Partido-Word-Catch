@@ -1,0 +1,315 @@
+[gd_scene format=3 uid="uid://brbxr71qdww6a"]
+
+[ext_resource type="Texture2D" uid="uid://dqkg03cu7016o" path="res://Settings Background.png" id="1_h437d"]
+[ext_resource type="Script" uid="uid://bsq3myf6dyxwh" path="res://settings_menu.gd" id="1_yl4dm"]
+[ext_resource type="FontFile" uid="uid://c72bkc0ronc7u" path="res://Fredoka-Bold.ttf" id="2_2tlyv"]
+[ext_resource type="Texture2D" uid="uid://d3e7k8aj301xq" path="res://Red X Icon.png" id="3_2d6lb"]
+[ext_resource type="Texture2D" uid="uid://cmok4pklx318k" path="res://Sound Icon.png" id="4_nxj4t"]
+[ext_resource type="FontFile" uid="uid://cshrqulfa1nyq" path="res://Nunito-Bold.ttf" id="5_yl4dm"]
+[ext_resource type="Texture2D" uid="uid://bemqa550vgmoa" path="res://Music Icon.png" id="6_ttjgw"]
+[ext_resource type="Texture2D" uid="uid://d4lxxasejykvm" path="res://Person Icon.png" id="7_nxj4t"]
+[ext_resource type="Texture2D" uid="uid://bfkheeipwean1" path="res://Help Icon.png" id="8_yl4dm"]
+[ext_resource type="Texture2D" uid="uid://ctff5wtq7phy2" path="res://Arrow Icon.png" id="9_ttjgw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
+bg_color = Color(0.98039216, 0.96862745, 0.9098039, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.7764706, 0.60784316, 0.39215687, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yl4dm"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.7764706, 0.60784316, 0.39215687, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nxj4t"]
+bg_color = Color(0.20392157, 0.6901961, 0.23529412, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_ttjgw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h3vdb"]
+bg_color = Color(1, 0.78431374, 0.78431374, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(1, 0.09019608, 0.06666667, 0.6862745)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[node name="SettingsMenu" type="Control" unique_id=707809916]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_yl4dm")
+
+[node name="BackgroundOverlay" type="ColorRect" parent="." unique_id=1249255514]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.043137256, 0.043137256, 0.043137256, 0.43137255)
+
+[node name="PopupBoard" type="TextureRect" parent="BackgroundOverlay" unique_id=1435313103]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 138.0
+offset_right = 672.0
+offset_bottom = 1102.0
+texture = ExtResource("1_h437d")
+expand_mode = 1
+
+[node name="SettingsLabel" type="Label" parent="BackgroundOverlay/PopupBoard" unique_id=2048302896]
+layout_mode = 0
+offset_left = 198.0
+offset_top = 33.0
+offset_right = 432.0
+offset_bottom = 96.0
+theme_override_fonts/font = ExtResource("2_2tlyv")
+theme_override_font_sizes/font_size = 51
+text = "SETTINGS"
+
+[node name="CloseButton" type="TextureButton" parent="BackgroundOverlay/PopupBoard" unique_id=1357814698]
+layout_mode = 0
+offset_left = 510.0
+offset_top = 90.0
+offset_right = 1110.0
+offset_bottom = 690.0
+scale = Vector2(0.15, 0.15)
+texture_normal = ExtResource("3_2d6lb")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BackgroundOverlay/PopupBoard" unique_id=511735163]
+layout_mode = 0
+offset_left = 75.0
+offset_top = 169.0
+offset_right = 567.0
+offset_bottom = 802.0
+
+[node name="SoundCard" type="Panel" parent="BackgroundOverlay/PopupBoard/VBoxContainer" unique_id=486272602]
+layout_mode = 2
+
+[node name="HBoxContainer" type="Panel" parent="BackgroundOverlay/PopupBoard/VBoxContainer/SoundCard" unique_id=759906904]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 17.0
+offset_right = 500.0
+offset_bottom = 163.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3owqy")
+
+[node name="SoundIcon" type="TextureRect" parent="BackgroundOverlay/PopupBoard/VBoxContainer/SoundCard/HBoxContainer" unique_id=1608713177]
+layout_mode = 0
+offset_left = 22.999998
+offset_top = 15.0
+offset_right = 151.0
+offset_bottom = 143.0
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("4_nxj4t")
+
+[node name="SoundLabel" type="Label" parent="BackgroundOverlay/PopupBoard/VBoxContainer/SoundCard/HBoxContainer/SoundIcon" unique_id=346967673]
+layout_mode = 0
+offset_left = 40.0
+offset_top = 26.666702
+offset_right = 441.6667
+offset_bottom = 116.6667
+theme_override_colors/font_color = Color(0.0253638, 0.0253638, 0.025363795, 1)
+theme_override_fonts/font = ExtResource("5_yl4dm")
+theme_override_font_sizes/font_size = 50
+text = "Sound"
+horizontal_alignment = 1
+
+[node name="MusicIcon" type="TextureRect" parent="BackgroundOverlay/PopupBoard/VBoxContainer/SoundCard/HBoxContainer" unique_id=2081440055]
+layout_mode = 0
+offset_left = 18.0
+offset_top = 83.0
+offset_right = 146.0
+offset_bottom = 211.0
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("6_ttjgw")
+
+[node name="MusicLabel" type="Label" parent="BackgroundOverlay/PopupBoard/VBoxContainer/SoundCard/HBoxContainer/MusicIcon" unique_id=1509770187]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 16.666649
+offset_right = 511.6667
+offset_bottom = 105.66665
+theme_override_colors/font_color = Color(0.0253638, 0.0253638, 0.025363795, 1)
+theme_override_fonts/font = ExtResource("5_yl4dm")
+theme_override_font_sizes/font_size = 66
+text = "Music"
+horizontal_alignment = 1
+
+[node name="SoundToggle" type="CheckButton" parent="BackgroundOverlay/PopupBoard/VBoxContainer/SoundCard" unique_id=462812687]
+layout_mode = 0
+offset_left = 374.00006
+offset_top = 37.0
+offset_right = 424.00006
+offset_bottom = 62.0
+scale = Vector2(1.7, 1.7)
+theme_override_styles/normal = SubResource("StyleBoxFlat_yl4dm")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nxj4t")
+theme_override_icons/unchecked_mirrored = SubResource("ViewportTexture_ttjgw")
+icon_alignment = 1
+expand_icon = true
+
+[node name="MusicToggle" type="CheckButton" parent="BackgroundOverlay/PopupBoard/VBoxContainer/SoundCard" unique_id=1699282068]
+layout_mode = 0
+offset_left = 374.99994
+offset_top = 94.999954
+offset_right = 424.99994
+offset_bottom = 119.999954
+scale = Vector2(1.7, 1.7)
+theme_override_styles/normal = SubResource("StyleBoxFlat_yl4dm")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_nxj4t")
+theme_override_icons/unchecked_mirrored = SubResource("ViewportTexture_ttjgw")
+icon_alignment = 1
+
+[node name="AccountCard" type="Panel" parent="BackgroundOverlay/PopupBoard/VBoxContainer" unique_id=1490479106]
+layout_mode = 2
+
+[node name="HBoxContainer" type="Panel" parent="BackgroundOverlay/PopupBoard/VBoxContainer/AccountCard" unique_id=1740678803]
+layout_mode = 0
+offset_left = -8.0
+offset_top = 175.0
+offset_right = 499.0
+offset_bottom = 410.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3owqy")
+
+[node name="PersonIcon" type="TextureRect" parent="BackgroundOverlay/PopupBoard/VBoxContainer/AccountCard/HBoxContainer" unique_id=2035364396]
+layout_mode = 0
+offset_left = 22.999998
+offset_top = 15.0
+offset_right = 170.5
+offset_bottom = 157.5
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("7_nxj4t")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="BackgroundOverlay/PopupBoard/VBoxContainer/AccountCard/HBoxContainer" unique_id=191094013]
+layout_mode = 0
+offset_left = 58.0
+offset_top = 20.0
+offset_right = 364.0
+offset_bottom = 69.0
+theme_override_colors/font_color = Color(0.0253638, 0.0253638, 0.025363795, 1)
+theme_override_fonts/font = ExtResource("5_yl4dm")
+theme_override_font_sizes/font_size = 25
+text = "Account Information"
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="BackgroundOverlay/PopupBoard/VBoxContainer/AccountCard/HBoxContainer" unique_id=814979016]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 84.0
+offset_right = 195.0
+offset_bottom = 133.0
+theme_override_colors/font_color = Color(0.0253638, 0.0253638, 0.025363795, 1)
+theme_override_fonts/font = ExtResource("5_yl4dm")
+theme_override_font_sizes/font_size = 25
+text = "Name: Lito"
+horizontal_alignment = 1
+
+[node name="GradeLabel" type="Label" parent="BackgroundOverlay/PopupBoard/VBoxContainer/AccountCard/HBoxContainer" unique_id=1631241982]
+layout_mode = 0
+offset_left = -32.0
+offset_top = 128.0
+offset_right = 274.0
+offset_bottom = 177.0
+theme_override_colors/font_color = Color(0.0253638, 0.0253638, 0.025363795, 1)
+theme_override_fonts/font = ExtResource("5_yl4dm")
+theme_override_font_sizes/font_size = 25
+text = "Grade level: 3"
+horizontal_alignment = 1
+
+[node name="SectionLabel" type="Label" parent="BackgroundOverlay/PopupBoard/VBoxContainer/AccountCard/HBoxContainer" unique_id=999568213]
+layout_mode = 0
+offset_left = -5.0
+offset_top = 172.0
+offset_right = 301.0
+offset_bottom = 221.0
+theme_override_colors/font_color = Color(0.0253638, 0.0253638, 0.025363795, 1)
+theme_override_fonts/font = ExtResource("5_yl4dm")
+theme_override_font_sizes/font_size = 25
+text = "Section: Masagana"
+horizontal_alignment = 1
+
+[node name="HelpCard" type="Panel" parent="BackgroundOverlay/PopupBoard/VBoxContainer" unique_id=1516029310]
+layout_mode = 2
+
+[node name="HBoxContainer" type="Panel" parent="BackgroundOverlay/PopupBoard/VBoxContainer/HelpCard" unique_id=846834460]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 420.0
+offset_right = 500.0
+offset_bottom = 503.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3owqy")
+
+[node name="HelpIcon" type="TextureRect" parent="BackgroundOverlay/PopupBoard/VBoxContainer/HelpCard/HBoxContainer" unique_id=610600797]
+layout_mode = 0
+offset_left = 22.999998
+offset_top = 15.0
+offset_right = 175.5
+offset_bottom = 137.49988
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("8_yl4dm")
+expand_mode = 1
+
+[node name="HelpLabel" type="Label" parent="BackgroundOverlay/PopupBoard/VBoxContainer/HelpCard/HBoxContainer" unique_id=1519359019]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 20.0
+offset_right = 321.0
+offset_bottom = 69.0
+theme_override_colors/font_color = Color(0.0253638, 0.0253638, 0.025363795, 1)
+theme_override_fonts/font = ExtResource("5_yl4dm")
+theme_override_font_sizes/font_size = 25
+text = "About / Help"
+horizontal_alignment = 1
+
+[node name="ArrowIcon" type="TextureRect" parent="BackgroundOverlay/PopupBoard/VBoxContainer/HelpCard/HBoxContainer" unique_id=187084757]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.039
+anchor_bottom = 0.24100001
+offset_left = 446.0
+offset_top = 29.0
+offset_right = 466.227
+offset_bottom = 48.997
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("9_ttjgw")
+expand_mode = 1
+
+[node name="LogOutButton" type="Button" parent="." unique_id=1980556815]
+layout_mode = 0
+offset_left = 168.0
+offset_top = 869.0
+offset_right = 526.0
+offset_bottom = 933.0
+theme_override_colors/font_color = Color(0.5019608, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_yl4dm")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
+text = "LOG OUT"
