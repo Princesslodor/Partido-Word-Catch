@@ -117,5 +117,36 @@ func load_game() -> void:
 	
 	
 	
-	
+	## --- GAMEPLAY ACTIONS ---
+
+## Adds coins to the player's total and saves immediately.
+## Call this whenever a player earns coins (e.g. completing a level).
+func add_coins(amount: int) -> void:
+	player_coins += amount
+	print("Coins added: +", amount, " | New total: ", player_coins)
+	save_game()
+
+
+## Marks a level as completed, updates the best score if this run was better,
+## unlocks the next level if this is a new milestone, and saves immediately.
+## Call this when a player finishes a level successfully.
+func complete_level(level_num: int, score: int) -> void:
+	# Step 1: Record or update this level's completion data.
+	if completed_levels.has(level_num):
+		# Level was already completed before -- only update if this score is better.
+		var previous_best: int = completed_levels[level_num].get("best_score", 0)
+		if score > previous_best:
+			completed_levels[level_num]["best_score"] = score
+	else:
+		# First time completing this level.
+		completed_levels[level_num] = {"completed": true, "best_score": score}
+
+	# Step 2: Unlock the next level, but only if this level was the current highest.
+	# (Prevents accidentally "un-unlocking" progress if a player replays an old level.)
+	if level_num >= unlocked_level:
+		unlocked_level = level_num + 1
+		print("Level ", level_num + 1, " unlocked!")
+
+	print("Level ", level_num, " completed with score: ", score)
+	save_game()
 	
