@@ -1,7 +1,6 @@
 extends Node2D
 
-var current_level: int = 17
-
+var current_level: int = 16
 
 var player_coins: int:
 	get: return Global.player_coins
@@ -25,8 +24,6 @@ func _ready():
 	_connect_button("%ShuffleButton", "ShuffleButto", "_on_shuffle_pressed")
 			
 	load_current_level()
-	
-	
 	_connect_sound_to_all_buttons(self)
 
 func _connect_button(unique_path: String, node_name: String, method_name: String):
@@ -75,8 +72,20 @@ func load_current_level():
 	if grid and grid is GridContainer: grid.columns = 7
 
 	update_level_image(current_level)
+	update_background(current_level)
 	setup_answer_slots(current_word)
 	setup_scrambled_letters(current_word)
+
+func update_background(lvl: int):
+	if has_node("CanvasLayer/LagonoyValleyBg"): $CanvasLayer/LagonoyValleyBg.visible = false
+	if has_node("CanvasLayer/CoastalShore"): $CanvasLayer/CoastalShore.visible = false
+	if has_node("CanvasLayer/GreenWood"): $CanvasLayer/GreenWood.visible = false
+	if has_node("CanvasLayer/BlueWood"): $CanvasLayer/BlueWood.visible = false
+	if has_node("CanvasLayer/VioletWood"): $CanvasLayer/VioletWood.visible = false
+		
+	if lvl >= 16 and lvl <= 20:
+		if has_node("CanvasLayer/CoastalShore"): 
+			$CanvasLayer/CoastalShore.visible = true
 
 func update_level_image(lvl: int):
 	var folder_path = "res://Picture_HintLevel/"
@@ -260,6 +269,14 @@ func show_victory_popup():
 	if has_node("%CulturalNoteLabel"):
 		%CulturalNoteLabel.text = level_info.get("cultural_note", "")
 		
+	var particles = get_node_or_null("%CPUParticles2D")
+	if particles and particles is CPUParticles2D:
+		particles.emitting = false
+		particles.restart()
+		particles.emitting = true
+	
+	Global.play_horray()
+		
 	if has_node("%VictoryPopup"):
 		%VictoryPopup.visible = true
 		
@@ -326,7 +343,6 @@ func _on_remove_letter_pressed():
 	var selected_index = wrong_indices[0]
 	var selected_tile = tiles[selected_index]
 	
-	
 	_clear_tile_text(selected_tile)
 	
 	player_coins -= 5
@@ -356,6 +372,11 @@ func _on_speaker_button_pressed():
 
 func _on_next_level_button_pressed():
 	current_level += 1
+	
+	if current_level == 21:
+		get_tree().change_scene_to_file("res://level_21_30.tscn")
+		return
+
 	if current_level <= LevelData.levels.size():
 		load_current_level()
 		if has_node("%CoinsLabel"):
@@ -389,7 +410,6 @@ func _set_tile_text(tile_node: Node, val: String):
 
 func _on_next_level_pressed() -> void:
 	_on_next_level_button_pressed()
-
 
 func _connect_sound_to_all_buttons(node: Node):
 	for child in node.get_children():

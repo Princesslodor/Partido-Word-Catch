@@ -1,0 +1,293 @@
+[gd_scene format=3 uid="uid://bjqclajmm586l"]
+
+[ext_resource type="Script" uid="uid://c17c4bpme2svq" path="res://avatar_selection.gd" id="1_ummre"]
+[ext_resource type="Texture2D" uid="uid://dg0yp5yj5eorl" path="res://Background Image.png" id="1_vba1o"]
+[ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://Back.png" id="2_qibic"]
+[ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://Nunito-Black.ttf" id="3_cd3w6"]
+[ext_resource type="FontFile" uid="uid://b0yhtkwh7o06h" path="res://Nunito-Bold.ttf" id="4_a7mb3"]
+[ext_resource type="Texture2D" uid="uid://bbelj0s3vv8eu" path="res://StudentF1.png" id="5_ummre"]
+[ext_resource type="Texture2D" uid="uid://bux0kihq48mby" path="res://StudentF2.png" id="6_6kwkn"]
+[ext_resource type="Texture2D" uid="uid://br0c1keh784yw" path="res://StudentM1.png" id="7_0er8t"]
+[ext_resource type="Texture2D" uid="uid://clqcadcfm1gdh" path="res://StudentM2.png" id="8_cq3so"]
+[ext_resource type="Texture2D" uid="uid://dqbysb3q4usve" path="res://TeacherFemale2.png" id="10_6kwkn"]
+[ext_resource type="Texture2D" uid="uid://baqmrv1073fn4" path="res://TeacherMale1.png" id="11_0er8t"]
+[ext_resource type="Texture2D" uid="uid://bg3geim823f1a" path="res://TeacherMale2.png" id="12_cq3so"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
+bg_color = Color(1, 0.972549, 0.93333334, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8901961, 0.81960785, 0.72156864, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_drsw1"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.20392157, 0.5568628, 0.24705882, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8upip"]
+bg_color = Color(1, 1, 1, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.20392157, 0.5568628, 0.24705882, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_a3jpw"]
+load_path = "res://.godot/imported/TeacherF1.png-a03faa453f3cc46702535fda1a37a5e0.ctex"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpga7"]
+bg_color = Color(0.3019608, 0.4862745, 0.21960784, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="AvatarSelection" type="Control" unique_id=1420942767]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ummre")
+
+[node name="Background" type="TextureRect" parent="." unique_id=89029770]
+layout_mode = 0
+offset_right = 723.0
+offset_bottom = 1279.0
+texture = ExtResource("1_vba1o")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BackButton" type="TextureButton" parent="." unique_id=402810741]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 49.0
+offset_right = 307.0
+offset_bottom = 349.0
+scale = Vector2(0.3, 0.3)
+texture_normal = ExtResource("2_qibic")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=800463037]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="StudentAvatarContainer" type="Control" parent="MarginContainer" unique_id=305139599]
+layout_mode = 2
+
+[node name="TopBar" type="Control" parent="MarginContainer/StudentAvatarContainer" unique_id=1201001977]
+anchors_preset = 0
+offset_right = 826.0
+
+[node name="Panel" type="Panel" parent="MarginContainer/StudentAvatarContainer/TopBar" unique_id=944577914]
+layout_mode = 0
+offset_left = 41.0
+offset_top = 135.0
+offset_right = 684.0
+offset_bottom = 1194.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3owqy")
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/StudentAvatarContainer/TopBar" unique_id=1665397482]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 165.0
+offset_right = 526.0
+offset_bottom = 221.0
+theme_override_colors/font_color = Color(0.64705884, 0.16470589, 0.16470589, 1)
+theme_override_fonts/font = ExtResource("3_cd3w6")
+theme_override_font_sizes/font_size = 40
+text = "CHOOSE AVATAR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="MarginContainer/StudentAvatarContainer/TopBar" unique_id=1325601957]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 231.0
+offset_right = 525.0
+offset_bottom = 273.0
+theme_override_colors/font_color = Color(0.47843137, 0.43137255, 0.39607844, 1)
+theme_override_fonts/font = ExtResource("4_a7mb3")
+theme_override_font_sizes/font_size = 30
+text = "Select your game character."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StudentAvatarGrid" type="GridContainer" parent="MarginContainer/StudentAvatarContainer/TopBar" unique_id=2078059083]
+layout_mode = 0
+offset_left = 71.0
+offset_top = 349.0
+offset_right = 812.0
+offset_bottom = 1155.0
+scale = Vector2(0.8, 0.8)
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 120
+columns = 2
+
+[node name="StudentCard" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=1781132578]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
+icon = ExtResource("5_ummre")
+clip_text = true
+
+[node name="StudentCard2" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=256163633]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_8upip")
+icon = ExtResource("6_6kwkn")
+
+[node name="StudentCard3" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=2041846605]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
+icon = ExtResource("7_0er8t")
+
+[node name="StudentCard4" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=1970074481]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
+icon = ExtResource("8_cq3so")
+
+[node name="Label" type="Label" parent="MarginContainer/StudentAvatarContainer" unique_id=840364394]
+layout_mode = 0
+offset_left = 81.0
+offset_top = 294.0
+offset_right = 308.0
+offset_bottom = 336.0
+theme_override_colors/font_color = Color(0.029506557, 0.029506557, 0.029506557, 1)
+theme_override_fonts/font = ExtResource("4_a7mb3")
+theme_override_font_sizes/font_size = 30
+text = "Female Student"
+
+[node name="Label2" type="Label" parent="MarginContainer/StudentAvatarContainer" unique_id=1901481304]
+layout_mode = 0
+offset_left = 77.0
+offset_top = 662.0
+offset_right = 304.0
+offset_bottom = 704.0
+theme_override_colors/font_color = Color(0.029506557, 0.029506557, 0.029506557, 1)
+theme_override_fonts/font = ExtResource("4_a7mb3")
+theme_override_font_sizes/font_size = 30
+text = "Male Student"
+
+[node name="TeacherAvatarContainer" type="Control" parent="MarginContainer" unique_id=680637680]
+layout_mode = 2
+
+[node name="TopBar" type="Control" parent="MarginContainer/TeacherAvatarContainer" unique_id=569214138]
+anchors_preset = 0
+offset_right = 826.0
+
+[node name="Panel" type="Panel" parent="MarginContainer/TeacherAvatarContainer/TopBar" unique_id=1976784669]
+layout_mode = 0
+offset_left = 41.0
+offset_top = 135.0
+offset_right = 684.0
+offset_bottom = 1194.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3owqy")
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/TeacherAvatarContainer/TopBar" unique_id=394005574]
+layout_mode = 0
+offset_left = 139.0
+offset_top = 165.0
+offset_right = 526.0
+offset_bottom = 221.0
+theme_override_colors/font_color = Color(0.64705884, 0.16470589, 0.16470589, 1)
+theme_override_fonts/font = ExtResource("3_cd3w6")
+theme_override_font_sizes/font_size = 40
+text = "CHOOSE AVATAR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="MarginContainer/TeacherAvatarContainer/TopBar" unique_id=1683990663]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 231.0
+offset_right = 525.0
+offset_bottom = 273.0
+theme_override_colors/font_color = Color(0.47843137, 0.43137255, 0.39607844, 1)
+theme_override_fonts/font = ExtResource("4_a7mb3")
+theme_override_font_sizes/font_size = 30
+text = "Select your game character."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TeacherAvatarGrid" type="GridContainer" parent="MarginContainer/TeacherAvatarContainer/TopBar" unique_id=646013052]
+layout_mode = 0
+offset_left = 71.0
+offset_top = 349.0
+offset_right = 812.0
+offset_bottom = 1155.0
+scale = Vector2(0.8, 0.8)
+theme_override_constants/h_separation = 40
+theme_override_constants/v_separation = 120
+columns = 2
+
+[node name="TeacherCard" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=1369578040]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
+icon = SubResource("CompressedTexture2D_a3jpw")
+clip_text = true
+
+[node name="TeacherCard2" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=1629558243]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_8upip")
+icon = ExtResource("10_6kwkn")
+
+[node name="TeacherCard3" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=1203253639]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
+icon = ExtResource("11_0er8t")
+
+[node name="TeacherCard4" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=706172558]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
+icon = ExtResource("12_cq3so")
+
+[node name="Label" type="Label" parent="MarginContainer/TeacherAvatarContainer" unique_id=1179093791]
+layout_mode = 0
+offset_left = 81.0
+offset_top = 294.0
+offset_right = 308.0
+offset_bottom = 336.0
+theme_override_colors/font_color = Color(0.029506557, 0.029506557, 0.029506557, 1)
+theme_override_fonts/font = ExtResource("4_a7mb3")
+theme_override_font_sizes/font_size = 30
+text = "Female Teacher"
+
+[node name="Label2" type="Label" parent="MarginContainer/TeacherAvatarContainer" unique_id=522432775]
+layout_mode = 0
+offset_left = 77.0
+offset_top = 662.0
+offset_right = 304.0
+offset_bottom = 704.0
+theme_override_colors/font_color = Color(0.029506557, 0.029506557, 0.029506557, 1)
+theme_override_fonts/font = ExtResource("4_a7mb3")
+theme_override_font_sizes/font_size = 30
+text = "Male Teacher"
+
+[node name="ConfirmButton" type="Button" parent="." unique_id=1038398089]
+custom_minimum_size = Vector2(100, 40)
+layout_mode = 0
+offset_left = 232.0
+offset_top = 1073.0
+offset_right = 508.0
+offset_bottom = 1132.0
+theme_override_fonts/font = ExtResource("4_a7mb3")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_dpga7")
+text = "CONFIRM"

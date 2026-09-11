@@ -1,14 +1,30 @@
 extends Node2D
 
-var current_level: int = 1 # MAGSIMULA SA LEVEL 1
-
-# Nakakonekta na sa Global para hindi mawala ang coins paglipat ng scene
+var current_level: int = 1
 var player_coins: int:
-	get: return Global.player_coins
+	get: 
+		if Global.player_coins <= 0 and not Global.has_meta("coins_initialized"):
+			Global.player_coins = 20
+			Global.set_meta("coins_initialized", true)
+		return Global.player_coins
 	set(val): Global.player_coins = val
+
+var player_stars: int = 3
+var player_hearts: int:
+	get:
+		if not Global.has_meta("hearts_initialized"):
+			Global.player_hearts = 4
+			Global.set_meta("hearts_initialized", true)
+		return Global.player_hearts
+	set(val): Global.player_hearts = val
+
+# Timer para sa 15 minuto (15 * 60 = 900 seconds)
+var heart_regen_timer: Timer
+const REGEN_TIME: float = 900.0 
 
 var current_word: String = ""
 var current_placed_letters: Array = []
+var last_slots_full_state: bool = false
 
 var extra_alphabet: Array = ["A", "B", "K", "D", "E", "G", "H", "I", "L", "M", "N", "O", "P", "R", "S", "T", "U", "W", "Y"]
 
@@ -25,14 +41,32 @@ func _ready():
 	if has_node("%ShuffleButton") and not %ShuffleButton.is_connected("pressed", Callable(self, "_on_shuffle_pressed")):
 		%ShuffleButton.pressed.connect(_on_shuffle_pressed)
 		
+	setup_heart_timer()
 	load_current_level()
-	
-	# Awtomatikong naglalagay ng tunog sa lahat ng buttons sa scene na ito
 	_connect_sound_to_all_buttons(self)
+
+func _process(_delta):
+	check_slots_automatically()
+	update_timer_display()
+
+func setup_heart_timer():
+	heart_regen_timer = Timer.new()
+	heart_regen_timer.wait_time = REGEN_TIME
+	heart_regen_timer.one_shot = false
+	heart_regen_timer.timeout.connect(_on_heart_regen_timeout)
+	add_child(heart_regen_timer)
+	
+	if player_hearts < 4:
+		heart_regen_timer.start()
 
 func load_current_level():
 	if has_node("%VictoryPopup"): %VictoryPopup.visible = false
 		
+	player_stars = 3
+	update_stars_display()
+	update_hearts_display()
+	last_slots_full_state = false
+
 	var lvl_key = int(current_level)
 	if not LevelData.levels.has(lvl_key): return
 		
@@ -53,8 +87,28 @@ func load_current_level():
 	if grid and grid is GridContainer: grid.columns = 7
 
 	update_level_image(current_level)
+	update_background(current_level)
 	setup_answer_slots(current_word)
 	setup_scrambled_letters(current_word)
+
+func update_background(lvl: int):
+	if has_node("CanvasLayer/LagonoyValleyBg"):
+		$CanvasLayer/LagonoyValleyBg.visible = false
+	if has_node("CanvasLayer/CoastalShore"):
+		$CanvasLayer/CoastalShore.visible = false
+	if has_node("CanvasLayer/GreenWood"):
+		$CanvasLayer/GreenWood.visible = false
+	if has_node("CanvasLayer/BlueWood"):
+		$CanvasLayer/BlueWood.visible = false
+	if has_node("CanvasLayer/VioletWood"):
+		$CanvasLayer/VioletWood.visible = false
+		
+	if lvl >= 1 and lvl <= 10:
+		if has_node("CanvasLayer/LagonoyValleyBg"):
+			$CanvasLayer/LagonoyValleyBg.visible = true
+	elif lvl >= 11:
+		if has_node("CanvasLayer/CoastalShore"):
+			$CanvasLayer/CoastalShore.visible = true
 
 func update_level_image(lvl: int):
 	var folder_path = "res://Picture_HintLevel/"
@@ -146,7 +200,7 @@ func setup_scrambled_letters(word: String):
 		else:
 			tiles[i].visible = false
 
-func check_answer():
+func check_slots_automatically():
 	var slot_container = _get_answer_slot_container()
 	if slot_container == null: return
 	var slots = slot_container.get_children()
@@ -162,16 +216,81 @@ func check_answer():
 			constructed_word += " "
 		else:
 			var slot_text = ""
-			if "text" in slot: slot_text = slot.text.strip_edges().to_upper()
-			elif slot.has_node("Label"): slot_text = slot.get_node("Label").text.strip_edges().to_upper()
+			if slot.has_method("get_letter"):
+				slot_text = slot.get_letter().strip_edges().to_upper()
+			elif "text" in slot and slot.text != "": 
+				slot_text = slot.text.strip_edges().to_upper()
+			elif slot.has_node("Label"): 
+				slot_text = slot.get_node("Label").text.strip_edges().to_upper()
 
 			if slot_text == "":
 				is_full = false
 				break
 			constructed_word += slot_text
 
-	if is_full and constructed_word.length() == current_word.length():
-		if constructed_word == current_word: show_victory_popup()
+	if is_full and not last_slots_full_state:
+		last_slots_full_state = true
+		if constructed_word == current_word:
+			show_victory_popup()
+		else:
+			handle_wrong_answer()
+	elif not is_full:
+		last_slots_full_state = false
+
+func check_answer():
+	check_slots_automatically()
+
+func handle_wrong_answer():
+	player_stars -= 1
+	if player_stars < 0:
+		player_stars = 0
+	update_stars_display()
+	
+	if player_stars <= 0:
+		player_hearts -= 1
+		if player_hearts < 0:
+			player_hearts = 0
+		update_hearts_display()
+		
+		if heart_regen_timer.is_stopped():
+			heart_regen_timer.start()
+			
+		if player_hearts <= 0:
+			print("Naubos na ang lahat ng puso!")
+
+func update_stars_display():
+	if has_node("CanvasLayer/LevelDesign/StarWithFill"):
+		$CanvasLayer/LevelDesign/StarWithFill.visible = (player_stars >= 1)
+	if has_node("CanvasLayer/LevelDesign/StarWithFill2"):
+		$CanvasLayer/LevelDesign/StarWithFill2.visible = (player_stars >= 2)
+	if has_node("CanvasLayer/LevelDesign/StarWithFill3"):
+		$CanvasLayer/LevelDesign/StarWithFill3.visible = (player_stars >= 3)
+
+func update_hearts_display():
+	if has_node("TopBar/HeartLabel"):
+		$TopBar/HeartLabel.text = str(player_hearts)
+
+func update_timer_display():
+	if heart_regen_timer and not heart_regen_timer.is_stopped():
+		var time_left = int(heart_regen_timer.time_left)
+		var minutes = time_left / 60
+		var seconds = time_left % 60
+		var time_string = "%02d:%02d" % [minutes, seconds]
+		if has_node("%HeartTimerLabel"):
+			%HeartTimerLabel.text = time_string
+	else:
+		if has_node("%HeartTimerLabel"):
+			%HeartTimerLabel.text = ""
+
+func _on_heart_regen_timeout():
+	if player_hearts < 4:
+		player_hearts += 1
+		update_hearts_display()
+		
+	if player_hearts < 4:
+		heart_regen_timer.start()
+	else:
+		heart_regen_timer.stop()
 
 func show_victory_popup():
 	var lvl_key = int(current_level)
@@ -183,13 +302,18 @@ func show_victory_popup():
 	if has_node("%MeaningLabel"): %MeaningLabel.text = level_info.get("meaning", "")
 	if has_node("%CulturalNoteLabel"): %CulturalNoteLabel.text = level_info.get("cultural_note", "")
 	if has_node("%VictoryPopup"): %VictoryPopup.visible = true
-	if level_info.has("audio"): play_audio(level_info["audio"])
+	
+	var particles = get_node_or_null("%CPUParticles2D")
+	if particles and particles is CPUParticles2D:
+		particles.emitting = false
+		particles.restart()
+		particles.emitting = true
+	
+	Global.play_horray()
 
 # --- HINT BUTTONS ---
 func _on_reveal_hint_pressed():
-	if player_coins < 10:
-		print("Kulang ang coins para sa hint!")
-		return
+	if player_coins < 10: return
 		
 	var slot_container = _get_answer_slot_container()
 	if not slot_container: return
@@ -211,13 +335,10 @@ func _on_reveal_hint_pressed():
 			_set_tile_text(slot, target_char)
 			current_placed_letters[i] = target_char
 			if "is_locked" in slot: slot.is_locked = true
-			check_answer()
 			break
 
 func _on_remove_letter_pressed():
-	if player_coins < 5:
-		print("Kulang ang coins para mag-alis ng letra!")
-		return
+	if player_coins < 5: return
 		
 	var grid = _get_scrambled_grid()
 	if not grid: return
@@ -240,9 +361,7 @@ func _on_remove_letter_pressed():
 	var selected_index = wrong_indices[0]
 	var selected_tile = tiles[selected_index]
 	
-	# Letra lang ang buburahin para mag-iwan ng gap/blank tile
 	_clear_tile_text(selected_tile)
-	
 	player_coins -= 5
 	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
 
@@ -251,10 +370,17 @@ func _on_shuffle_pressed():
 # --------------------
 
 func play_audio(audio_filename: String):
-	pass
+	if Global.has_method("play_word_audio_with_volume"):
+		Global.play_word_audio_with_volume(audio_filename, 1000.0)
+	else:
+		Global.play_word_audio(audio_filename)
 
 func _on_speaker_button_pressed():
-	pass
+	var lvl_key = int(current_level)
+	if LevelData.levels.has(lvl_key):
+		var level_info = LevelData.levels[lvl_key]
+		if level_info.has("audio"):
+			play_audio(level_info["audio"])
 
 func _on_next_level_button_pressed():
 	current_level += 1
@@ -275,24 +401,15 @@ func _get_scrambled_grid() -> Node:
 	return null
 
 func get_hint_count_for_level(lvl: int) -> int:
-	if lvl >= 1 and lvl <= 2:
-		return 1
-	elif lvl >= 3 and lvl <= 5:
-		return 1
-	elif lvl >= 6 and lvl <= 9:
-		return 2
-	elif lvl == 10:
-		return 2
-	elif lvl >= 11 and lvl <= 15:
-		return 2
-	elif lvl == 16:
-		return 3
-	elif lvl == 17:
-		return 3
-	elif lvl >= 18 and lvl <= 19:
-		return 4
-	elif lvl >= 20:
-		return 5
+	if lvl >= 1 and lvl <= 2: return 1
+	elif lvl >= 3 and lvl <= 5: return 1
+	elif lvl >= 6 and lvl <= 9: return 2
+	elif lvl == 10: return 2
+	elif lvl >= 11 and lvl <= 15: return 2
+	elif lvl == 16: return 3
+	elif lvl == 17: return 3
+	elif lvl >= 18 and lvl <= 19: return 4
+	elif lvl >= 20: return 5
 	return 1
 
 func _clear_tile_text(tile_node: Node): _set_tile_text(tile_node, "")
