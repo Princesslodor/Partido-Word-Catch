@@ -13,7 +13,6 @@
 [ext_resource type="Texture2D" uid="uid://cwowvyi8gp0nw" path="res://book_icon.png" id="11_otlon"]
 [ext_resource type="Texture2D" uid="uid://bi4fk8k0a5sw" path="res://key_icon.png" id="12_bdjbp"]
 [ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://Back.png" id="13_bdjbp"]
-[ext_resource type="Texture2D" uid="uid://ucr37oowu8ku" path="res://Setting Icon.png" id="14_setico"]
 [ext_resource type="PackedScene" uid="uid://brbxr71qdww6a" path="res://settings_menu.tscn" id="15_setmnu"]
 [ext_resource type="PackedScene" uid="uid://dc3itlbsj88f7" path="res://exit_confirmation_popup.tscn" id="16_exitpop"]
 [ext_resource type="Script" uid="uid://dsne1cp5umdhs" path="res://teacher_dashboard.gd" id="14_dashboard_script"]
@@ -286,6 +285,17 @@ offset_right = 95.0
 offset_bottom = 100.0
 texture = ExtResource("9_p44m3")
 expand_mode = 1
+
+[node name="ProfileClickArea" type="Button" parent="TeacherProfilePanel" unique_id=1000002010]
+layout_mode = 0
+offset_left = -70.0
+offset_top = -15.0
+offset_right = 300.0
+offset_bottom = 95.0
+mouse_default_cursor_shape = 2
+focus_mode = 0
+flat = true
+text = ""
 
 [node name="Dashboard" type="Control" parent="." unique_id=78130873]
 visible = false
@@ -1047,17 +1057,6 @@ offset_right = 299.0
 offset_bottom = 286.0
 scale = Vector2(0.4, 0.4)
 texture_normal = ExtResource("13_bdjbp")
-
-[node name="SettingsButton" type="TextureButton" parent="." unique_id=1000002000]
-layout_mode = 0
-offset_left = 330.0
-offset_top = 15.0
-offset_right = 667.0
-offset_bottom = 352.0
-scale = Vector2(0.2, 0.2)
-texture_normal = ExtResource("14_setico")
-ignore_texture_size = true
-stretch_mode = 0
 
 [node name="SettingsMenu" parent="." unique_id=1000002001 instance=ExtResource("15_setmnu")]
 visible = false

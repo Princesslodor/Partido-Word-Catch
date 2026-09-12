@@ -5,7 +5,7 @@ extends Control
 @onready var students: Control = $Students
 @onready var leaderboard: Control = $Leaderboard
 @onready var back_button: TextureButton = $BackButton
-@onready var settings_button: TextureButton = $SettingsButton
+@onready var profile_click_area: Button = $TeacherProfilePanel/ProfileClickArea
 @onready var settings_menu: Control = $SettingsMenu
 @onready var logout_confirmation_popup: Control = $ExitConfirmationPopup
 
@@ -89,8 +89,8 @@ func _connect_signals() -> void:
 		back_button.pressed.connect(_on_back_pressed)
 	if copy_code_button and not copy_code_button.pressed.is_connected(_on_copy_code_pressed):
 		copy_code_button.pressed.connect(_on_copy_code_pressed)
-	if settings_button and not settings_button.pressed.is_connected(_on_settings_button_pressed):
-		settings_button.pressed.connect(_on_settings_button_pressed)
+	if profile_click_area and not profile_click_area.pressed.is_connected(_on_settings_button_pressed):
+		profile_click_area.pressed.connect(_on_settings_button_pressed)
 	if logout_confirmation_popup and logout_confirmation_popup.has_signal("confirmed"):
 		if not logout_confirmation_popup.confirmed.is_connected(_on_logout_confirmed):
 			logout_confirmation_popup.confirmed.connect(_on_logout_confirmed)
