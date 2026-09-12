@@ -2,7 +2,7 @@ extends Control
 
 # --- SCENE NODE REFERENCES ---
 @onready var close_button: BaseButton = $BackgroundOverlay/PopupBoard/CloseButton if has_node("BackgroundOverlay/PopupBoard/CloseButton") else null
-@onready var quit_game_button: BaseButton = $BackgroundOverlay/PopupBoard/QuitButton if has_node("BackgroundOverlay/PopupBoard/QuitButton") else null
+@onready var quit_game_button: BaseButton = $QuitGameButton if has_node("QuitGameButton") else null
 
 # Custom Toggles
 @onready var sound_toggle: Button = $BackgroundOverlay/PopupBoard/CustomToggle/Panel/SoundRow/SoundToggle if has_node("BackgroundOverlay/PopupBoard/CustomToggle/Panel/SoundRow/SoundToggle") else null
