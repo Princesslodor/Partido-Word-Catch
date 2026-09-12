@@ -1008,6 +1008,7 @@ offset_left = 30.0
 offset_top = 20.0
 offset_right = 656.0
 offset_bottom = 66.0
+theme_override_colors/font_color = Color(0.16, 0.16, 0.16, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 32
 text = "Levels reached, whole class"
