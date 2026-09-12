@@ -14,6 +14,7 @@ extends Control
 @onready var student_registration = $StudentRegistration if has_node("StudentRegistration") else null
 @onready var back_button = $BackButton if has_node("BackButton") else null
 @onready var class_joined_popup = $ClassJoinedPopup if has_node("ClassJoinedPopup") else null
+@onready var student_welcome_back = $StudentWelcomeBack if has_node("StudentWelcomeBack") else null
 
 # Buttons sa Role Selection
 @onready var student_card = $RoleSelectionContainer/StudentCard/VBoxContainer/Button if has_node("RoleSelectionContainer/StudentCard/VBoxContainer/Button") else null
@@ -31,6 +32,11 @@ extends Control
 @onready var class_code_input: LineEdit = $ClassCodeContainer/EnterCodeContainer/ClassCodeEdit if has_node("ClassCodeContainer/EnterCodeContainer/ClassCodeEdit") else null
 @onready var join_class_button: Button = $ClassCodeContainer/EnterCodeContainer/Button if has_node("ClassCodeContainer/EnterCodeContainer/Button") else null
 @onready var join_status_label: Label = $ClassCodeContainer/EnterCodeContainer/JoinStatusLabel if has_node("ClassCodeContainer/EnterCodeContainer/JoinStatusLabel") else null
+
+# Student Welcome Back Elements (returning student who already joined a class)
+@onready var welcome_back_greeting_label: Label = $StudentWelcomeBack/Card/GreetingLabel if has_node("StudentWelcomeBack/Card/GreetingLabel") else null
+@onready var welcome_back_continue_button: Button = $StudentWelcomeBack/Card/ContinueButton if has_node("StudentWelcomeBack/Card/ContinueButton") else null
+@onready var welcome_back_not_you_button: Button = $StudentWelcomeBack/Card/NotYouButton if has_node("StudentWelcomeBack/Card/NotYouButton") else null
 
 # Teacher Create Account Fields
 @onready var teacher_name_input: LineEdit = $TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer/NameInput if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer/NameInput") else null
@@ -66,6 +72,12 @@ func _connect_signals():
 	if forgot_password_button and not forgot_password_button.pressed.is_connected(_on_forgot_password_pressed):
 		forgot_password_button.pressed.connect(_on_forgot_password_pressed)
 
+	if welcome_back_continue_button and not welcome_back_continue_button.pressed.is_connected(_on_welcome_back_continue_pressed):
+		welcome_back_continue_button.pressed.connect(_on_welcome_back_continue_pressed)
+
+	if welcome_back_not_you_button and not welcome_back_not_you_button.pressed.is_connected(_on_welcome_back_not_you_pressed):
+		welcome_back_not_you_button.pressed.connect(_on_welcome_back_not_you_pressed)
+
 	if student_code_container:
 		_bind_join_class_btn(student_code_container)
 
@@ -100,6 +112,7 @@ func _hide_all_screens():
 	if student_registration: student_registration.hide()
 	if back_button: back_button.hide()
 	if class_joined_popup: class_joined_popup.hide()
+	if student_welcome_back: student_welcome_back.hide()
 
 func _show_role_selection_screen():
 	_hide_all_screens()
@@ -110,6 +123,17 @@ func _show_student_class_code_screen():
 	_hide_all_screens()
 	if game_logo: game_logo.hide()
 	if student_code_container: student_code_container.show()
+	if back_button: back_button.show()
+
+func _show_student_welcome_back_screen():
+	_hide_all_screens()
+	if game_logo: game_logo.hide()
+	var gm = get_node_or_null("/root/GameManager")
+	var saved_name: String = gm.player_name if gm and "player_name" in gm and gm.player_name != "" else "there"
+	if welcome_back_greeting_label:
+		welcome_back_greeting_label.text = "Hi, " + saved_name + "!"
+	if student_welcome_back:
+		student_welcome_back.show()
 	if back_button: back_button.show()
 
 func _show_student_registration_screen():
@@ -147,6 +171,36 @@ func _show_teacher_register_screen():
 
 func _on_student_selected():
 	current_role = "STUDENT"
+
+	var gm = get_node_or_null("/root/GameManager")
+	var already_joined: bool = gm != null \
+		and gm.role == "STUDENT" \
+		and gm.class_code != "" \
+		and gm.player_name != "" \
+		and gm.avatar_id != ""
+
+	if already_joined:
+		_show_student_welcome_back_screen()
+		return
+
+	_save_role_to_gm("STUDENT")
+	_show_student_class_code_screen()
+
+func _on_welcome_back_continue_pressed():
+	get_tree().change_scene_to_file(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
+
+func _on_welcome_back_not_you_pressed():
+	var gm = get_node_or_null("/root/GameManager")
+	if gm:
+		gm.set("player_name", "")
+		gm.set("class_code", "")
+		gm.set("student_pin", "")
+		gm.set("avatar_id", "")
+		gm.set("joined_teacher_name", "")
+		gm.set("joined_class_name", "")
+		if gm.has_method("save_game"):
+			gm.save_game()
+
 	_save_role_to_gm("STUDENT")
 	_show_student_class_code_screen()
 
