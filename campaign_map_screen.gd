@@ -46,9 +46,9 @@ func _setup_option_button() -> void:
 
 	region_option.clear()
 	
-	region_option.add_item("UNIT 1", 0)
-	region_option.add_item("UNIT 2", 1)
-	region_option.add_item("UNIT 3", 2)
+	region_option.add_item("YUNIT 1", 0)
+	region_option.add_item("YUNIT 2", 1)
+	region_option.add_item("YUNIT 3", 2)
 	
 	var current_unlocked_level: int = GameManager.unlocked_level
 
@@ -159,8 +159,8 @@ func _on_settings_button_pressed() -> void:
 
 func _unit_label_for_level(level_num: int) -> String:
 	if level_num <= COASTAL_TOTAL_LEVELS:
-		return "Unit 1"
+		return "Yunit 1"
 	elif level_num <= COASTAL_TOTAL_LEVELS + LAGONOY_TOTAL_LEVELS:
-		return "Unit 2"
+		return "Yunit 2"
 	else:
-		return "Unit 3"
+		return "Yunit 3"
