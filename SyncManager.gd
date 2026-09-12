@@ -61,18 +61,18 @@ func upsert_class(class_code: String, teacher_name: String, teacher_email: Strin
 	])
 	http.request_completed.connect(func(_result, _code, _h, _b): http.queue_free())
 
-## --- TEACHER LOGIN LOOKUP ---
-## Looks up a teacher's class by the email they typed on the Login screen.
-## Calls back with: the class row (Dictionary) if a matching account exists,
-## `false` if the lookup succeeded but no account matched that email, or
-## `null` if the lookup itself couldn't complete (offline/unconfigured/error) -
-## so the caller can tell "wrong email" apart from "couldn't check".
-func find_class_by_email(teacher_email: String, on_result: Callable) -> void:
-	if not is_configured() or teacher_email.strip_edges() == "":
+## --- CLASS LOOKUPS ---
+## Shared helper: finds one row in `classes` where `field` = `value`.
+## Calls back with: the class row (Dictionary) if a match exists, `false` if
+## the lookup succeeded but nothing matched, or `null` if the lookup itself
+## couldn't complete (offline/unconfigured/error) - so callers can tell
+## "no such account/code" apart from "couldn't check".
+func _find_class_by(field: String, value: String, on_result: Callable) -> void:
+	if not is_configured() or value.strip_edges() == "":
 		on_result.call(null)
 		return
 
-	var path := "/rest/v1/classes?teacher_email=eq.%s&limit=1" % teacher_email.strip_edges().uri_encode()
+	var path := "/rest/v1/classes?%s=eq.%s&limit=1" % [field, value.strip_edges().uri_encode()]
 	var http := _request(path, HTTPClient.METHOD_GET)
 	http.request_completed.connect(func(result, response_code, _h, body: PackedByteArray):
 		http.queue_free()
@@ -85,6 +85,14 @@ func find_class_by_email(teacher_email: String, on_result: Callable) -> void:
 		else:
 			on_result.call(false)
 	)
+
+## Looks up a teacher's class by the email they typed on the Login screen.
+func find_class_by_email(teacher_email: String, on_result: Callable) -> void:
+	_find_class_by("teacher_email", teacher_email, on_result)
+
+## Looks up a class by the code a student typed to join it.
+func find_class_by_code(class_code: String, on_result: Callable) -> void:
+	_find_class_by("class_code", class_code, on_result)
 
 ## --- STUDENT PROGRESS SYNC ---
 ## Pushes this device's current GameManager progress up for the teacher to see.

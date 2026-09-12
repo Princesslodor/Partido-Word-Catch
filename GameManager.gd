@@ -31,6 +31,10 @@ var grade_subject: String = ""
 var teacher_class_name: String = ""
 var class_code: String = ""           # Class code a student entered / a teacher generated
 
+## --- STUDENT'S JOINED CLASS INFO (looked up from the class code) ---
+var joined_teacher_name: String = ""
+var joined_class_name: String = ""
+
 ## --- PROGRESS ---
 var unlocked_level: int = 1           # Highest level the player can currently play (default: level 1 only)
 var player_coins: int = 0             # Player's total coin balance
@@ -91,6 +95,8 @@ func save_game() -> void:
 		"grade_subject": grade_subject,
 		"teacher_class_name": teacher_class_name,
 		"class_code": class_code,
+		"joined_teacher_name": joined_teacher_name,
+		"joined_class_name": joined_class_name,
 		"device_id": device_id,
 		"unlocked_level": unlocked_level,
 		"player_coins": player_coins,
@@ -159,6 +165,8 @@ func load_game() -> void:
 	grade_subject = save_data.get("grade_subject", "")
 	teacher_class_name = save_data.get("teacher_class_name", "")
 	class_code = save_data.get("class_code", "")
+	joined_teacher_name = save_data.get("joined_teacher_name", "")
+	joined_class_name = save_data.get("joined_class_name", "")
 	device_id = save_data.get("device_id", "")
 	unlocked_level = save_data.get("unlocked_level", 1)
 	player_coins = save_data.get("player_coins", 0)

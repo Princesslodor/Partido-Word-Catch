@@ -28,6 +28,8 @@ extends Control
 
 # Student Class Code Field
 @onready var class_code_input: LineEdit = $ClassCodeContainer/EnterCodeContainer/ClassCodeEdit if has_node("ClassCodeContainer/EnterCodeContainer/ClassCodeEdit") else null
+@onready var join_class_button: Button = $ClassCodeContainer/EnterCodeContainer/Button if has_node("ClassCodeContainer/EnterCodeContainer/Button") else null
+@onready var join_status_label: Label = $ClassCodeContainer/EnterCodeContainer/JoinStatusLabel if has_node("ClassCodeContainer/EnterCodeContainer/JoinStatusLabel") else null
 
 # Teacher Create Account Fields
 @onready var teacher_name_input: LineEdit = $TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer/NameInput if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer/NameInput") else null
@@ -154,14 +156,46 @@ func _on_register_here_pressed():
 
 # Pagkatapos mag-enter ng Class Code, dadaan muna sa Registration Panel
 func _on_join_class_pressed():
-	_save_role_to_gm("STUDENT")
-	if class_code_input:
+	var typed_code: String = class_code_input.text.strip_edges() if class_code_input else ""
+	if typed_code == "":
+		_show_join_status("Enter your teacher's class code.")
+		return
+
+	var sync = get_node_or_null("/root/SyncManager")
+	if not sync or not sync.has_method("find_class_by_code"):
+		_show_join_status("Joining isn't available right now.")
+		return
+
+	_show_join_status("Checking...")
+	if join_class_button: join_class_button.disabled = true
+
+	sync.find_class_by_code(typed_code, func(class_row):
+		if join_class_button: join_class_button.disabled = false
+
+		if class_row == null:
+			_show_join_status("Couldn't reach the server. Check your internet connection and try again.")
+			return
+		if class_row == false:
+			_show_join_status("No class found with that code. Double-check it with your teacher.")
+			return
+
+		_show_join_status("")
+		_save_role_to_gm("STUDENT")
 		var gm = get_node_or_null("/root/GameManager")
 		if gm:
-			gm.set("class_code", class_code_input.text.strip_edges())
+			gm.set("class_code", typed_code)
+			gm.set("joined_teacher_name", str(class_row.get("teacher_name", "")))
+			gm.set("joined_class_name", str(class_row.get("teacher_class_name", "")))
 			if gm.has_method("save_game"):
 				gm.save_game()
-	_show_student_registration_screen()
+		_show_student_registration_screen()
+	)
+
+func _show_join_status(message: String) -> void:
+	if not join_status_label:
+		return
+	join_status_label.text = message
+	join_status_label.visible = message != ""
 
 func _on_class_joined_continued():
 	_change_to_avatar_selection()

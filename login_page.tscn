@@ -623,6 +623,20 @@ theme_override_font_sizes/font_size = 35
 theme_override_styles/normal = SubResource("StyleBoxFlat_6k0s3")
 text = "JOIN CLASS"
 
+[node name="JoinStatusLabel" type="Label" parent="ClassCodeContainer/EnterCodeContainer" unique_id=1643597483]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 638.0
+offset_right = 630.0
+offset_bottom = 680.0
+theme_override_colors/font_color = Color(0.7019608, 0.10980392, 0.10980392, 1)
+theme_override_fonts/font = ExtResource("6_wkk7v")
+theme_override_font_sizes/font_size = 22
+text = ""
+autowrap_mode = 3
+horizontal_alignment = 1
+visible = false
+
 [node name="TeacherCreateAccount" type="Panel" parent="." unique_id=1412830781]
 visible = false
 custom_minimum_size = Vector2(360, 520)
