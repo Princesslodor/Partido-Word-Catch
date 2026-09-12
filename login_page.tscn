@@ -10,7 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://drtqhq01jfhty" path="res://Quit Background.png" id="7_wewh5"]
 [ext_resource type="Script" uid="uid://1560de6l70rh" path="res://student_registration.gd" id="8_hgb5e"]
 [ext_resource type="Script" uid="uid://bw5aa6ay4i7ue" path="res://class_joined_popup.gd" id="9_lw488"]
-[ext_resource type="Texture2D" uid="uid://c4tmxxsaf22ch" path="res://Plain Board.png" id="10_hgb5e"]
+[ext_resource type="Texture2D" uid="uid://c61g3y8xbiy3x" path="res://TeacherBoard.png" id="10_hgb5e"]
 [ext_resource type="Texture2D" uid="uid://dilapiwanb33f" path="res://checkbagde.png" id="11_482kg"]
 [ext_resource type="Texture2D" uid="uid://58h630xls4fo" path="res://AvatarTeacherF.png" id="12_ce8hi"]
 
