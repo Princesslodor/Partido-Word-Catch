@@ -38,7 +38,16 @@ func _request(path: String, method: int, body: String = "", extra_headers: Array
 	var http := HTTPRequest.new()
 	http.timeout = REQUEST_TIMEOUT
 	add_child(http)
-	http.request(SUPABASE_URL + path, _headers(extra_headers), method, body)
+	var full_url := SUPABASE_URL + path
+	var send_err := http.request(full_url, _headers(extra_headers), method, body)
+	if send_err != OK:
+		push_warning("SyncManager: request() failed to even start for %s - error code %s" % [full_url, send_err])
+	http.request_completed.connect(func(result, response_code, _h, resp_body: PackedByteArray):
+		if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
+			push_warning("SyncManager: request to %s failed - result=%s response_code=%s body=%s" % [
+				full_url, result, response_code, resp_body.get_string_from_utf8()
+			])
+	)
 	return http
 
 ## --- CLASS SYNC (teacher side) ---
