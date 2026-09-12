@@ -120,7 +120,7 @@ func save_game() -> void:
 		if role == "STUDENT" and sync.has_method("sync_student_progress"):
 			sync.sync_student_progress()
 		elif role == "TEACHER" and class_code != "" and sync.has_method("upsert_class"):
-			sync.upsert_class(class_code, player_name, school_name, grade_subject, teacher_class_name)
+			sync.upsert_class(class_code, player_name, teacher_email, school_name, grade_subject, teacher_class_name)
 
 
 ## --- LOAD ---

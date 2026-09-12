@@ -56,6 +56,12 @@ func _load_teacher_info() -> void:
 	if class_code_edit and gm.has_method("get_or_create_class_code"):
 		class_code_edit.text = gm.get_or_create_class_code()
 
+	# Re-push this teacher's full info whenever the dashboard opens, so any
+	# fields that changed locally (or were missing from an earlier sync,
+	# like the account's email) stay up to date online.
+	if gm.has_method("save_game"):
+		gm.save_game()
+
 func _connect_signals() -> void:
 	if create_class_code_button and not create_class_code_button.pressed.is_connected(_on_create_class_code_pressed):
 		create_class_code_button.pressed.connect(_on_create_class_code_pressed)

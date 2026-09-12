@@ -24,6 +24,7 @@ extends Control
 @onready var login_button = $LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginButton if has_node("LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginButton") else null
 @onready var register_here_button = $LoginFormContainer/MarginContainer/VBoxContainer/RegisterRow/RegisterButton if has_node("LoginFormContainer/MarginContainer/VBoxContainer/RegisterRow/RegisterButton") else null
 @onready var login_email_input: LineEdit = $LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer/LineEdit if has_node("LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer/LineEdit") else null
+@onready var login_status_label: Label = $LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginStatusLabel if has_node("LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginStatusLabel") else null
 
 # Student Class Code Field
 @onready var class_code_input: LineEdit = $ClassCodeContainer/EnterCodeContainer/ClassCodeEdit if has_node("ClassCodeContainer/EnterCodeContainer/ClassCodeEdit") else null
@@ -170,16 +171,50 @@ func _change_to_avatar_selection():
 	get_tree().change_scene_to_file(target)
 
 func _on_teacher_login_pressed():
-	_save_role_to_gm("TEACHER")
-	var gm = get_node_or_null("/root/GameManager")
-	if gm and login_email_input and login_email_input.text.strip_edges() != "":
-		var typed = login_email_input.text.strip_edges()
-		gm.set("player_name", typed)
-		gm.set("teacher_email", typed)
-		if gm.has_method("save_game"):
-			gm.save_game()
-	if teacher_dashboard_scene != "":
-		get_tree().change_scene_to_file(teacher_dashboard_scene)
+	var typed_email: String = login_email_input.text.strip_edges() if login_email_input else ""
+	if typed_email == "":
+		_show_login_status("Enter the email you registered with.")
+		return
+
+	var sync = get_node_or_null("/root/SyncManager")
+	if not sync or not sync.has_method("find_class_by_email"):
+		_show_login_status("Login isn't available right now.")
+		return
+
+	_show_login_status("Checking...")
+	if login_button: login_button.disabled = true
+
+	sync.find_class_by_email(typed_email, func(class_row):
+		if login_button: login_button.disabled = false
+
+		if class_row == null:
+			_show_login_status("Couldn't reach the server. Check your internet connection and try again.")
+			return
+		if class_row == false:
+			_show_login_status("No account found with that email. Check the spelling, or create a new account below.")
+			return
+
+		_show_login_status("")
+		_save_role_to_gm("TEACHER")
+		var gm = get_node_or_null("/root/GameManager")
+		if gm:
+			gm.set("player_name", str(class_row.get("teacher_name", "")))
+			gm.set("teacher_email", typed_email)
+			gm.set("school_name", str(class_row.get("school_name", "")))
+			gm.set("grade_subject", str(class_row.get("grade_subject", "")))
+			gm.set("teacher_class_name", str(class_row.get("teacher_class_name", "")))
+			gm.set("class_code", str(class_row.get("class_code", "")))
+			if gm.has_method("save_game"):
+				gm.save_game()
+		if teacher_dashboard_scene != "":
+			get_tree().change_scene_to_file(teacher_dashboard_scene)
+	)
+
+func _show_login_status(message: String) -> void:
+	if not login_status_label:
+		return
+	login_status_label.text = message
+	login_status_label.visible = message != ""
 
 func _on_teacher_create_account_pressed():
 	_save_role_to_gm("TEACHER")

@@ -4,11 +4,15 @@
 create table if not exists classes (
   class_code text primary key,
   teacher_name text,
+  teacher_email text,
   school_name text,
   grade_subject text,
   teacher_class_name text,
   created_at timestamptz default now()
 );
+
+-- Safe to re-run: adds the column if this table already existed without it.
+alter table classes add column if not exists teacher_email text;
 
 create table if not exists students (
   student_id uuid primary key default gen_random_uuid(),

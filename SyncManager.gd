@@ -43,13 +43,14 @@ func _request(path: String, method: int, body: String = "", extra_headers: Array
 
 ## --- CLASS SYNC (teacher side) ---
 ## Upserts the class row for this teacher's permanent class code.
-func upsert_class(class_code: String, teacher_name: String, school_name: String, grade_subject: String, teacher_class_name: String) -> void:
+func upsert_class(class_code: String, teacher_name: String, teacher_email: String, school_name: String, grade_subject: String, teacher_class_name: String) -> void:
 	if not is_configured() or class_code == "":
 		return
 
 	var body := JSON.stringify({
 		"class_code": class_code,
 		"teacher_name": teacher_name,
+		"teacher_email": teacher_email,
 		"school_name": school_name,
 		"grade_subject": grade_subject,
 		"teacher_class_name": teacher_class_name,
@@ -59,6 +60,31 @@ func upsert_class(class_code: String, teacher_name: String, school_name: String,
 		"Prefer: resolution=merge-duplicates"
 	])
 	http.request_completed.connect(func(_result, _code, _h, _b): http.queue_free())
+
+## --- TEACHER LOGIN LOOKUP ---
+## Looks up a teacher's class by the email they typed on the Login screen.
+## Calls back with: the class row (Dictionary) if a matching account exists,
+## `false` if the lookup succeeded but no account matched that email, or
+## `null` if the lookup itself couldn't complete (offline/unconfigured/error) -
+## so the caller can tell "wrong email" apart from "couldn't check".
+func find_class_by_email(teacher_email: String, on_result: Callable) -> void:
+	if not is_configured() or teacher_email.strip_edges() == "":
+		on_result.call(null)
+		return
+
+	var path := "/rest/v1/classes?teacher_email=eq.%s&limit=1" % teacher_email.strip_edges().uri_encode()
+	var http := _request(path, HTTPClient.METHOD_GET)
+	http.request_completed.connect(func(result, response_code, _h, body: PackedByteArray):
+		http.queue_free()
+		if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+			on_result.call(null)
+			return
+		var parsed = JSON.parse_string(body.get_string_from_utf8())
+		if parsed is Array and parsed.size() > 0:
+			on_result.call(parsed[0])
+		else:
+			on_result.call(false)
+	)
 
 ## --- STUDENT PROGRESS SYNC ---
 ## Pushes this device's current GameManager progress up for the teacher to see.
