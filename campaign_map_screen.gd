@@ -36,10 +36,9 @@ func _ready() -> void:
 	_update_coin_display()
 
 func _update_coin_display() -> void:
-	var coins: int = GameManager.player_coins if "player_coins" in GameManager else 0
 	for label in coin_labels:
 		if label:
-			label.text = str(coins)
+			label.text = str(GameManager.player_coins)
 
 func _setup_option_button() -> void:
 	if not region_option:
@@ -51,11 +50,7 @@ func _setup_option_button() -> void:
 	region_option.add_item("LAGONOY VALLEY", 1)
 	region_option.add_item("ISAROG FOOTHILLS", 2)
 	
-	var current_unlocked_level: int = 1
-	if Engine.has_singleton("GameManager"):
-		current_unlocked_level = GameManager.unlocked_level
-	elif "GameManager" in get_tree().root:
-		current_unlocked_level = get_tree().root.get_node("GameManager").unlocked_level
+	var current_unlocked_level: int = GameManager.unlocked_level
 
 	region_option.set_item_disabled(0, false)
 	
@@ -121,12 +116,9 @@ func _load_region(region_index: int) -> void:
 		_update_level_locks(active_container, level_offset)
 
 func _update_level_locks(container: Control, offset: int) -> void:
-	var unlocked_limit: int = 1
-	if Engine.has_singleton("GameManager"):
-		unlocked_limit = GameManager.unlocked_level
-	elif "GameManager" in get_tree().root:
-		unlocked_limit = get_tree().root.get_node("GameManager").unlocked_level
-		
+	var unlocked_limit: int = GameManager.unlocked_level
+
+
 	var button_counter: int = 1
 	
 	for child in container.get_children():
