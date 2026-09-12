@@ -21,7 +21,7 @@ extends Control
 
 # Login Form Elements
 @onready var title_label = $LoginFormContainer/MarginContainer/VBoxContainer/TitleLabel if has_node("LoginFormContainer/MarginContainer/VBoxContainer/TitleLabel") else null
-@onready var login_button = $LoginFormContainer/MarginContainer/VBoxContainer/LoginButton if has_node("LoginFormContainer/MarginContainer/VBoxContainer/LoginButton") else null
+@onready var login_button = $LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginButton if has_node("LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginButton") else null
 @onready var register_here_button = $LoginFormContainer/MarginContainer/VBoxContainer/RegisterRow/RegisterButton if has_node("LoginFormContainer/MarginContainer/VBoxContainer/RegisterRow/RegisterButton") else null
 
 var current_role: String = "STUDENT"

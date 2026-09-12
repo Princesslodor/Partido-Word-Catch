@@ -241,6 +241,7 @@ theme_override_font_sizes/font_size = 38
 text = "Who's Playing?"
 
 [node name="Game Logo" type="TextureRect" parent="RoleSelectionContainer" unique_id=1534697093]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(800, 0)
 layout_mode = 1
 anchors_preset = -1

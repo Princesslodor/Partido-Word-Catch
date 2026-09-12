@@ -5,8 +5,8 @@ signal back_pressed
 
 # --- DIRECT NODE REFERENCES ---
 # Sinisigurado nitong makuha ang tamang LineEdit nodes sa iyong Scene Tree
-@onready var name_input: LineEdit = $StudentRegistrationContainer/FieldContainer/LineEdit if has_node("StudentRegistrationContainer/FieldContainer/LineEdit") else null
-@onready var pin_input: LineEdit = $StudentRegistrationContainer/FieldContainer2/LineEdit if has_node("StudentRegistrationContainer/FieldContainer2/LineEdit") else null
+@onready var name_input: LineEdit = $FieldContainer/LineEdit if has_node("FieldContainer/LineEdit") else null
+@onready var pin_input: LineEdit = $FieldContainer2/LineEdit if has_node("FieldContainer2/LineEdit") else null
 
 @onready var continue_button: Button = find_child("ContinueButton", true, false) as Button
 @onready var back_button: Button = find_child("BackButton", true, false) as Button
