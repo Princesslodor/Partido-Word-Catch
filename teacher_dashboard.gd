@@ -158,15 +158,19 @@ func _render_students_list(students_data: Array) -> void:
 		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD
-		empty_label.position = Vector2(30, 30)
-		empty_label.size = Vector2(students_panel.size.x - 60, 100)
+		empty_label.position = Vector2(30, 110)
+		empty_label.size = Vector2(students_panel.size.x - 60, 150)
 		students_panel.add_child(empty_label)
 		_dynamic_student_nodes.append(empty_label)
 		return
 
-	var row_top := 20.0
+	# Header row ("Students" / "View All") is drawn on top of this same
+	# panel, occupying its top ~85px - rows must start below that to avoid
+	# overlapping it.
+	var row_top := 100.0
 	var row_height := 64.0
-	for i in range(students_data.size()):
+	var max_visible_rows: int = max(1, int((students_panel.size.y - row_top) / row_height))
+	for i in range(min(students_data.size(), max_visible_rows)):
 		var row: Dictionary = students_data[i]
 		var name_label := Label.new()
 		name_label.text = str(row.get("player_name", "Student"))
