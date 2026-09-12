@@ -18,9 +18,13 @@ config/icon="res://icon.svg"
 [autoload]
 
 LevelData="*uid://blju7gpqmr7tu"
-Global="*uid://beufhve7kspn2"
 GameManager="*uid://btt20whkyb6yr"
+Global="*uid://beufhve7kspn2"
 SyncManager="*res://SyncManager.gd"
+
+[audio]
+
+buses/default_bus_layout="res://audio/bus_layout.tres"
 
 [display]
 

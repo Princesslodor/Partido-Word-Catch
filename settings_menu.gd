@@ -60,13 +60,26 @@ func _on_sound_toggled(is_on: bool):
 	if bus_idx != -1:
 		AudioServer.set_bus_mute(bus_idx, not is_on)
 
+	var gm = get_node_or_null("/root/GameManager")
+	if gm:
+		gm.set("is_sound_enabled", is_on)
+		if gm.has_method("save_game"):
+			gm.save_game()
+
 func _on_music_toggled(is_on: bool):
 	var bus_idx = AudioServer.get_bus_index("Music")
 	if bus_idx != -1:
 		AudioServer.set_bus_mute(bus_idx, not is_on)
 
+	var gm = get_node_or_null("/root/GameManager")
+	if gm:
+		gm.set("is_music_enabled", is_on)
+		if gm.has_method("save_game"):
+			gm.save_game()
+
 func _load_saved_settings():
+	var gm = get_node_or_null("/root/GameManager")
 	if sound_toggle and "is_on" in sound_toggle:
-		sound_toggle.is_on = true
+		sound_toggle.is_on = gm.is_sound_enabled if gm and "is_sound_enabled" in gm else true
 	if music_toggle and "is_on" in music_toggle:
-		music_toggle.is_on = true
+		music_toggle.is_on = gm.is_music_enabled if gm and "is_music_enabled" in gm else true

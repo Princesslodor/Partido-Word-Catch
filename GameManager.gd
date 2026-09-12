@@ -45,7 +45,8 @@ var player_coins: int = 0             # Player's total coin balance
 var completed_levels: Dictionary = {}
 
 ## --- SETTINGS ---
-var is_sound_enabled: bool = true
+var is_sound_enabled: bool = true    # Sound effects (SFX bus)
+var is_music_enabled: bool = true    # Background music (Music bus)
 
 
 ## --- SAVE FILE LOCATION ---
@@ -101,7 +102,8 @@ func save_game() -> void:
 		"unlocked_level": unlocked_level,
 		"player_coins": player_coins,
 		"completed_levels": completed_levels,
-		"is_sound_enabled": is_sound_enabled
+		"is_sound_enabled": is_sound_enabled,
+		"is_music_enabled": is_music_enabled
 	}
 
 	# Step 2: Open the save file for writing (this creates the file if it doesn't exist yet).
@@ -172,6 +174,7 @@ func load_game() -> void:
 	player_coins = save_data.get("player_coins", 0)
 	completed_levels = save_data.get("completed_levels", {})
 	is_sound_enabled = save_data.get("is_sound_enabled", true)
+	is_music_enabled = save_data.get("is_music_enabled", true)
 
 	print("Game loaded successfully. Player: ", player_name, " | Unlocked level: ", unlocked_level)
 	

@@ -14,14 +14,35 @@ var horray_audio = preload("res://audio/horray.mp3")
 
 func _ready():
 	audio_player = AudioStreamPlayer.new()
+	audio_player.bus = "SFX"
 	add_child(audio_player)
-	
+
 	sfx_player = AudioStreamPlayer.new()
+	sfx_player.bus = "SFX"
 	add_child(sfx_player)
-	
+
 	bgm_player = AudioStreamPlayer.new()
+	bgm_player.bus = "Music"
 	add_child(bgm_player)
 	play_background_music()
+
+	_apply_saved_audio_settings()
+
+## Applies the sound/music on-off state saved in GameManager, so a mute
+## chosen in Settings is still in effect after the app is closed and
+## reopened (not just for the rest of this session).
+func _apply_saved_audio_settings():
+	var gm = get_node_or_null("/root/GameManager")
+	if not gm:
+		return
+
+	var sfx_bus = AudioServer.get_bus_index("SFX")
+	if sfx_bus != -1 and "is_sound_enabled" in gm:
+		AudioServer.set_bus_mute(sfx_bus, not gm.is_sound_enabled)
+
+	var music_bus = AudioServer.get_bus_index("Music")
+	if music_bus != -1 and "is_music_enabled" in gm:
+		AudioServer.set_bus_mute(music_bus, not gm.is_music_enabled)
 
 func play_click_sound():
 	var sound_path = "res://audio/click.mp3"
