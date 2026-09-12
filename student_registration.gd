@@ -55,6 +55,8 @@ func _on_continue_pressed() -> void:
 			gm.set_role("STUDENT")
 		gm.set("player_name", student_name)
 		gm.set("student_pin", student_pin)
+		if gm.has_method("save_game"):
+			gm.save_game()
 
 	print(">>> REGISTRATION SUCCESSFUL! LILIPAT SA CLASS JOINED POPUP <<<")
 	registration_successful.emit()

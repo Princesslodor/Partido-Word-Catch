@@ -110,3 +110,5 @@ func _generate_class_code() -> void:
 	var gm = get_node_or_null("/root/GameManager")
 	if gm:
 		gm.set("class_code", code)
+		if gm.has_method("save_game"):
+			gm.save_game()

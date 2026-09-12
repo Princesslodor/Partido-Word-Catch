@@ -89,6 +89,8 @@ func _on_confirm_pressed() -> void:
 	var gm = get_node_or_null("/root/GameManager")
 	if gm:
 		gm.set("avatar_id", selected_avatar_id)
+		if gm.has_method("save_game"):
+			gm.save_game()
 
 	get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
 

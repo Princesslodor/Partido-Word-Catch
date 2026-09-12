@@ -57,6 +57,17 @@ func _ready() -> void:
 	# from a file (user://save_data.json) when the app starts.
 	load_game()
 	print("GameManager ready! Player: ", player_name, " | Unlocked level: ", unlocked_level)
+
+	# Safety net: always flush the latest data to disk when the app is
+	# closed (desktop) or backgrounded/killed (mobile), in case a screen
+	# forgot to call save_game() itself.
+	get_tree().set_auto_accept_quit(false)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_APPLICATION_PAUSED:
+		save_game()
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
+		get_tree().quit()
 	
 	
 ## Writes the current player data to a JSON file on disk.

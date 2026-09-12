@@ -158,6 +158,8 @@ func _on_join_class_pressed():
 		var gm = get_node_or_null("/root/GameManager")
 		if gm:
 			gm.set("class_code", class_code_input.text.strip_edges())
+			if gm.has_method("save_game"):
+				gm.save_game()
 	_show_student_registration_screen()
 
 func _on_class_joined_continued():
@@ -174,6 +176,8 @@ func _on_teacher_login_pressed():
 		var typed = login_email_input.text.strip_edges()
 		gm.set("player_name", typed)
 		gm.set("teacher_email", typed)
+		if gm.has_method("save_game"):
+			gm.save_game()
 	if teacher_dashboard_scene != "":
 		get_tree().change_scene_to_file(teacher_dashboard_scene)
 
@@ -191,6 +195,8 @@ func _on_teacher_create_account_pressed():
 			gm.set("grade_subject", teacher_grade_subject_input.text.strip_edges())
 		if teacher_class_name_input:
 			gm.set("teacher_class_name", teacher_class_name_input.text.strip_edges())
+		if gm.has_method("save_game"):
+			gm.save_game()
 	if teacher_dashboard_scene != "":
 		get_tree().change_scene_to_file(teacher_dashboard_scene)
 
