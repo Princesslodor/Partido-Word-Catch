@@ -128,11 +128,21 @@ func _update_level_locks(container: Control, offset: int) -> void:
 		var global_level_num: int = offset + button_counter
 		var lock_icon_name := "LockIcon" + str(global_level_num)
 
+		# theme_override_styles/normal in the .tscn lives in the same override
+		# slot that add/remove_theme_stylebox_override() manipulate, so the
+		# button's original circle style has to be cached once and restored
+		# explicitly - removing the override entirely falls back to Godot's
+		# plain default Button look, not the original style.
+		if not btn.has_meta("original_normal_style"):
+			btn.set_meta("original_normal_style", btn.get_theme_stylebox("normal"))
+		var original_style: StyleBox = btn.get_meta("original_normal_style")
+
 		if global_level_num < unlocked_limit:
 			# Already completed - unlocked, but no special highlight needed.
 			btn.disabled = false
 			btn.modulate = Color(1, 1, 1, 1)
-			btn.remove_theme_stylebox_override("normal")
+			if original_style:
+				btn.add_theme_stylebox_override("normal", original_style)
 			if btn.has_node(lock_icon_name):
 				btn.get_node(lock_icon_name).hide()
 
@@ -152,7 +162,8 @@ func _update_level_locks(container: Control, offset: int) -> void:
 			# Still locked.
 			btn.disabled = true
 			btn.modulate = Color(0.4, 0.4, 0.4, 0.8)
-			btn.remove_theme_stylebox_override("normal")
+			if original_style:
+				btn.add_theme_stylebox_override("normal", original_style)
 			if btn.has_node(lock_icon_name):
 				btn.get_node(lock_icon_name).show()
 
