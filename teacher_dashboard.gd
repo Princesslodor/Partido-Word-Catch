@@ -18,6 +18,11 @@ extends Control
 @onready var greeting_name_label: Label = $Dashboard/GreetingPanel/GreetingLabel2
 @onready var grade_label: Label = $CreateClasscode/Panel/GradeLabel
 @onready var teacher_label: Label = $CreateClasscode/Panel/TeacherLabel
+@onready var total_students_label: Label = $Dashboard/Control2/TotalStudentsPanel/TotalNumberLabel
+
+# --- Students page (populated live from Supabase) ---
+@onready var students_panel: Panel = $Students/Panel
+var _dynamic_student_nodes: Array = []
 
 # --- Leaderboard (populated live from Supabase) ---
 @onready var podium_slots := [$Leaderboard/First, $Leaderboard/Second, $Leaderboard/Third]
@@ -62,6 +67,8 @@ func _load_teacher_info() -> void:
 	if gm.has_method("save_game"):
 		gm.save_game()
 
+	_refresh_total_students_count()
+
 func _connect_signals() -> void:
 	if create_class_code_button and not create_class_code_button.pressed.is_connected(_on_create_class_code_pressed):
 		create_class_code_button.pressed.connect(_on_create_class_code_pressed)
@@ -94,6 +101,7 @@ func _on_student_button_pressed() -> void:
 	_hide_all_pages()
 	if students: students.show()
 	if back_button: back_button.show()
+	_refresh_students_list()
 
 func _on_leaderboard_button_pressed() -> void:
 	_hide_all_pages()
@@ -107,6 +115,79 @@ func _on_back_pressed() -> void:
 func _on_copy_code_pressed() -> void:
 	if class_code_edit:
 		DisplayServer.clipboard_set(class_code_edit.text)
+
+# --- STUDENTS PAGE (live data from Supabase, offline-safe) ---
+
+func _refresh_total_students_count() -> void:
+	var gm = get_node_or_null("/root/GameManager")
+	var sync = get_node_or_null("/root/SyncManager")
+	if not gm or not sync or gm.class_code == "":
+		if total_students_label: total_students_label.text = "0"
+		return
+	sync.fetch_leaderboard(gm.class_code, func(students_data: Array):
+		if total_students_label:
+			total_students_label.text = str(students_data.size())
+	)
+
+func _refresh_students_list() -> void:
+	var gm = get_node_or_null("/root/GameManager")
+	var sync = get_node_or_null("/root/SyncManager")
+	if not gm or not sync or gm.class_code == "":
+		_render_students_list([])
+		return
+	sync.fetch_leaderboard(gm.class_code, _render_students_list)
+
+func _render_students_list(students_data: Array) -> void:
+	for node in _dynamic_student_nodes:
+		if is_instance_valid(node):
+			node.queue_free()
+	_dynamic_student_nodes.clear()
+
+	if not students_panel:
+		return
+
+	if total_students_label:
+		total_students_label.text = str(students_data.size())
+
+	if students_data.is_empty():
+		var empty_label := Label.new()
+		empty_label.text = "No students yet — share your class code so they can join."
+		empty_label.add_theme_font_override("font", _bold_font)
+		empty_label.add_theme_font_size_override("font_size", 24)
+		empty_label.add_theme_color_override("font_color", Color(0.45, 0.45, 0.45, 1))
+		empty_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		empty_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		empty_label.autowrap_mode = TextServer.AUTOWRAP_WORD
+		empty_label.position = Vector2(30, 30)
+		empty_label.size = Vector2(students_panel.size.x - 60, 100)
+		students_panel.add_child(empty_label)
+		_dynamic_student_nodes.append(empty_label)
+		return
+
+	var row_top := 20.0
+	var row_height := 64.0
+	for i in range(students_data.size()):
+		var row: Dictionary = students_data[i]
+		var name_label := Label.new()
+		name_label.text = str(row.get("player_name", "Student"))
+		name_label.add_theme_font_override("font", _bold_font)
+		name_label.add_theme_font_size_override("font_size", 26)
+		name_label.add_theme_color_override("font_color", Color(0.16, 0.38, 0.56, 1))
+		name_label.position = Vector2(20, row_top + i * row_height)
+		name_label.size = Vector2(330, 40)
+		students_panel.add_child(name_label)
+		_dynamic_student_nodes.append(name_label)
+
+		var level_label := Label.new()
+		level_label.text = "Level " + str(row.get("unlocked_level", 1))
+		level_label.add_theme_font_override("font", _bold_font)
+		level_label.add_theme_font_size_override("font_size", 22)
+		level_label.add_theme_color_override("font_color", Color(0.3, 0.3, 0.3, 1))
+		level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		level_label.position = Vector2(360, row_top + i * row_height)
+		level_label.size = Vector2(140, 40)
+		students_panel.add_child(level_label)
+		_dynamic_student_nodes.append(level_label)
 
 # --- LEADERBOARD (live data from Supabase, offline-safe) ---
 
