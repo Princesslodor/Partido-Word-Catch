@@ -264,18 +264,20 @@ func _total_stars(row: Dictionary) -> int:
 			total += int(entry.get("best_score", 0))
 	return total
 
-## Relative-to-slot placement for the star + points row under each podium
-## card - First (center/tallest stand) has more room below its card than
-## the shorter Second/Third stands, hence the different sizing.
+## Placement of the star + points icon, relative to each podium's own
+## "Panel" card (same parent/coordinate space as its Level label) - sits
+## to the right of "Lvl X" on the same row, inside the card, instead of
+## floating below it. First's card is wider than Second/Third's.
 const _PODIUM_POINTS_LAYOUT := [
-	{"x": 54.0, "y": 192.0, "icon_size": 20.0, "font_size": 18},
-	{"x": 37.0, "y": 156.0, "icon_size": 16.0, "font_size": 15},
-	{"x": 37.0, "y": 156.0, "icon_size": 16.0, "font_size": 15},
+	{"icon_x": 126.0, "icon_y": 48.0, "icon_size": 18.0, "label_x": 147.0, "label_y": 42.0, "label_w": 40.0, "font_size": 16},
+	{"icon_x": 108.0, "icon_y": 50.0, "icon_size": 14.0, "label_x": 124.0, "label_y": 44.0, "label_w": 26.0, "font_size": 13},
+	{"icon_x": 108.0, "icon_y": 50.0, "icon_size": 14.0, "label_x": 124.0, "label_y": 44.0, "label_w": 26.0, "font_size": 13},
 ]
 
 func _render_podium(students_data: Array) -> void:
 	for i in range(podium_slots.size()):
 		var slot: Panel = podium_slots[i]
+		var card: Panel = slot.get_node_or_null("Panel")
 		var name_label: Label = slot.get_node_or_null("Panel/Label")
 		var score_label: Label = slot.get_node_or_null("Panel/Label2")
 		if i < students_data.size():
@@ -283,25 +285,26 @@ func _render_podium(students_data: Array) -> void:
 			if name_label: name_label.text = str(row.get("player_name", "Student"))
 			if score_label: score_label.text = "Lvl " + str(int(row.get("unlocked_level", 1)))
 
-			var cfg: Dictionary = _PODIUM_POINTS_LAYOUT[i]
-			var icon := TextureRect.new()
-			icon.texture = _star_icon
-			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-			icon.position = Vector2(cfg.x, cfg.y)
-			icon.size = Vector2(cfg.icon_size, cfg.icon_size)
-			slot.add_child(icon)
-			_dynamic_leaderboard_nodes.append(icon)
+			if card:
+				var cfg: Dictionary = _PODIUM_POINTS_LAYOUT[i]
+				var icon := TextureRect.new()
+				icon.texture = _star_icon
+				icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+				icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+				icon.position = Vector2(cfg.icon_x, cfg.icon_y)
+				icon.size = Vector2(cfg.icon_size, cfg.icon_size)
+				card.add_child(icon)
+				_dynamic_leaderboard_nodes.append(icon)
 
-			var points_label := Label.new()
-			points_label.text = str(_total_stars(row))
-			points_label.add_theme_font_override("font", _bold_font)
-			points_label.add_theme_font_size_override("font_size", cfg.font_size)
-			points_label.add_theme_color_override("font_color", Color(0.16, 0.16, 0.16, 1))
-			points_label.position = Vector2(cfg.x + cfg.icon_size + 4, cfg.y - 3)
-			points_label.size = Vector2(50, cfg.icon_size + 8)
-			slot.add_child(points_label)
-			_dynamic_leaderboard_nodes.append(points_label)
+				var points_label := Label.new()
+				points_label.text = str(_total_stars(row))
+				points_label.add_theme_font_override("font", _bold_font)
+				points_label.add_theme_font_size_override("font_size", cfg.font_size)
+				points_label.add_theme_color_override("font_color", Color(0.16, 0.16, 0.16, 1))
+				points_label.position = Vector2(cfg.label_x, cfg.label_y)
+				points_label.size = Vector2(cfg.label_w, cfg.icon_size + 10)
+				card.add_child(points_label)
+				_dynamic_leaderboard_nodes.append(points_label)
 		else:
 			if name_label: name_label.text = "—"
 			if score_label: score_label.text = "—"
