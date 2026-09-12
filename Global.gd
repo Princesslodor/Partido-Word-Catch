@@ -26,6 +26,7 @@ func _ready():
 func play_click_sound():
 	var sound_path = "res://audio/click.mp3"
 	if ResourceLoader.exists(sound_path):
+		audio_player.volume_db = 0.0
 		audio_player.stream = load(sound_path)
 		audio_player.play()
 
@@ -35,10 +36,40 @@ func play_horray():
 		sfx_player.play()
 
 func play_word_audio(audio_filename: String):
+	play_word_audio_with_volume(audio_filename, 0.0)
+
+const BGM_DUCKED_VOLUME_DB: float = -18.0
+var _bgm_normal_volume_db: float = 0.0
+
+## Plays a word's pronunciation audio, ducking the background music while it
+## plays so it's actually audible, then restoring it once the word finishes.
+func play_word_audio_with_volume(audio_filename: String, boost_db: float = 0.0):
 	var sound_path = "res://audio/" + audio_filename
-	if ResourceLoader.exists(sound_path):
-		audio_player.stream = load(sound_path)
-		audio_player.play()
+	if not ResourceLoader.exists(sound_path):
+		return
+
+	_duck_background_music()
+
+	audio_player.volume_db = clamp(boost_db, 0.0, 12.0)
+	audio_player.stream = load(sound_path)
+	audio_player.play()
+
+	if audio_player.finished.is_connected(_on_word_audio_finished):
+		audio_player.finished.disconnect(_on_word_audio_finished)
+	audio_player.finished.connect(_on_word_audio_finished, CONNECT_ONE_SHOT)
+
+func _duck_background_music():
+	if not bgm_player:
+		return
+	_bgm_normal_volume_db = bgm_player.volume_db
+	var tween = create_tween()
+	tween.tween_property(bgm_player, "volume_db", BGM_DUCKED_VOLUME_DB, 0.2)
+
+func _on_word_audio_finished():
+	if not bgm_player:
+		return
+	var tween = create_tween()
+	tween.tween_property(bgm_player, "volume_db", _bgm_normal_volume_db, 0.4)
 
 func play_background_music():
 	var bgm_path = "res://audio/Partido_Word_Catch_30min_enhanced.mp3"
