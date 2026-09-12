@@ -14,6 +14,12 @@ create table if not exists classes (
 -- Safe to re-run: adds the column if this table already existed without it.
 alter table classes add column if not exists teacher_email text;
 
+-- Supabase's REST API (PostgREST) caches the table schema and doesn't
+-- always notice a plain ALTER TABLE right away - this tells it to reload,
+-- otherwise requests mentioning the new column can fail with a 400
+-- "Could not find the 'teacher_email' column ... in the schema cache".
+notify pgrst, 'reload schema';
+
 create table if not exists students (
   student_id uuid primary key default gen_random_uuid(),
   class_code text references classes(class_code) on delete cascade,
