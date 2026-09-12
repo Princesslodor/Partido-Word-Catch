@@ -1,8 +1,8 @@
 extends Control
 
 # Safe references gamit ang find_child (hahanapin nito ang node sa buong tree)
-@onready var back_button: Button = find_child("BackButton", true, false) as Button
-@onready var confirm_button: Button = find_child("ConfirmButton", true, false) as Button
+@onready var back_button: BaseButton = find_child("BackButton", true, false) as BaseButton
+@onready var confirm_button: BaseButton = find_child("ConfirmButton", true, false) as BaseButton
 @onready var student_container: Control = find_child("StudentAvatarContainer", true, false) as Control
 @onready var teacher_container: Control = find_child("TeacherAvatarContainer", true, false) as Control
 @onready var student_grid: Control = find_child("StudentAvatarGrid", true, false) as Control

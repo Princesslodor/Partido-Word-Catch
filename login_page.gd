@@ -97,7 +97,8 @@ func _show_student_class_code_screen():
 func _show_student_registration_screen():
 	_hide_all_screens()
 	if game_logo: game_logo.hide()
-	if student_registration: 
+	if back_button: back_button.show()
+	if student_registration:
 		student_registration.show()
 		student_registration.move_to_front()
 		if student_registration.has_method("show_registration"):

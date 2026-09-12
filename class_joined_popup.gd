@@ -8,8 +8,8 @@ signal back_pressed
 @onready var class_name_label: Label = find_child("ClassNameLabel", true, false) as Label
 @onready var teacher_label: Label = find_child("TeacherLabel", true, false) as Label
 @onready var teacher_avatar: TextureRect = find_child("TeacherAvatar", true, false) as TextureRect
-@onready var continue_button: Button = find_child("ContinueButton", true, false) as Button
-@onready var back_button: Button = find_child("BackButton", true, false) as Button
+@onready var continue_button: BaseButton = find_child("ContinueButton", true, false) as BaseButton
+@onready var back_button: BaseButton = find_child("BackButton", true, false) as BaseButton
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS

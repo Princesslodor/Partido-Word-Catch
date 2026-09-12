@@ -8,8 +8,8 @@ signal back_pressed
 @onready var name_input: LineEdit = $FieldContainer/LineEdit if has_node("FieldContainer/LineEdit") else null
 @onready var pin_input: LineEdit = $FieldContainer2/LineEdit if has_node("FieldContainer2/LineEdit") else null
 
-@onready var continue_button: Button = find_child("ContinueButton", true, false) as Button
-@onready var back_button: Button = find_child("BackButton", true, false) as Button
+@onready var continue_button: BaseButton = find_child("ContinueButton", true, false) as BaseButton
+@onready var back_button: BaseButton = find_child("BackButton", true, false) as BaseButton
 
 func _ready() -> void:
 	if pin_input:
