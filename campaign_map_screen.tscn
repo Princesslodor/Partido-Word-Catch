@@ -1020,11 +1020,11 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_drsw1")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_hgfbm")
 alignment = 1
 item_count = 3
-popup/item_0/text = "COASTAL SHORE"
+popup/item_0/text = "UNIT 1"
 popup/item_0/id = 0
-popup/item_1/text = "LAGONOY VALLEY"
+popup/item_1/text = "UNIT 2"
 popup/item_1/id = 1
-popup/item_2/text = "ISAROG FOOTHILLS"
+popup/item_2/text = "UNIT 3"
 popup/item_2/id = 2
 
 [node name="SettingsButton" type="TextureButton" parent="." unique_id=375040293]

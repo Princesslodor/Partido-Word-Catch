@@ -46,9 +46,9 @@ func _setup_option_button() -> void:
 
 	region_option.clear()
 	
-	region_option.add_item("COASTAL SHORE", 0)
-	region_option.add_item("LAGONOY VALLEY", 1)
-	region_option.add_item("ISAROG FOOTHILLS", 2)
+	region_option.add_item("UNIT 1", 0)
+	region_option.add_item("UNIT 2", 1)
+	region_option.add_item("UNIT 3", 2)
 	
 	var current_unlocked_level: int = GameManager.unlocked_level
 
@@ -148,9 +148,7 @@ func _update_level_locks(container: Control, offset: int) -> void:
 func _on_level_button_pressed(level_num: int) -> void:
 	if not level_info_popup:
 		return
-	var lesson_title := ""
-	if LevelData.levels.has(level_num):
-		lesson_title = LevelData.levels[level_num].get("unit", "")
+	var lesson_title := _unit_label_for_level(level_num)
 	if level_info_popup.has_method("display_level_info"):
 		level_info_popup.display_level_info(level_num, lesson_title)
 
@@ -158,3 +156,11 @@ func _on_settings_button_pressed() -> void:
 	if settings_menu:
 		settings_menu.show()
 		settings_menu.move_to_front()
+
+func _unit_label_for_level(level_num: int) -> String:
+	if level_num <= COASTAL_TOTAL_LEVELS:
+		return "Unit 1"
+	elif level_num <= COASTAL_TOTAL_LEVELS + LAGONOY_TOTAL_LEVELS:
+		return "Unit 2"
+	else:
+		return "Unit 3"
