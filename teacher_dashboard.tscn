@@ -365,9 +365,9 @@ offset_bottom = 40.0
 
 [node name="TotalStudentsPanel" type="Panel" parent="Dashboard/Control2" unique_id=1316946678]
 layout_mode = 0
-offset_left = 87.0
+offset_left = 179.0
 offset_top = 448.0
-offset_right = 256.0
+offset_right = 348.0
 offset_bottom = 639.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8upip")
 
@@ -405,9 +405,9 @@ horizontal_alignment = 1
 
 [node name="ActivePlayerPanel" type="Panel" parent="Dashboard/Control2" unique_id=1152368770]
 layout_mode = 0
-offset_left = 271.0
+offset_left = 363.0
 offset_top = 448.0
-offset_right = 440.0
+offset_right = 532.0
 offset_bottom = 639.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dpga7")
 
@@ -437,46 +437,6 @@ offset_top = 141.0
 offset_right = 130.0
 offset_bottom = 170.0
 theme_override_colors/font_color = Color(0.23137255, 0.6392157, 0.29803923, 1)
-theme_override_fonts/font = ExtResource("3_2jwbv")
-theme_override_font_sizes/font_size = 33
-text = "0"
-horizontal_alignment = 1
-
-[node name="TotalClassPanel" type="Panel" parent="Dashboard/Control2" unique_id=1654240852]
-layout_mode = 0
-offset_left = 455.0
-offset_top = 447.0
-offset_right = 624.0
-offset_bottom = 638.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_drsw1")
-
-[node name="TextureRect" type="TextureRect" parent="Dashboard/Control2/TotalClassPanel" unique_id=1634563340]
-layout_mode = 0
-offset_left = 33.0
-offset_top = -24.0
-offset_right = 136.0
-offset_bottom = 132.0
-texture = ExtResource("8_bdjbp")
-expand_mode = 1
-
-[node name="Label" type="Label" parent="Dashboard/Control2/TotalClassPanel" unique_id=772181183]
-layout_mode = 0
-offset_left = 28.0
-offset_top = 111.0
-offset_right = 128.0
-offset_bottom = 134.0
-theme_override_colors/font_color = Color(0.7019608, 0.3647059, 0.9019608, 1)
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 20
-text = "Total Class"
-
-[node name="Label2" type="Label" parent="Dashboard/Control2/TotalClassPanel" unique_id=1360706662]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 141.0
-offset_right = 130.0
-offset_bottom = 170.0
-theme_override_colors/font_color = Color(0.7019608, 0.3647059, 0.9019608, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 33
 text = "0"
