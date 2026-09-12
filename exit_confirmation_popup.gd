@@ -4,8 +4,8 @@ signal confirmed
 signal canceled
 
 # Node references batay sa button names ("Hindi" at "Oo")
-@onready var no_button: Button = $PopupBoard/ButtonContainer/NoButton if has_node("PopupBoard/ButtonContainer/NoButton") else null
-@onready var yes_button: Button = $PopupBoard/ButtonContainer/YesButton if has_node("PopupBoard/ButtonContainer/YesButton") else null
+@onready var no_button: Button = $BackgroundOverlay/ExitConfirmationBackground/CancelButton if has_node("BackgroundOverlay/ExitConfirmationBackground/CancelButton") else null
+@onready var yes_button: Button = $BackgroundOverlay/ExitConfirmationBackground/OkButton if has_node("BackgroundOverlay/ExitConfirmationBackground/OkButton") else null
 
 func _ready():
 	hide()

@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://0v0m0g86cv3g" path="res://Word of the Day.png" id="11_fv1ni"]
 [ext_resource type="Texture2D" uid="uid://bg1r4sixynhkt" path="res://Wood.png" id="11_o4pao"]
 [ext_resource type="PackedScene" uid="uid://brbxr71qdww6a" path="res://settings_menu.tscn" id="13_o4pao"]
+[ext_resource type="PackedScene" uid="uid://dc3itlbsj88f7" path="res://exit_confirmation_popup.tscn" id="14_exitpop"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
 bg_color = Color(0.90588236, 0.84705883, 0.6784314, 1)
@@ -1037,5 +1038,9 @@ ignore_texture_size = true
 stretch_mode = 0
 
 [node name="SettingsMenu" parent="." unique_id=707809916 instance=ExtResource("13_o4pao")]
+visible = false
+layout_mode = 1
+
+[node name="ExitConfirmationPopup" parent="." instance=ExtResource("14_exitpop")]
 visible = false
 layout_mode = 1
