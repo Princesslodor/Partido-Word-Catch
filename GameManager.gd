@@ -23,6 +23,13 @@ var role: String = "STUDENT"          # "STUDENT" or "TEACHER"
 var student_pin: String = ""          # 4-digit PIN a student registers with
 var avatar_id: String = ""            # Which avatar card the player picked
 
+## --- TEACHER ACCOUNT INFO ---
+var teacher_email: String = ""
+var school_name: String = ""
+var grade_subject: String = ""
+var teacher_class_name: String = ""
+var class_code: String = ""           # Class code a student entered / a teacher generated
+
 ## --- PROGRESS ---
 var unlocked_level: int = 1           # Highest level the player can currently play (default: level 1 only)
 var player_coins: int = 0             # Player's total coin balance
@@ -62,6 +69,11 @@ func save_game() -> void:
 		"role": role,
 		"student_pin": student_pin,
 		"avatar_id": avatar_id,
+		"teacher_email": teacher_email,
+		"school_name": school_name,
+		"grade_subject": grade_subject,
+		"teacher_class_name": teacher_class_name,
+		"class_code": class_code,
 		"unlocked_level": unlocked_level,
 		"player_coins": player_coins,
 		"completed_levels": completed_levels,
@@ -114,6 +126,11 @@ func load_game() -> void:
 	role = save_data.get("role", "STUDENT")
 	student_pin = save_data.get("student_pin", "")
 	avatar_id = save_data.get("avatar_id", "")
+	teacher_email = save_data.get("teacher_email", "")
+	school_name = save_data.get("school_name", "")
+	grade_subject = save_data.get("grade_subject", "")
+	teacher_class_name = save_data.get("teacher_class_name", "")
+	class_code = save_data.get("class_code", "")
 	unlocked_level = save_data.get("unlocked_level", 1)
 	player_coins = save_data.get("player_coins", 0)
 	completed_levels = save_data.get("completed_levels", {})

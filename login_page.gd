@@ -23,6 +23,17 @@ extends Control
 @onready var title_label = $LoginFormContainer/MarginContainer/VBoxContainer/TitleLabel if has_node("LoginFormContainer/MarginContainer/VBoxContainer/TitleLabel") else null
 @onready var login_button = $LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginButton if has_node("LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginButton") else null
 @onready var register_here_button = $LoginFormContainer/MarginContainer/VBoxContainer/RegisterRow/RegisterButton if has_node("LoginFormContainer/MarginContainer/VBoxContainer/RegisterRow/RegisterButton") else null
+@onready var login_email_input: LineEdit = $LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer/LineEdit if has_node("LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer/LineEdit") else null
+
+# Student Class Code Field
+@onready var class_code_input: LineEdit = $ClassCodeContainer/EnterCodeContainer/ClassCodeEdit if has_node("ClassCodeContainer/EnterCodeContainer/ClassCodeEdit") else null
+
+# Teacher Create Account Fields
+@onready var teacher_name_input: LineEdit = $TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer/NameInput if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer/NameInput") else null
+@onready var teacher_email_input: LineEdit = $TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer2/EmailInput if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer2/EmailInput") else null
+@onready var teacher_school_input: LineEdit = $TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer4/SchoolNameInput if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer4/SchoolNameInput") else null
+@onready var teacher_grade_subject_input: LineEdit = get_node_or_null("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer5/Grade_Subject TaughtInput")
+@onready var teacher_class_name_input: LineEdit = $TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer6/ClassNameInput if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer6/ClassNameInput") else null
 
 var current_role: String = "STUDENT"
 
@@ -143,6 +154,10 @@ func _on_register_here_pressed():
 # Pagkatapos mag-enter ng Class Code, dadaan muna sa Registration Panel
 func _on_join_class_pressed():
 	_save_role_to_gm("STUDENT")
+	if class_code_input:
+		var gm = get_node_or_null("/root/GameManager")
+		if gm:
+			gm.set("class_code", class_code_input.text.strip_edges())
 	_show_student_registration_screen()
 
 func _on_class_joined_continued():
@@ -154,11 +169,28 @@ func _change_to_avatar_selection():
 
 func _on_teacher_login_pressed():
 	_save_role_to_gm("TEACHER")
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and login_email_input and login_email_input.text.strip_edges() != "":
+		var typed = login_email_input.text.strip_edges()
+		gm.set("player_name", typed)
+		gm.set("teacher_email", typed)
 	if teacher_dashboard_scene != "":
 		get_tree().change_scene_to_file(teacher_dashboard_scene)
 
 func _on_teacher_create_account_pressed():
 	_save_role_to_gm("TEACHER")
+	var gm = get_node_or_null("/root/GameManager")
+	if gm:
+		if teacher_name_input and teacher_name_input.text.strip_edges() != "":
+			gm.set("player_name", teacher_name_input.text.strip_edges())
+		if teacher_email_input:
+			gm.set("teacher_email", teacher_email_input.text.strip_edges())
+		if teacher_school_input:
+			gm.set("school_name", teacher_school_input.text.strip_edges())
+		if teacher_grade_subject_input:
+			gm.set("grade_subject", teacher_grade_subject_input.text.strip_edges())
+		if teacher_class_name_input:
+			gm.set("teacher_class_name", teacher_class_name_input.text.strip_edges())
 	if teacher_dashboard_scene != "":
 		get_tree().change_scene_to_file(teacher_dashboard_scene)
 
