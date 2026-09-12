@@ -195,6 +195,8 @@ func _on_teacher_create_account_pressed():
 			gm.set("grade_subject", teacher_grade_subject_input.text.strip_edges())
 		if teacher_class_name_input:
 			gm.set("teacher_class_name", teacher_class_name_input.text.strip_edges())
+		if gm.has_method("get_or_create_class_code"):
+			gm.get_or_create_class_code()
 		if gm.has_method("save_game"):
 			gm.save_game()
 	if teacher_dashboard_scene != "":

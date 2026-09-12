@@ -158,6 +158,22 @@ func set_role(new_role: String) -> void:
 	role = new_role
 	save_game()
 
+## Returns this teacher's permanent class code, generating one the first
+## time it's needed. A class only ever gets one code for its whole life.
+func get_or_create_class_code() -> String:
+	if class_code != "":
+		return class_code
+
+	const CODE_CHARS := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+	const CODE_LENGTH := 6
+	var code := ""
+	for i in range(CODE_LENGTH):
+		code += CODE_CHARS[randi() % CODE_CHARS.length()]
+
+	class_code = code
+	save_game()
+	return class_code
+
 ## Adds coins to the player's total and saves immediately.
 ## Call this whenever a player earns coins (e.g. completing a level).
 func add_coins(amount: int) -> void:

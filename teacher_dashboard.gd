@@ -19,13 +19,13 @@ extends Control
 @onready var grade_label: Label = $CreateClasscode/Panel/GradeLabel
 @onready var teacher_label: Label = $CreateClasscode/Panel/TeacherLabel
 
-const CODE_CHARS := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-const CODE_LENGTH := 6
-
 func _ready() -> void:
 	_load_teacher_info()
 	_show_dashboard()
 	_connect_signals()
+	# The class code is permanent once generated - there's nothing to regenerate.
+	if generate_new_code_button:
+		generate_new_code_button.hide()
 
 func _load_teacher_info() -> void:
 	var gm = get_node_or_null("/root/GameManager")
@@ -42,10 +42,8 @@ func _load_teacher_info() -> void:
 	if grade_subject != "" and grade_label:
 		grade_label.text = grade_subject
 
-	if class_code_edit:
-		var saved_code: String = gm.get("class_code") if "class_code" in gm else ""
-		if saved_code != "":
-			class_code_edit.text = saved_code
+	if class_code_edit and gm.has_method("get_or_create_class_code"):
+		class_code_edit.text = gm.get_or_create_class_code()
 
 func _connect_signals() -> void:
 	if create_class_code_button and not create_class_code_button.pressed.is_connected(_on_create_class_code_pressed):
@@ -58,8 +56,6 @@ func _connect_signals() -> void:
 		back_button.pressed.connect(_on_back_pressed)
 	if copy_code_button and not copy_code_button.pressed.is_connected(_on_copy_code_pressed):
 		copy_code_button.pressed.connect(_on_copy_code_pressed)
-	if generate_new_code_button and not generate_new_code_button.pressed.is_connected(_on_generate_new_code_pressed):
-		generate_new_code_button.pressed.connect(_on_generate_new_code_pressed)
 
 func _hide_all_pages() -> void:
 	if dashboard: dashboard.hide()
@@ -76,8 +72,6 @@ func _on_create_class_code_pressed() -> void:
 	_hide_all_pages()
 	if create_classcode: create_classcode.show()
 	if back_button: back_button.show()
-	if class_code_edit and class_code_edit.text == "":
-		_generate_class_code()
 
 func _on_student_button_pressed() -> void:
 	_hide_all_pages()
@@ -95,20 +89,3 @@ func _on_back_pressed() -> void:
 func _on_copy_code_pressed() -> void:
 	if class_code_edit:
 		DisplayServer.clipboard_set(class_code_edit.text)
-
-func _on_generate_new_code_pressed() -> void:
-	_generate_class_code()
-
-func _generate_class_code() -> void:
-	if not class_code_edit:
-		return
-	var code := ""
-	for i in range(CODE_LENGTH):
-		code += CODE_CHARS[randi() % CODE_CHARS.length()]
-	class_code_edit.text = code
-
-	var gm = get_node_or_null("/root/GameManager")
-	if gm:
-		gm.set("class_code", code)
-		if gm.has_method("save_game"):
-			gm.save_game()
