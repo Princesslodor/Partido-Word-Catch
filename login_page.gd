@@ -214,6 +214,21 @@ func _on_welcome_back_not_you_pressed():
 
 func _on_teacher_selected():
 	current_role = "TEACHER"
+
+	var gm = get_node_or_null("/root/GameManager")
+	var already_registered_here: bool = gm != null \
+		and gm.role == "TEACHER" \
+		and gm.player_name != "" \
+		and gm.class_code != ""
+
+	if already_registered_here:
+		# This device already has a completed teacher account on it - no
+		# need to go through Login (which requires an online lookup) just
+		# to get back into an account that's already sitting right here.
+		if teacher_dashboard_scene != "":
+			get_tree().change_scene_to_file(teacher_dashboard_scene)
+		return
+
 	_save_role_to_gm("TEACHER")
 	_show_teacher_login_screen()
 
