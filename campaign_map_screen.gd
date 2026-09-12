@@ -13,6 +13,12 @@ const LAGONOY_TOTAL_LEVELS: int = 10
 @onready var lagonoy_levels: Control = $"Level Container/LagonoyValleyLevels"
 @onready var isarog_levels: Control = $"Level Container/IsarogFoothillsLevels"
 
+@onready var coin_labels: Array = [
+	$"Level Container/CoastalShoreLevels/Header/CoinDisplay/CoinLabel",
+	$"Level Container/LagonoyValleyLevels/Header/CoinDisplay/CoinLabel",
+	$"Level Container/IsarogFoothillsLevels/Header/CoinDisplay/CoinLabel",
+]
+
 var coastal_bg: Texture2D = preload("res://Coastal Shore.png")
 var lagonoy_bg: Texture2D = preload("res://Lagonoy Valley.png")
 var isarog_bg: Texture2D = preload("res://Isarog Foothills.png")
@@ -20,13 +26,20 @@ var isarog_bg: Texture2D = preload("res://Isarog Foothills.png")
 func _ready() -> void:
 	if settings_menu:
 		settings_menu.hide()
-	
+
 	if settings_button:
 		if not settings_button.pressed.is_connected(_on_settings_button_pressed):
 			settings_button.pressed.connect(_on_settings_button_pressed)
 
 	_setup_option_button()
 	_load_region(0)
+	_update_coin_display()
+
+func _update_coin_display() -> void:
+	var coins: int = GameManager.player_coins if "player_coins" in GameManager else 0
+	for label in coin_labels:
+		if label:
+			label.text = str(coins)
 
 func _setup_option_button() -> void:
 	if not region_option:
@@ -122,20 +135,21 @@ func _update_level_locks(container: Control, offset: int) -> void:
 			
 		var btn = child as Button
 		var global_level_num: int = offset + button_counter
-		
+		var lock_icon_name := "LockIcon" + str(global_level_num)
+
 		if global_level_num <= unlocked_limit:
 			btn.disabled = false
 			btn.modulate = Color(1, 1, 1, 1)
-			if btn.has_node("LockIcon"):
-				btn.get_node("LockIcon").hide()
-				
+			if btn.has_node(lock_icon_name):
+				btn.get_node(lock_icon_name).hide()
+
 			if not btn.pressed.is_connected(_on_level_button_pressed):
 				btn.pressed.connect(_on_level_button_pressed.bind(global_level_num))
 		else:
 			btn.disabled = true
 			btn.modulate = Color(0.4, 0.4, 0.4, 0.8)
-			if btn.has_node("LockIcon"):
-				btn.get_node("LockIcon").show()
+			if btn.has_node(lock_icon_name):
+				btn.get_node(lock_icon_name).show()
 				
 		button_counter += 1
 
