@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cwowvyi8gp0nw" path="res://book_icon.png" id="11_otlon"]
 [ext_resource type="Texture2D" uid="uid://bi4fk8k0a5sw" path="res://key_icon.png" id="12_bdjbp"]
 [ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://Back.png" id="13_bdjbp"]
+[ext_resource type="Script" path="res://teacher_dashboard.gd" id="14_dashboard_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2s3ny"]
 bg_color = Color(0.043137256, 0.043137256, 0.043137256, 0.6745098)
@@ -225,6 +226,7 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
+script = ExtResource("14_dashboard_script")
 grow_vertical = 2
 
 [node name="Background" type="TextureRect" parent="." unique_id=119301735]
@@ -768,7 +770,7 @@ horizontal_alignment = 1
 [node name="Leaderboard" type="Control" parent="." unique_id=2026712972]
 anchors_preset = 0
 offset_right = 734.0
-offset_bottom = 1292.0
+offset_bottom = 1760.0
 
 [node name="TextureRect" type="TextureRect" parent="Leaderboard" unique_id=2145888276]
 layout_mode = 0
@@ -996,6 +998,244 @@ theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 30
 text = "     #           Name                  Score"
+
+[node name="RankRow4" type="Label" parent="Leaderboard" unique_id=1000000401]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 774.0
+offset_right = 668.0
+offset_bottom = 826.0
+theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 26
+text = "     4           Maria Clara           450 XP"
+
+[node name="RankRow5Highlight" type="ColorRect" parent="Leaderboard" unique_id=1000000502]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 830.0
+offset_right = 660.0
+offset_bottom = 882.0
+color = Color(0.8, 0.93, 0.8, 1)
+
+[node name="RankRow5" type="Label" parent="Leaderboard" unique_id=1000000501]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 830.0
+offset_right = 668.0
+offset_bottom = 882.0
+theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 26
+text = "     5           Lito (Me)              320 XP"
+
+[node name="RankRow6" type="Label" parent="Leaderboard" unique_id=1000000601]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 886.0
+offset_right = 668.0
+offset_bottom = 938.0
+theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 26
+text = "     6           Basilio                290 XP"
+
+[node name="LevelsGraphPanel" type="Panel" parent="Leaderboard" unique_id=1000000700]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 1140.0
+offset_right = 697.0
+offset_bottom = 1750.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ldig")
+
+[node name="GraphTitle" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000701]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 20.0
+offset_right = 656.0
+offset_bottom = 66.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 32
+text = "Levels reached, whole class"
+
+[node name="BarJuan" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000710]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 90.0
+offset_right = 130.0
+offset_bottom = 122.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "Juan"
+
+[node name="BarJuanFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000711]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 92.0
+offset_right = 500.0
+offset_bottom = 120.0
+color = Color(0.9137255, 0.6, 0.15, 1)
+
+[node name="BarJuanValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000712]
+layout_mode = 0
+offset_left = 508.0
+offset_top = 90.0
+offset_right = 560.0
+offset_bottom = 122.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "18"
+
+[node name="BarSarah" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000720]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 168.0
+offset_right = 130.0
+offset_bottom = 200.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "Sarah"
+
+[node name="BarSarahFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000721]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 170.0
+offset_right = 440.0
+offset_bottom = 198.0
+color = Color(0.9137255, 0.6, 0.15, 1)
+
+[node name="BarSarahValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000722]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 168.0
+offset_right = 500.0
+offset_bottom = 200.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "15"
+
+[node name="BarDane" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000730]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 246.0
+offset_right = 130.0
+offset_bottom = 278.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "Dane"
+
+[node name="BarDaneFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000731]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 248.0
+offset_right = 400.0
+offset_bottom = 276.0
+color = Color(0.9137255, 0.6, 0.15, 1)
+
+[node name="BarDaneValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000732]
+layout_mode = 0
+offset_left = 408.0
+offset_top = 246.0
+offset_right = 460.0
+offset_bottom = 278.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "13"
+
+[node name="BarClara" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000740]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 324.0
+offset_right = 130.0
+offset_bottom = 356.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "Clara"
+
+[node name="BarClaraFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000741]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 326.0
+offset_right = 360.0
+offset_bottom = 354.0
+color = Color(0.9137255, 0.6, 0.15, 1)
+
+[node name="BarClaraValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000742]
+layout_mode = 0
+offset_left = 368.0
+offset_top = 324.0
+offset_right = 420.0
+offset_bottom = 356.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "11"
+
+[node name="BarNicole" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000750]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 402.0
+offset_right = 130.0
+offset_bottom = 434.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "Nicole"
+
+[node name="BarNicoleFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000751]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 404.0
+offset_right = 320.0
+offset_bottom = 432.0
+color = Color(0.9137255, 0.6, 0.15, 1)
+
+[node name="BarNicoleValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000752]
+layout_mode = 0
+offset_left = 328.0
+offset_top = 402.0
+offset_right = 380.0
+offset_bottom = 434.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "9"
+
+[node name="BarBasilio" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000760]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 480.0
+offset_right = 130.0
+offset_bottom = 512.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "Basilio"
+
+[node name="BarBasilioFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000761]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 482.0
+offset_right = 260.0
+offset_bottom = 510.0
+color = Color(0.8039216, 0.28627452, 0.28627452, 1)
+
+[node name="BarBasilioValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000762]
+layout_mode = 0
+offset_left = 268.0
+offset_top = 480.0
+offset_right = 320.0
+offset_bottom = 512.0
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "6"
+
+[node name="AxisLabels" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000770]
+layout_mode = 0
+offset_left = 140.0
+offset_top = 550.0
+offset_right = 560.0
+offset_bottom = 582.0
+theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 20
+text = "0                  5                 10                15                20"
 
 [node name="BackButton" type="TextureButton" parent="." unique_id=409611384]
 layout_mode = 0
