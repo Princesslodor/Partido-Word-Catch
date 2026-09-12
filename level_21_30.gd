@@ -3,8 +3,8 @@ extends Node2D
 var current_level: int = 21
 
 var player_coins: int:
-	get: return Global.player_coins
-	set(val): Global.player_coins = val
+	get: return GameManager.player_coins
+	set(val): GameManager.player_coins = val
 
 var current_sentence_words: Array = [] 
 var selected_word_blocks: Array = []  
@@ -269,7 +269,8 @@ func check_answer():
 
 func show_victory_popup():
 	var lvl_key = int(current_level)
-	player_coins += 10
+	GameManager.add_coins(10)
+	GameManager.complete_level(lvl_key, 0)
 	if has_node("%CoinsLabel"):
 		%CoinsLabel.text = "🪙 " + str(player_coins)
 	if has_node("%+coin"):
@@ -308,6 +309,7 @@ func _on_reveal_hint_pressed():
 				player_coins -= 10
 				if has_node("%CoinsLabel"):
 					%CoinsLabel.text = "🪙 " + str(player_coins)
+				GameManager.save_game()
 				_set_block_text(slot, current_sentence_words[i].to_upper())
 				selected_word_blocks[i] = current_sentence_words[i].to_upper()
 				check_answer()

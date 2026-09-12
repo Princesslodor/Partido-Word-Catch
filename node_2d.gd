@@ -2,21 +2,13 @@ extends Node2D
 
 var current_level: int = 1
 var player_coins: int:
-	get: 
-		if Global.player_coins <= 0 and not Global.has_meta("coins_initialized"):
-			Global.player_coins = 20
-			Global.set_meta("coins_initialized", true)
-		return Global.player_coins
-	set(val): Global.player_coins = val
+	get: return GameManager.player_coins
+	set(val): GameManager.player_coins = val
 
 var player_stars: int = 3
 var player_hearts: int:
-	get:
-		if not Global.has_meta("hearts_initialized"):
-			Global.player_hearts = 4
-			Global.set_meta("hearts_initialized", true)
-		return Global.player_hearts
-	set(val): Global.player_hearts = val
+	get: return GameManager.player_hearts
+	set(val): GameManager.player_hearts = val
 
 # Timer para sa 15 minuto (15 * 60 = 900 seconds)
 var heart_regen_timer: Timer
@@ -259,10 +251,11 @@ func handle_wrong_answer():
 		if player_hearts < 0:
 			player_hearts = 0
 		update_hearts_display()
-		
+		GameManager.save_game()
+
 		if heart_regen_timer.is_stopped():
 			heart_regen_timer.start()
-			
+
 		if player_hearts <= 0:
 			print("Naubos na ang lahat ng puso!")
 
@@ -294,7 +287,8 @@ func _on_heart_regen_timeout():
 	if player_hearts < 4:
 		player_hearts += 1
 		update_hearts_display()
-		
+		GameManager.save_game()
+
 	if player_hearts < 4:
 		heart_regen_timer.start()
 	else:
@@ -303,7 +297,8 @@ func _on_heart_regen_timeout():
 func show_victory_popup():
 	var lvl_key = int(current_level)
 	var level_info = LevelData.levels[lvl_key]
-	player_coins += 10
+	GameManager.add_coins(10)
+	GameManager.complete_level(lvl_key, player_stars)
 	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
 	if has_node("%+coin"): get_node("%+coin").text = "+10 COINS"
 	if has_node("%WordLabel"): %WordLabel.text = level_info.get("word", "")
@@ -340,6 +335,7 @@ func _on_reveal_hint_pressed():
 		if slot_text != target_char:
 			player_coins -= 10
 			if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+			GameManager.save_game()
 			_set_tile_text(slot, target_char)
 			current_placed_letters[i] = target_char
 			if "is_locked" in slot: slot.is_locked = true
@@ -372,6 +368,7 @@ func _on_remove_letter_pressed():
 	_clear_tile_text(selected_tile)
 	player_coins -= 5
 	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+	GameManager.save_game()
 
 func _on_shuffle_pressed():
 	setup_scrambled_letters(current_word)

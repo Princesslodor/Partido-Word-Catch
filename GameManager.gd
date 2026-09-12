@@ -38,6 +38,7 @@ var joined_class_name: String = ""
 ## --- PROGRESS ---
 var unlocked_level: int = 1           # Highest level the player can currently play (default: level 1 only)
 var player_coins: int = 0             # Player's total coin balance
+var player_hearts: int = 4            # Lives remaining in the current gameplay session
 
 ## --- PER-LEVEL COMPLETION DATA ---
 ## Dictionary structure: { level_num: { "completed": bool, "best_score": int } }
@@ -101,6 +102,7 @@ func save_game() -> void:
 		"device_id": device_id,
 		"unlocked_level": unlocked_level,
 		"player_coins": player_coins,
+		"player_hearts": player_hearts,
 		"completed_levels": completed_levels,
 		"is_sound_enabled": is_sound_enabled,
 		"is_music_enabled": is_music_enabled
@@ -172,6 +174,7 @@ func load_game() -> void:
 	device_id = save_data.get("device_id", "")
 	unlocked_level = save_data.get("unlocked_level", 1)
 	player_coins = save_data.get("player_coins", 0)
+	player_hearts = save_data.get("player_hearts", 4)
 	completed_levels = save_data.get("completed_levels", {})
 	is_sound_enabled = save_data.get("is_sound_enabled", true)
 	is_music_enabled = save_data.get("is_music_enabled", true)

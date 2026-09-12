@@ -3,8 +3,8 @@ extends Node2D
 var current_level: int = 16
 
 var player_coins: int:
-	get: return Global.player_coins
-	set(val): Global.player_coins = val
+	get: return GameManager.player_coins
+	set(val): GameManager.player_coins = val
 
 var current_word: String = ""
 var current_placed_letters: Array = []
@@ -260,7 +260,8 @@ func show_victory_popup():
 	var lvl_key = int(current_level)
 	var level_info = LevelData.levels[lvl_key]
 	
-	player_coins += 10
+	GameManager.add_coins(10)
+	GameManager.complete_level(lvl_key, 0)
 	if has_node("%CoinsLabel"):
 		%CoinsLabel.text = "🪙 " + str(player_coins)
 	if has_node("%+coin"):
@@ -312,6 +313,7 @@ func _on_reveal_hint_pressed():
 			player_coins -= 10
 			if has_node("%CoinsLabel"):
 				%CoinsLabel.text = "🪙 " + str(player_coins)
+			GameManager.save_game()
 			_set_tile_text(slot, target_char)
 			current_placed_letters[i] = target_char
 			if "is_locked" in slot:
@@ -354,6 +356,7 @@ func _on_remove_letter_pressed():
 	player_coins -= 5
 	if has_node("%CoinsLabel"):
 		%CoinsLabel.text = "🪙 " + str(player_coins)
+	GameManager.save_game()
 
 func _on_shuffle_pressed():
 	setup_scrambled_letters(current_word)

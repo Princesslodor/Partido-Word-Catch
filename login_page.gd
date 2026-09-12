@@ -192,12 +192,19 @@ func _on_welcome_back_continue_pressed():
 func _on_welcome_back_not_you_pressed():
 	var gm = get_node_or_null("/root/GameManager")
 	if gm:
+		# Clear identity AND progress - this device is about to belong to a
+		# different student, who shouldn't inherit the previous student's
+		# coins, unlocked levels, or completed-level history.
 		gm.set("player_name", "")
 		gm.set("class_code", "")
 		gm.set("student_pin", "")
 		gm.set("avatar_id", "")
 		gm.set("joined_teacher_name", "")
 		gm.set("joined_class_name", "")
+		gm.set("unlocked_level", 1)
+		gm.set("player_coins", 0)
+		gm.set("player_hearts", 4)
+		gm.set("completed_levels", {})
 		if gm.has_method("save_game"):
 			gm.save_game()
 
