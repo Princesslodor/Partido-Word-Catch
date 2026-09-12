@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bemqa550vgmoa"
-path="res://.godot/imported/Music Icon.png-83142784d51acbbce5d3f21fd3c95557.ctex"
+path="res://.godot/imported/Music Icon.png-9172daeee4beb2f550eac5f454dd9eca.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Music Icon.png"
-dest_files=["res://.godot/imported/Music Icon.png-83142784d51acbbce5d3f21fd3c95557.ctex"]
+source_file="res://campaign-map-screen/Music Icon.png"
+dest_files=["res://.godot/imported/Music Icon.png-9172daeee4beb2f550eac5f454dd9eca.ctex"]
 
 [params]
 

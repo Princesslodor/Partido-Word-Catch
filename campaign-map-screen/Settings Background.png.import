@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dqkg03cu7016o"
-path="res://.godot/imported/Settings Background.png-9749b4058367e713992511942c5ed367.ctex"
+path="res://.godot/imported/Settings Background.png-391c5f4a7e01ef39a3b90b6beeb145ab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Settings Background.png"
-dest_files=["res://.godot/imported/Settings Background.png-9749b4058367e713992511942c5ed367.ctex"]
+source_file="res://campaign-map-screen/Settings Background.png"
+dest_files=["res://.godot/imported/Settings Background.png-391c5f4a7e01ef39a3b90b6beeb145ab.ctex"]
 
 [params]
 

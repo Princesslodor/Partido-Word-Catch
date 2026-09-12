@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d3e7k8aj301xq"
-path="res://.godot/imported/Red X Icon.png-60a3271f5ca3a577d9f3aab69c4f6c57.ctex"
+path="res://.godot/imported/Red X Icon.png-0af10f3d5a3ad2eaf3d1e4b6a84fdd97.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Red X Icon.png"
-dest_files=["res://.godot/imported/Red X Icon.png-60a3271f5ca3a577d9f3aab69c4f6c57.ctex"]
+source_file="res://campaign-map-screen/Red X Icon.png"
+dest_files=["res://.godot/imported/Red X Icon.png-0af10f3d5a3ad2eaf3d1e4b6a84fdd97.ctex"]
 
 [params]
 

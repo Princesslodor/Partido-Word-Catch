@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dm36qy402y4ka"
-path="res://.godot/imported/Student.png-7253dc5f41cfd5f5c4f4e8bc1be431b7.ctex"
+path="res://.godot/imported/Student.png-a5fef497c902441b8aec4c83526508fa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Student.png"
-dest_files=["res://.godot/imported/Student.png-7253dc5f41cfd5f5c4f4e8bc1be431b7.ctex"]
+source_file="res://pwc-login-page/Student.png"
+dest_files=["res://.godot/imported/Student.png-a5fef497c902441b8aec4c83526508fa.ctex"]
 
 [params]
 

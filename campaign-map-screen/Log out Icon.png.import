@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://btdawe7fb8qii"
-path="res://.godot/imported/Log out Icon.png-f4e2f44083972a4f0f84c4f0aa6a895e.ctex"
+path="res://.godot/imported/Log out Icon.png-eeae9af540c68815be7236f50288b089.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Log out Icon.png"
-dest_files=["res://.godot/imported/Log out Icon.png-f4e2f44083972a4f0f84c4f0aa6a895e.ctex"]
+source_file="res://campaign-map-screen/Log out Icon.png"
+dest_files=["res://.godot/imported/Log out Icon.png-eeae9af540c68815be7236f50288b089.ctex"]
 
 [params]
 

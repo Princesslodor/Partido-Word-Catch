@@ -1,13 +1,13 @@
 [gd_scene format=3 uid="uid://rbkc3x0j0r3i"]
 
-[ext_resource type="Script" uid="uid://bqk07b0q5l0rj" path="res://login_page.gd" id="1_jlmyn"]
-[ext_resource type="Texture2D" uid="uid://dg0yp5yj5eorl" path="res://Background Image.png" id="1_yakwh"]
-[ext_resource type="Texture2D" uid="uid://58bdbuwtorss" path="res://download.png" id="2_qrlyr"]
-[ext_resource type="Texture2D" uid="uid://dm36qy402y4ka" path="res://Student.png" id="3_w5qi1"]
-[ext_resource type="Texture2D" uid="uid://buotriuiijos7" path="res://Teacher.png" id="4_qrlyr"]
-[ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://Back.png" id="5_w5qi1"]
-[ext_resource type="FontFile" uid="uid://b0yhtkwh7o06h" path="res://Nunito-Bold.ttf" id="6_wkk7v"]
-[ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://Nunito-Black.ttf" id="7_51wku"]
+[ext_resource type="Script" uid="uid://bqk07b0q5l0rj" path="res://pwc-login-page/login_page.gd" id="1_jlmyn"]
+[ext_resource type="Texture2D" uid="uid://dg0yp5yj5eorl" path="res://pwc-login-page/Background Image.png" id="1_yakwh"]
+[ext_resource type="Texture2D" uid="uid://58bdbuwtorss" path="res://pwc-login-page/download.png" id="2_qrlyr"]
+[ext_resource type="Texture2D" uid="uid://dm36qy402y4ka" path="res://pwc-login-page/Student.png" id="3_w5qi1"]
+[ext_resource type="Texture2D" uid="uid://buotriuiijos7" path="res://pwc-login-page/Teacher.png" id="4_qrlyr"]
+[ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://pwc-login-page/Back.png" id="5_w5qi1"]
+[ext_resource type="FontFile" uid="uid://b0yhtkwh7o06h" path="res://pwc-login-page/Nunito-Bold.ttf" id="6_wkk7v"]
+[ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://pwc-login-page/Nunito-Black.ttf" id="7_51wku"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8upip"]
 bg_color = Color(1, 1, 1, 1)
@@ -157,7 +157,8 @@ offset_bottom = 1257.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Game Logo" type="TextureRect" parent="RoleSelectionContainer" unique_id=1534697093]
+[node name="GameLogo" type="TextureRect" parent="RoleSelectionContainer" unique_id=1534697093]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(800, 0)
 layout_mode = 1
 anchors_preset = -1
@@ -402,7 +403,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Button" type="Button" parent="LoginFormContainer/MarginContainer/VBoxContainer/Spacer" unique_id=1944566927]
+[node name="LoginButton" type="Button" parent="LoginFormContainer/MarginContainer/VBoxContainer/Spacer" unique_id=1944566927]
 custom_minimum_size = Vector2(150, 60)
 layout_mode = 0
 offset_left = 149.0
@@ -612,7 +613,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Button" type="Button" parent="StudentCreateAccount/MarginContainer/VBoxContainer/Spacer" unique_id=1936543142]
+[node name="StudentCreateAccountButton" type="Button" parent="StudentCreateAccount/MarginContainer/VBoxContainer/Spacer" unique_id=1936543142]
 custom_minimum_size = Vector2(400, 80)
 layout_mode = 0
 offset_left = 96.0
@@ -845,7 +846,7 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="Button" type="Button" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/Spacer" unique_id=1217566696]
+[node name="TeacherCreateAccountButton" type="Button" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/Spacer" unique_id=1217566696]
 custom_minimum_size = Vector2(300, 60)
 layout_mode = 0
 offset_left = 124.0

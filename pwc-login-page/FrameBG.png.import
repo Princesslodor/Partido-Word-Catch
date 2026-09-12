@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dnkal5y7xxysb"
-path="res://.godot/imported/FrameBG.png-a3717ed77bf4efe2474c61a13f9d8073.ctex"
+path="res://.godot/imported/FrameBG.png-b1a85846e383e76daa5beca55fffa3a6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://FrameBG.png"
-dest_files=["res://.godot/imported/FrameBG.png-a3717ed77bf4efe2474c61a13f9d8073.ctex"]
+source_file="res://pwc-login-page/FrameBG.png"
+dest_files=["res://.godot/imported/FrameBG.png-b1a85846e383e76daa5beca55fffa3a6.ctex"]
 
 [params]
 

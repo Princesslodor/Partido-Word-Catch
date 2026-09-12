@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d4lxxasejykvm"
-path="res://.godot/imported/Person Icon.png-fb4d0c31f73fcf9657a66741f6b0d88a.ctex"
+path="res://.godot/imported/Person Icon.png-2c8b3392d815f055eb340da4f01f860e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Person Icon.png"
-dest_files=["res://.godot/imported/Person Icon.png-fb4d0c31f73fcf9657a66741f6b0d88a.ctex"]
+source_file="res://campaign-map-screen/Person Icon.png"
+dest_files=["res://.godot/imported/Person Icon.png-2c8b3392d815f055eb340da4f01f860e.ctex"]
 
 [params]
 

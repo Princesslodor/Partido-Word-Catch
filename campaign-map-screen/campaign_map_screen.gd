@@ -12,9 +12,9 @@ const LAGONOY_TOTAL_LEVELS: int = 10
 @onready var lagonoy_levels: Control = $"Level Container/LagonoyValleyLevels"
 @onready var isarog_levels: Control = $"Level Container/IsarogFoothillsLevels"
 
-var coastal_bg: Texture2D = preload("res://Coastal Shore.png")
-var lagonoy_bg: Texture2D = preload("res://Lagonoy Valley.png")
-var isarog_bg: Texture2D = preload("res://Isarog Foothills.png")
+var coastal_bg: Texture2D = preload("res://campaign-map-screen/Coastal Shore.png")
+var lagonoy_bg: Texture2D = preload("res://campaign-map-screen/Lagonoy Valley.png")
+var isarog_bg: Texture2D = preload("res://campaign-map-screen/Isarog Foothills.png")
 
 func _ready() -> void:
 	if settings_menu:

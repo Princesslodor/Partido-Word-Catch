@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://bxcd657qk3tam"
-path="res://.godot/imported/Fredoka-Medium.ttf-80a909bf5dfe92442807cc4290d37c9d.fontdata"
+path="res://.godot/imported/Fredoka-Medium.ttf-dd5e7e2c965b2ca0638001c96b6f2ed1.fontdata"
 
 [deps]
 
-source_file="res://Fredoka-Medium.ttf"
-dest_files=["res://.godot/imported/Fredoka-Medium.ttf-80a909bf5dfe92442807cc4290d37c9d.fontdata"]
+source_file="res://campaign-map-screen/Fredoka-Medium.ttf"
+dest_files=["res://.godot/imported/Fredoka-Medium.ttf-dd5e7e2c965b2ca0638001c96b6f2ed1.fontdata"]
 
 [params]
 
