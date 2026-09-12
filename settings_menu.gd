@@ -37,11 +37,21 @@ func _load_account_info():
 	if name_label:
 		name_label.text = "Name: " + display_name
 
-	var grade_subject: String = gm.joined_grade_subject if "joined_grade_subject" in gm and gm.joined_grade_subject != "" else "-"
+	# A teacher's own grade/section live in different fields than a
+	# student's - joined_grade_subject/joined_class_name only describe the
+	# class a STUDENT joined, which are empty for a teacher account.
+	var is_teacher: bool = "role" in gm and gm.role == "TEACHER"
+	var grade_subject: String
+	var section: String
+	if is_teacher:
+		grade_subject = gm.grade_subject if "grade_subject" in gm and gm.grade_subject != "" else "-"
+		section = gm.teacher_class_name if "teacher_class_name" in gm and gm.teacher_class_name != "" else "-"
+	else:
+		grade_subject = gm.joined_grade_subject if "joined_grade_subject" in gm and gm.joined_grade_subject != "" else "-"
+		section = gm.joined_class_name if "joined_class_name" in gm and gm.joined_class_name != "" else "-"
+
 	if grade_label:
 		grade_label.text = "Grade Level: " + grade_subject
-
-	var section: String = gm.joined_class_name if "joined_class_name" in gm and gm.joined_class_name != "" else "-"
 	if section_label:
 		section_label.text = "Section: " + section
 

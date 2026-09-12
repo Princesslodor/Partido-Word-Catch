@@ -5,6 +5,9 @@ extends Control
 @onready var students: Control = $Students
 @onready var leaderboard: Control = $Leaderboard
 @onready var back_button: TextureButton = $BackButton
+@onready var settings_button: TextureButton = $SettingsButton
+@onready var settings_menu: Control = $SettingsMenu
+@onready var logout_confirmation_popup: Control = $ExitConfirmationPopup
 
 @onready var create_class_code_button: Button = $Dashboard/Control3/Panel/CreateClassCodeButton
 @onready var student_button: Button = $Dashboard/Control3/Panel/StudentButton
@@ -86,6 +89,33 @@ func _connect_signals() -> void:
 		back_button.pressed.connect(_on_back_pressed)
 	if copy_code_button and not copy_code_button.pressed.is_connected(_on_copy_code_pressed):
 		copy_code_button.pressed.connect(_on_copy_code_pressed)
+	if settings_button and not settings_button.pressed.is_connected(_on_settings_button_pressed):
+		settings_button.pressed.connect(_on_settings_button_pressed)
+	if logout_confirmation_popup and logout_confirmation_popup.has_signal("confirmed"):
+		if not logout_confirmation_popup.confirmed.is_connected(_on_logout_confirmed):
+			logout_confirmation_popup.confirmed.connect(_on_logout_confirmed)
+
+func _on_settings_button_pressed() -> void:
+	if settings_menu:
+		settings_menu.show()
+		settings_menu.move_to_front()
+
+## The teacher account (name/email/school/class code) is cleared so this
+## device stops auto-recognizing it as "already registered" - going back
+## to the Teacher role screen after this will show the login/register
+## flow again instead of skipping straight back into the dashboard.
+func _on_logout_confirmed() -> void:
+	var gm = get_node_or_null("/root/GameManager")
+	if not gm:
+		return
+	gm.set("player_name", "")
+	gm.set("teacher_email", "")
+	gm.set("school_name", "")
+	gm.set("grade_subject", "")
+	gm.set("teacher_class_name", "")
+	gm.set("class_code", "")
+	if gm.has_method("save_game"):
+		gm.save_game()
 
 func _hide_all_pages() -> void:
 	if dashboard: dashboard.hide()
