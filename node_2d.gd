@@ -36,8 +36,8 @@ func _ready():
 	if has_node("%VictoryPopup"): %VictoryPopup.visible = false
 	if has_node("%SpeakerButton") and not %SpeakerButton.is_connected("pressed", Callable(self, "_on_speaker_button_pressed")):
 		%SpeakerButton.pressed.connect(_on_speaker_button_pressed)
-	if has_node("%NextLevelButton") and not %NextLevelButton.is_connected("pressed", Callable(self, "_on_next_level_button_pressed")):
-		%NextLevelButton.pressed.connect(_on_next_level_button_pressed)
+	if has_node("%NextLevel") and not %NextLevel.is_connected("pressed", Callable(self, "_on_next_level_button_pressed")):
+		%NextLevel.pressed.connect(_on_next_level_button_pressed)
 	if has_node("%RevealHintButton") and not %RevealHintButton.is_connected("pressed", Callable(self, "_on_reveal_hint_pressed")):
 		%RevealHintButton.pressed.connect(_on_reveal_hint_pressed)
 	if has_node("%RemoveLetterButton") and not %RemoveLetterButton.is_connected("pressed", Callable(self, "_on_remove_letter_pressed")):
@@ -271,8 +271,8 @@ func update_stars_display():
 		$CanvasLayer/LevelDesign/StarWithFill3.visible = (player_stars >= 3)
 
 func update_hearts_display():
-	if has_node("TopBar/HeartLabel"):
-		$TopBar/HeartLabel.text = str(player_hearts)
+	if has_node("%LiveLabel"):
+		get_node("%LiveLabel").text = str(player_hearts)
 
 func update_timer_display():
 	if heart_regen_timer and not heart_regen_timer.is_stopped():
@@ -301,7 +301,7 @@ func show_victory_popup():
 	var level_info = LevelData.levels[lvl_key]
 	player_coins += 10
 	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
-	if has_node("%RewardCoinsLabel"): %RewardCoinsLabel.text = "+10 COINS"
+	if has_node("%+coin"): get_node("%+coin").text = "+10 COINS"
 	if has_node("%WordLabel"): %WordLabel.text = level_info.get("word", "")
 	if has_node("%MeaningLabel"): %MeaningLabel.text = level_info.get("meaning", "")
 	if has_node("%CulturalNoteLabel"): %CulturalNoteLabel.text = level_info.get("cultural_note", "")

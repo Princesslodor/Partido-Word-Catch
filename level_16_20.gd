@@ -22,7 +22,7 @@ func _ready():
 		$VictoryPopup.visible = false
 		
 	_connect_button("%SpeakerButton", "SpeakerButton", "_on_speaker_button_pressed")
-	_connect_button("%NextLevelButton", "NextLevelButton", "_on_next_level_button_pressed")
+	_connect_button("%NextLevel", "NextLevel", "_on_next_level_button_pressed")
 	_connect_button("%RevealHintButton", "RevealHintB", "_on_reveal_hint_pressed")
 	_connect_button("%RemoveLetterButton", "RemoveLette", "_on_remove_letter_pressed")
 	_connect_button("%ShuffleButton", "ShuffleButto", "_on_shuffle_pressed")
@@ -261,8 +261,8 @@ func show_victory_popup():
 	player_coins += 10
 	if has_node("%CoinsLabel"):
 		%CoinsLabel.text = "🪙 " + str(player_coins)
-	if has_node("%RewardCoinsLabel"):
-		%RewardCoinsLabel.text = "+10 COINS"
+	if has_node("%+coin"):
+		get_node("%+coin").text = "+10 COINS"
 	
 	if has_node("%WordLabel"):
 		%WordLabel.text = level_info.get("word", "")
