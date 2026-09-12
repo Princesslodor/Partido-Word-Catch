@@ -12,6 +12,10 @@ var current_placed_letters: Array = []
 var extra_alphabet: Array = ["A", "B", "K", "D", "E", "G", "H", "I", "L", "M", "N", "O", "P", "R", "S", "T", "U", "W", "Y"]
 
 func _ready():
+	if Global.requested_level >= 16 and Global.requested_level <= 20:
+		current_level = Global.requested_level
+		Global.requested_level = 0
+
 	if has_node("%VictoryPopup"):
 		%VictoryPopup.visible = false
 	elif has_node("VictoryPopup"):

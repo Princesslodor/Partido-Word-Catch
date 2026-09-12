@@ -54,6 +54,10 @@ var level_custom_pools = {
 }
 
 func _ready():
+	if Global.requested_level >= 21 and Global.requested_level <= 30:
+		current_level = Global.requested_level
+		Global.requested_level = 0
+
 	if has_node("%VictoryPopup"):
 		%VictoryPopup.visible = false
 	elif has_node("VictoryPopup"):

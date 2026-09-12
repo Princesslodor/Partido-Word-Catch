@@ -3,6 +3,9 @@ extends Node
 var player_coins: int = 0
 var player_hearts: int = 4
 
+# Level requested from the campaign map (0 = start each gameplay scene at its default level)
+var requested_level: int = 0
+
 var audio_player: AudioStreamPlayer
 var sfx_player: AudioStreamPlayer
 var bgm_player: AudioStreamPlayer

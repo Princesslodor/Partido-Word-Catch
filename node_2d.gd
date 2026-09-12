@@ -29,6 +29,10 @@ var last_slots_full_state: bool = false
 var extra_alphabet: Array = ["A", "B", "K", "D", "E", "G", "H", "I", "L", "M", "N", "O", "P", "R", "S", "T", "U", "W", "Y"]
 
 func _ready():
+	if Global.requested_level >= 1 and Global.requested_level <= 16:
+		current_level = Global.requested_level
+		Global.requested_level = 0
+
 	if has_node("%VictoryPopup"): %VictoryPopup.visible = false
 	if has_node("%SpeakerButton") and not %SpeakerButton.is_connected("pressed", Callable(self, "_on_speaker_button_pressed")):
 		%SpeakerButton.pressed.connect(_on_speaker_button_pressed)

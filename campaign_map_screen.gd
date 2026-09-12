@@ -7,6 +7,7 @@ const LAGONOY_TOTAL_LEVELS: int = 10
 @onready var region_option: OptionButton = $RegionOptionButton
 @onready var settings_button: TextureButton = $SettingsButton 
 @onready var settings_menu: Control = $SettingsMenu
+@onready var level_info_popup: Control = $LevelInfoPopup
 
 @onready var coastal_levels: Control = $"Level Container/CoastalShoreLevels"
 @onready var lagonoy_levels: Control = $"Level Container/LagonoyValleyLevels"
@@ -139,7 +140,13 @@ func _update_level_locks(container: Control, offset: int) -> void:
 		button_counter += 1
 
 func _on_level_button_pressed(level_num: int) -> void:
-	print("Lalabas ang gameplay para sa Level: ", level_num)
+	if not level_info_popup:
+		return
+	var lesson_title := ""
+	if LevelData.levels.has(level_num):
+		lesson_title = LevelData.levels[level_num].get("unit", "")
+	if level_info_popup.has_method("display_level_info"):
+		level_info_popup.display_level_info(level_num, lesson_title)
 
 func _on_settings_button_pressed() -> void:
 	if settings_menu:
