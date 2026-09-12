@@ -424,6 +424,7 @@ text = "Username"
 
 [node name="LineEdit" type="LineEdit" parent="LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer" unique_id=2061609050]
 layout_mode = 0
+caret_blink = true
 offset_left = -19.0
 offset_top = -14.0
 offset_right = 533.0
@@ -453,6 +454,7 @@ text = "Password"
 
 [node name="LineEdit" type="LineEdit" parent="LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer2" unique_id=825679223]
 layout_mode = 0
+caret_blink = true
 offset_left = -15.0
 offset_top = 97.0
 offset_right = 528.0
@@ -609,6 +611,7 @@ autowrap_mode = 2
 
 [node name="ClassCodeEdit" type="LineEdit" parent="ClassCodeContainer/EnterCodeContainer" unique_id=1913485671]
 layout_mode = 0
+caret_blink = true
 offset_left = 111.0
 offset_top = 302.0
 offset_right = 578.0
@@ -722,6 +725,7 @@ text = "Full Name"
 
 [node name="NameInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer" unique_id=945111976]
 layout_mode = 0
+caret_blink = true
 offset_left = 13.0
 offset_top = -68.0
 offset_right = 533.0
@@ -752,6 +756,7 @@ text = "Email"
 
 [node name="EmailInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer2" unique_id=1505487583]
 layout_mode = 0
+caret_blink = true
 offset_left = 15.0
 offset_top = 23.0
 offset_right = 530.0
@@ -781,6 +786,7 @@ text = "Create Password"
 
 [node name="PasswordInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer3" unique_id=1261404397]
 layout_mode = 0
+caret_blink = true
 offset_left = 14.0
 offset_top = -36.0
 offset_right = 529.0
@@ -811,6 +817,7 @@ text = "School Name"
 
 [node name="SchoolNameInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer4" unique_id=184946243]
 layout_mode = 0
+caret_blink = true
 offset_left = 17.0
 offset_top = 407.0
 offset_right = 530.0
@@ -840,6 +847,7 @@ text = "Grade/Subject Taught"
 
 [node name="Grade_Subject TaughtInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer5" unique_id=186052991]
 layout_mode = 0
+caret_blink = true
 offset_left = 21.0
 offset_top = 590.0
 offset_right = 534.0
@@ -869,6 +877,7 @@ text = "Class Name"
 
 [node name="ClassNameInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer6" unique_id=796059548]
 layout_mode = 0
+caret_blink = true
 offset_left = 23.0
 offset_top = 721.0
 offset_right = 536.0
@@ -958,6 +967,7 @@ text = "Your Name"
 
 [node name="LineEdit" type="LineEdit" parent="StudentRegistration/FieldContainer" unique_id=168719696]
 layout_mode = 0
+caret_blink = true
 offset_left = 94.0
 offset_top = 227.0
 offset_right = 578.0
@@ -987,6 +997,7 @@ text = "Create a 4-digit Pin"
 
 [node name="LineEdit" type="LineEdit" parent="StudentRegistration/FieldContainer2" unique_id=849749240]
 layout_mode = 0
+caret_blink = true
 offset_left = 96.0
 offset_top = 337.0
 offset_right = 575.0
