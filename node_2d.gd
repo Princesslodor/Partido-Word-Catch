@@ -44,7 +44,11 @@ func _ready():
 		%RemoveLetterButton.pressed.connect(_on_remove_letter_pressed)
 	if has_node("%ShuffleButton") and not %ShuffleButton.is_connected("pressed", Callable(self, "_on_shuffle_pressed")):
 		%ShuffleButton.pressed.connect(_on_shuffle_pressed)
-		
+	if has_node("%SettingsButton") and not %SettingsButton.is_connected("pressed", Callable(self, "_on_settings_button_pressed")):
+		%SettingsButton.pressed.connect(_on_settings_button_pressed)
+	if has_node("%BackButton") and not %BackButton.is_connected("pressed", Callable(self, "_on_back_button_pressed")):
+		%BackButton.pressed.connect(_on_back_button_pressed)
+
 	setup_heart_timer()
 	load_current_level()
 	_connect_sound_to_all_buttons(self)
@@ -385,6 +389,15 @@ func _on_speaker_button_pressed():
 		var level_info = LevelData.levels[lvl_key]
 		if level_info.has("audio"):
 			play_audio(level_info["audio"])
+
+func _on_settings_button_pressed():
+	if has_node("%SettingsMenu"):
+		%SettingsMenu.show()
+		%SettingsMenu.move_to_front()
+
+func _on_back_button_pressed():
+	if has_node("%ExitConfirmationPopup") and %ExitConfirmationPopup.has_method("open_popup"):
+		%ExitConfirmationPopup.open_popup()
 
 func _on_next_level_button_pressed():
 	current_level += 1

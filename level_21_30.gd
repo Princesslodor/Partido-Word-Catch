@@ -68,6 +68,8 @@ func _ready():
 	_connect_button("%RevealHintButton", "RevealHintB", "_on_reveal_hint_pressed")
 	_connect_button("%RemoveLetterButton", "RemoveLette", "_on_remove_letter_pressed")
 	_connect_button("%ShuffleButton", "ShuffleButto", "_on_shuffle_pressed")
+	_connect_button("%SettingsButton2", "SettingsButton2", "_on_settings_button_pressed")
+	_connect_button("%BackButton", "BackButton", "_on_back_button_pressed")
 			
 	load_current_level()
 	_connect_sound_to_all_buttons(self)
@@ -335,6 +337,15 @@ func _on_speaker_button_pressed():
 		var level_info = LevelData.levels[lvl_key]
 		if level_info.has("audio"):
 			play_audio(level_info["audio"])
+
+func _on_settings_button_pressed():
+	if has_node("%SettingsMenu"):
+		%SettingsMenu.show()
+		%SettingsMenu.move_to_front()
+
+func _on_back_button_pressed():
+	if has_node("%ExitConfirmationPopup") and %ExitConfirmationPopup.has_method("open_popup"):
+		%ExitConfirmationPopup.open_popup()
 
 func _on_next_level_button_pressed():
 	current_level += 1
