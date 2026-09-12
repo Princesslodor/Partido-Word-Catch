@@ -161,7 +161,7 @@ func _on_register_here_pressed():
 func _on_forgot_password_pressed():
 	# There's no real password check yet - Login only verifies the email
 	# against the teacher's account, so there's nothing to "reset" yet.
-	_show_login_status("Just log in with your registered email - no password is checked yet.")
+	_show_login_status("No password needed - just use your email.")
 
 # Pagkatapos mag-enter ng Class Code, dadaan muna sa Registration Panel
 func _on_join_class_pressed():
@@ -182,10 +182,10 @@ func _on_join_class_pressed():
 		if join_class_button: join_class_button.disabled = false
 
 		if class_row == null:
-			_show_join_status("Couldn't reach the server. Check your internet connection and try again.")
+			_show_join_status("No internet connection. Try again.")
 			return
 		if class_row == false:
-			_show_join_status("No class found with that code. Double-check it with your teacher.")
+			_show_join_status("No class found with that code.")
 			return
 
 		_show_join_status("")
@@ -216,7 +216,7 @@ func _change_to_avatar_selection():
 func _on_teacher_login_pressed():
 	var typed_email: String = login_email_input.text.strip_edges() if login_email_input else ""
 	if typed_email == "":
-		_show_login_status("Enter the email you registered with.")
+		_show_login_status("Enter your registered email.")
 		return
 
 	var sync = get_node_or_null("/root/SyncManager")
@@ -231,10 +231,10 @@ func _on_teacher_login_pressed():
 		if login_button: login_button.disabled = false
 
 		if class_row == null:
-			_show_login_status("Couldn't reach the server. Check your internet connection and try again.")
+			_show_login_status("No internet connection. Try again.")
 			return
 		if class_row == false:
-			_show_login_status("No account found with that email. Check the spelling, or create a new account below.")
+			_show_login_status("No account found with that email.")
 			return
 
 		_show_login_status("")
