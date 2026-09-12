@@ -513,9 +513,13 @@ offset_left = 28.0
 offset_top = 53.0
 offset_right = 504.0
 offset_bottom = 152.0
+theme_override_constants/h_separation = 18
+theme_override_constants/icon_max_width = 48
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 35
 theme_override_styles/normal = SubResource("StyleBoxFlat_lwcwy")
+icon = ExtResource("12_bdjbp")
+expand_icon = true
 text = "Class Code"
 
 [node name="StudentButton" type="Button" parent="Dashboard/Control3/Panel" unique_id=994212987]
@@ -524,9 +528,13 @@ offset_left = 28.0
 offset_top = 163.0
 offset_right = 504.0
 offset_bottom = 262.0
+theme_override_constants/h_separation = 18
+theme_override_constants/icon_max_width = 48
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 35
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
+icon = ExtResource("6_48pe7")
+expand_icon = true
 text = "Student"
 
 [node name="LeaderboardButton" type="Button" parent="Dashboard/Control3/Panel" unique_id=1783666737]
@@ -535,9 +543,13 @@ offset_left = 28.0
 offset_top = 276.0
 offset_right = 504.0
 offset_bottom = 375.0
+theme_override_constants/h_separation = 18
+theme_override_constants/icon_max_width = 48
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 35
 theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
+icon = ExtResource("8_bdjbp")
+expand_icon = true
 text = "Leaderboard"
 
 [node name="CreateClasscode" type="Control" parent="." unique_id=904867988]
