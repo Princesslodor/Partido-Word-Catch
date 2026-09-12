@@ -238,7 +238,7 @@ func _on_join_class_pressed():
 		if class_row == null:
 			_show_join_status("No internet connection. Try again.")
 			return
-		if class_row == false:
+		if not (class_row is Dictionary):
 			_show_join_status("No class found with that code.")
 			return
 
@@ -287,7 +287,7 @@ func _on_teacher_login_pressed():
 		if class_row == null:
 			_show_login_status("No internet connection. Try again.")
 			return
-		if class_row == false:
+		if not (class_row is Dictionary):
 			_show_login_status("No account found with that email.")
 			return
 
