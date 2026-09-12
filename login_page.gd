@@ -115,7 +115,7 @@ func _show_student_registration_screen():
 		if student_registration.has_method("show_registration"):
 			student_registration.show_registration()
 
-func show_class_joined_popup(joined_class: String = "GRADE 3", teacher: String = "Ms. Santos"):
+func show_class_joined_popup(joined_class: String = "", teacher: String = ""):
 	_hide_all_screens()
 	if game_logo: game_logo.hide()
 	if class_joined_popup:

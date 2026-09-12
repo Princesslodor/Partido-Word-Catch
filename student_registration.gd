@@ -64,7 +64,8 @@ func _on_continue_pressed() -> void:
 	# DERETSO LILIPAT SA CLASS JOINED POPUP VIA PARENT
 	var main_login = get_parent()
 	if main_login and main_login.has_method("show_class_joined_popup"):
-		main_login.show_class_joined_popup("GRADE 3", "Ms. Santos")
+		var joined_code: String = gm.class_code if gm and "class_code" in gm else ""
+		main_login.show_class_joined_popup(joined_code, "")
 	else:
 		# Fallback direct call sa popup node
 		var popup = main_login.get_node_or_null("ClassJoinedPopup") if main_login else null

@@ -1024,7 +1024,7 @@ offset_bottom = 563.0
 theme_override_colors/font_color = Color(0.10980392, 0.2509804, 0.05882353, 1)
 theme_override_fonts/font = ExtResource("7_51wku")
 theme_override_font_sizes/font_size = 40
-text = "GRADE 3"
+text = ""
 horizontal_alignment = 1
 
 [node name="TeacherRow" type="Panel" parent="ClassJoinedPopup" unique_id=405702843]
@@ -1053,7 +1053,7 @@ offset_bottom = 92.0
 theme_override_colors/font_color = Color(0.10980392, 0.2509804, 0.05882353, 1)
 theme_override_fonts/font = ExtResource("7_51wku")
 theme_override_font_sizes/font_size = 30
-text = "Teacher: Ms. Santos"
+text = "Teacher: "
 
 [node name="ContinueButton" type="Button" parent="ClassJoinedPopup" unique_id=1759373980]
 layout_mode = 0

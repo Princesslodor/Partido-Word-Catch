@@ -264,7 +264,7 @@ offset_top = 14.0
 offset_right = 227.0
 offset_bottom = 56.0
 theme_override_font_sizes/font_size = 30
-text = "Ms. Santos"
+text = ""
 
 [node name="Panel2" type="Panel" parent="TeacherProfilePanel" unique_id=352713124]
 layout_mode = 0
@@ -343,7 +343,7 @@ offset_bottom = 80.0
 theme_override_colors/font_color = Color(0.105882354, 0.49803922, 0.11372549, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 39
-text = "Ms. Santos!"
+text = ""
 
 [node name="SubtittleLabel" type="Label" parent="Dashboard/GreetingPanel" unique_id=323211529]
 layout_mode = 0
@@ -398,7 +398,7 @@ offset_bottom = 184.0
 theme_override_colors/font_color = Color(0.16470589, 0.5137255, 0.88235295, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 33
-text = "28"
+text = "0"
 horizontal_alignment = 1
 
 [node name="ActivePlayerPanel" type="Panel" parent="Dashboard/Control2" unique_id=1152368770]
@@ -437,7 +437,7 @@ offset_bottom = 170.0
 theme_override_colors/font_color = Color(0.23137255, 0.6392157, 0.29803923, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 33
-text = "25"
+text = "0"
 horizontal_alignment = 1
 
 [node name="TotalClassPanel" type="Panel" parent="Dashboard/Control2" unique_id=1654240852]
@@ -477,7 +477,7 @@ offset_bottom = 170.0
 theme_override_colors/font_color = Color(0.7019608, 0.3647059, 0.9019608, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 33
-text = "3"
+text = "0"
 horizontal_alignment = 1
 
 [node name="Control3" type="Control" parent="Dashboard" unique_id=2086909344]
@@ -590,7 +590,7 @@ offset_bottom = 53.0
 theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 23
-text = "Grade 3"
+text = ""
 
 [node name="SubjectLabel" type="Label" parent="CreateClasscode/Panel" unique_id=513025693]
 layout_mode = 0
@@ -601,7 +601,7 @@ offset_bottom = 96.0
 theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 23
-text = "Bikol Language"
+text = ""
 
 [node name="TeacherLabel" type="Label" parent="CreateClasscode/Panel" unique_id=889209971]
 layout_mode = 0
@@ -612,7 +612,7 @@ offset_bottom = 139.0
 theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 23
-text = "Teacher: Ms. Santos"
+text = "Teacher: "
 
 [node name="TextureRect2" type="TextureRect" parent="CreateClasscode/Panel" unique_id=1470983759]
 layout_mode = 0
@@ -632,7 +632,7 @@ offset_bottom = 51.0
 theme_override_colors/font_color = Color(0.16078432, 0.5058824, 0.8862745, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 30
-text = "28"
+text = "0"
 
 [node name="Label2" type="Label" parent="CreateClasscode/Panel/TextureRect2" unique_id=14542536]
 layout_mode = 0
@@ -775,7 +775,7 @@ horizontal_alignment = 1
 [node name="Leaderboard" type="Control" parent="." unique_id=2026712972]
 anchors_preset = 0
 offset_right = 734.0
-offset_bottom = 1760.0
+offset_bottom = 1420.0
 
 [node name="TextureRect" type="TextureRect" parent="Leaderboard" unique_id=2145888276]
 layout_mode = 0
@@ -1004,53 +1004,25 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 30
 text = "     #           Name                  Score"
 
-[node name="RankRow4" type="Label" parent="Leaderboard" unique_id=1000000401]
+[node name="EmptyRosterMessage" type="Label" parent="Leaderboard" unique_id=1000000401]
 layout_mode = 0
 offset_left = 90.0
-offset_top = 774.0
+offset_top = 800.0
 offset_right = 668.0
-offset_bottom = 826.0
-theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
+offset_bottom = 900.0
+theme_override_colors/font_color = Color(0.45, 0.45, 0.45, 1)
 theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 26
-text = "     4           Maria Clara           450 XP"
-
-[node name="RankRow5Highlight" type="ColorRect" parent="Leaderboard" unique_id=1000000502]
-layout_mode = 0
-offset_left = 90.0
-offset_top = 830.0
-offset_right = 660.0
-offset_bottom = 882.0
-color = Color(0.8, 0.93, 0.8, 1)
-
-[node name="RankRow5" type="Label" parent="Leaderboard" unique_id=1000000501]
-layout_mode = 0
-offset_left = 90.0
-offset_top = 830.0
-offset_right = 668.0
-offset_bottom = 882.0
-theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 26
-text = "     5           Lito (Me)              320 XP"
-
-[node name="RankRow6" type="Label" parent="Leaderboard" unique_id=1000000601]
-layout_mode = 0
-offset_left = 90.0
-offset_top = 886.0
-offset_right = 668.0
-offset_bottom = 938.0
-theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 26
-text = "     6           Basilio                290 XP"
+theme_override_font_sizes/font_size = 24
+text = "No students yet — rankings will appear once your class starts playing."
+autowrap_mode = 3
+horizontal_alignment = 1
 
 [node name="LevelsGraphPanel" type="Panel" parent="Leaderboard" unique_id=1000000700]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 1140.0
 offset_right = 697.0
-offset_bottom = 1750.0
+offset_bottom = 1400.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8ldig")
 
 [node name="GraphTitle" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000701]
@@ -1063,184 +1035,18 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 32
 text = "Levels reached, whole class"
 
-[node name="BarJuan" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000710]
+[node name="EmptyGraphMessage" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000710]
 layout_mode = 0
 offset_left = 30.0
 offset_top = 90.0
-offset_right = 130.0
-offset_bottom = 122.0
+offset_right = 638.0
+offset_bottom = 300.0
+theme_override_colors/font_color = Color(0.45, 0.45, 0.45, 1)
 theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "Juan"
-
-[node name="BarJuanFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000711]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 92.0
-offset_right = 500.0
-offset_bottom = 120.0
-color = Color(0.9137255, 0.6, 0.15, 1)
-
-[node name="BarJuanValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000712]
-layout_mode = 0
-offset_left = 508.0
-offset_top = 90.0
-offset_right = 560.0
-offset_bottom = 122.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "18"
-
-[node name="BarSarah" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000720]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 168.0
-offset_right = 130.0
-offset_bottom = 200.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "Sarah"
-
-[node name="BarSarahFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000721]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 170.0
-offset_right = 440.0
-offset_bottom = 198.0
-color = Color(0.9137255, 0.6, 0.15, 1)
-
-[node name="BarSarahValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000722]
-layout_mode = 0
-offset_left = 448.0
-offset_top = 168.0
-offset_right = 500.0
-offset_bottom = 200.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "15"
-
-[node name="BarDane" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000730]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 246.0
-offset_right = 130.0
-offset_bottom = 278.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "Dane"
-
-[node name="BarDaneFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000731]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 248.0
-offset_right = 400.0
-offset_bottom = 276.0
-color = Color(0.9137255, 0.6, 0.15, 1)
-
-[node name="BarDaneValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000732]
-layout_mode = 0
-offset_left = 408.0
-offset_top = 246.0
-offset_right = 460.0
-offset_bottom = 278.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "13"
-
-[node name="BarClara" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000740]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 324.0
-offset_right = 130.0
-offset_bottom = 356.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "Clara"
-
-[node name="BarClaraFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000741]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 326.0
-offset_right = 360.0
-offset_bottom = 354.0
-color = Color(0.9137255, 0.6, 0.15, 1)
-
-[node name="BarClaraValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000742]
-layout_mode = 0
-offset_left = 368.0
-offset_top = 324.0
-offset_right = 420.0
-offset_bottom = 356.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "11"
-
-[node name="BarNicole" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000750]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 402.0
-offset_right = 130.0
-offset_bottom = 434.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "Nicole"
-
-[node name="BarNicoleFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000751]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 404.0
-offset_right = 320.0
-offset_bottom = 432.0
-color = Color(0.9137255, 0.6, 0.15, 1)
-
-[node name="BarNicoleValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000752]
-layout_mode = 0
-offset_left = 328.0
-offset_top = 402.0
-offset_right = 380.0
-offset_bottom = 434.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "9"
-
-[node name="BarBasilio" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000760]
-layout_mode = 0
-offset_left = 30.0
-offset_top = 480.0
-offset_right = 130.0
-offset_bottom = 512.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "Basilio"
-
-[node name="BarBasilioFill" type="ColorRect" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000761]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 482.0
-offset_right = 260.0
-offset_bottom = 510.0
-color = Color(0.8039216, 0.28627452, 0.28627452, 1)
-
-[node name="BarBasilioValue" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000762]
-layout_mode = 0
-offset_left = 268.0
-offset_top = 480.0
-offset_right = 320.0
-offset_bottom = 512.0
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 22
-text = "6"
-
-[node name="AxisLabels" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000770]
-layout_mode = 0
-offset_left = 140.0
-offset_top = 550.0
-offset_right = 560.0
-offset_bottom = 582.0
-theme_override_colors/font_color = Color(0.4, 0.4, 0.4, 1)
-theme_override_fonts/font = ExtResource("5_kpsdq")
-theme_override_font_sizes/font_size = 20
-text = "0                  5                 10                15                20"
+theme_override_font_sizes/font_size = 24
+text = "No class data yet — this chart will fill in once students start completing levels."
+autowrap_mode = 3
+horizontal_alignment = 1
 
 [node name="BackButton" type="TextureButton" parent="." unique_id=409611384]
 layout_mode = 0

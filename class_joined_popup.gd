@@ -34,7 +34,7 @@ func _unblock_mouse_recursive(node: Node) -> void:
 			
 		_unblock_mouse_recursive(child)
 
-func setup_and_show(p_class_name: String = "GRADE 3", p_teacher_name: String = "Ms. Santos", avatar_texture: Texture2D = null) -> void:
+func setup_and_show(p_class_name: String = "", p_teacher_name: String = "", avatar_texture: Texture2D = null) -> void:
 	if class_name_label:
 		class_name_label.text = p_class_name
 	if teacher_label:
