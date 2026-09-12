@@ -118,32 +118,63 @@ func _load_region(region_index: int) -> void:
 func _update_level_locks(container: Control, offset: int) -> void:
 	var unlocked_limit: int = GameManager.unlocked_level
 
-
 	var button_counter: int = 1
-	
+
 	for child in container.get_children():
 		if not (child is Button):
 			continue
-			
+
 		var btn = child as Button
 		var global_level_num: int = offset + button_counter
 		var lock_icon_name := "LockIcon" + str(global_level_num)
 
-		if global_level_num <= unlocked_limit:
+		if global_level_num < unlocked_limit:
+			# Already completed - unlocked, but no special highlight needed.
 			btn.disabled = false
 			btn.modulate = Color(1, 1, 1, 1)
+			btn.remove_theme_stylebox_override("normal")
+			if btn.has_node(lock_icon_name):
+				btn.get_node(lock_icon_name).hide()
+
+			if not btn.pressed.is_connected(_on_level_button_pressed):
+				btn.pressed.connect(_on_level_button_pressed.bind(global_level_num))
+		elif global_level_num == unlocked_limit:
+			# The one level the student should play next - make it stand out.
+			btn.disabled = false
+			btn.modulate = Color(1, 1, 1, 1)
+			btn.add_theme_stylebox_override("normal", _get_next_level_highlight_style())
 			if btn.has_node(lock_icon_name):
 				btn.get_node(lock_icon_name).hide()
 
 			if not btn.pressed.is_connected(_on_level_button_pressed):
 				btn.pressed.connect(_on_level_button_pressed.bind(global_level_num))
 		else:
+			# Still locked.
 			btn.disabled = true
 			btn.modulate = Color(0.4, 0.4, 0.4, 0.8)
+			btn.remove_theme_stylebox_override("normal")
 			if btn.has_node(lock_icon_name):
 				btn.get_node(lock_icon_name).show()
-				
+
 		button_counter += 1
+
+## Bright gold/orange highlight so the next level to play stands out from
+## both already-completed levels and still-locked ones.
+func _get_next_level_highlight_style() -> StyleBoxFlat:
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(1.0, 0.83, 0.2, 1)
+	style.border_width_left = 6
+	style.border_width_top = 6
+	style.border_width_right = 6
+	style.border_width_bottom = 6
+	style.border_color = Color(0.9, 0.35, 0.05, 1)
+	style.corner_radius_top_left = 50
+	style.corner_radius_top_right = 50
+	style.corner_radius_bottom_right = 50
+	style.corner_radius_bottom_left = 50
+	style.shadow_color = Color(1.0, 0.7, 0.0, 0.6)
+	style.shadow_size = 10
+	return style
 
 func _on_level_button_pressed(level_num: int) -> void:
 	if not level_info_popup:
