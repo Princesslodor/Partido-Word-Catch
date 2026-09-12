@@ -20,6 +20,8 @@ extends Node
 ## --- PLAYER IDENTITY ---
 var player_name: String = ""          # Name of the currently logged-in player
 var role: String = "STUDENT"          # "STUDENT" or "TEACHER"
+var student_pin: String = ""          # 4-digit PIN a student registers with
+var avatar_id: String = ""            # Which avatar card the player picked
 
 ## --- PROGRESS ---
 var unlocked_level: int = 1           # Highest level the player can currently play (default: level 1 only)
@@ -58,6 +60,8 @@ func save_game() -> void:
 	var save_data: Dictionary = {
 		"player_name": player_name,
 		"role": role,
+		"student_pin": student_pin,
+		"avatar_id": avatar_id,
 		"unlocked_level": unlocked_level,
 		"player_coins": player_coins,
 		"completed_levels": completed_levels,
@@ -108,6 +112,8 @@ func load_game() -> void:
 	var save_data: Dictionary = parsed_result
 	player_name = save_data.get("player_name", "")
 	role = save_data.get("role", "STUDENT")
+	student_pin = save_data.get("student_pin", "")
+	avatar_id = save_data.get("avatar_id", "")
 	unlocked_level = save_data.get("unlocked_level", 1)
 	player_coins = save_data.get("player_coins", 0)
 	completed_levels = save_data.get("completed_levels", {})
@@ -118,6 +124,11 @@ func load_game() -> void:
 	
 	
 	## --- GAMEPLAY ACTIONS ---
+
+## Sets the current player's role and saves immediately.
+func set_role(new_role: String) -> void:
+	role = new_role
+	save_game()
 
 ## Adds coins to the player's total and saves immediately.
 ## Call this whenever a player earns coins (e.g. completing a level).

@@ -51,7 +51,8 @@ func _on_continue_pressed() -> void:
 	# Save sa GameManager
 	var gm = get_node_or_null("/root/GameManager")
 	if gm:
-		gm.set("current_role", "STUDENT")
+		if gm.has_method("set_role"):
+			gm.set_role("STUDENT")
 		gm.set("player_name", student_name)
 		gm.set("student_pin", student_pin)
 
