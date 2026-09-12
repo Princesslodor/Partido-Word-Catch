@@ -42,12 +42,10 @@ func _all_cards() -> Array:
 	return cards
 
 func _setup_initial_ui() -> void:
-	# Itago muna ang lahat ng Active Badges sa simula
+	# Wala munang naka-select sa simula, kaya dimmed lahat ng cards
 	for card in _all_cards():
 		if card is Button:
-			var active_badge = card.find_child("ActiveBadge", true, false)
-			if active_badge:
-				active_badge.hide()
+			card.modulate = Color(0.6, 0.6, 0.6, 1)
 
 func _filter_avatars_by_role() -> void:
 	# Ipakita lamang ang container na tumutugma sa kasalukuyang role
@@ -69,21 +67,17 @@ func _connect_signals() -> void:
 			card.toggled.connect(func(toggled_on: bool): _on_avatar_toggled(card, toggled_on))
 
 func _on_avatar_toggled(card_node: Button, toggled_on: bool) -> void:
-	var active_badge = card_node.find_child("ActiveBadge", true, false)
-	
 	if toggled_on:
 		var card_name = card_node.name
 		if avatar_data.has(card_name):
 			selected_avatar_id = avatar_data[card_name]["id"]
 			print("Napiling Avatar ID: ", selected_avatar_id)
-		
-		# Ipakita ang "ACTIVE" badge kapag napili
-		if active_badge:
-			active_badge.show()
+
+		# I-highlight ang napiling card
+		card_node.modulate = Color(1, 1, 1, 1)
 	else:
-		# Itago ang "ACTIVE" badge kapag pinalitan ng ibang card
-		if active_badge:
-			active_badge.hide()
+		# I-dim ulit kapag napalitan ng ibang card
+		card_node.modulate = Color(0.6, 0.6, 0.6, 1)
 
 func _on_confirm_pressed() -> void:
 	if selected_avatar_id.is_empty():

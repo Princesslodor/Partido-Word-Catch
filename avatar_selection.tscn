@@ -13,6 +13,10 @@
 [ext_resource type="Texture2D" uid="uid://baqmrv1073fn4" path="res://TeacherMale1.png" id="11_0er8t"]
 [ext_resource type="Texture2D" uid="uid://bg3geim823f1a" path="res://TeacherMale2.png" id="12_cq3so"]
 
+[sub_resource type="ButtonGroup" id="ButtonGroup_student"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_teacher"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
 bg_color = Color(1, 0.972549, 0.93333334, 1)
 border_width_left = 3
@@ -144,22 +148,30 @@ columns = 2
 
 [node name="StudentCard" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=1781132578]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_student")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = ExtResource("5_ummre")
 clip_text = true
 
 [node name="StudentCard2" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=256163633]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_student")
 theme_override_styles/normal = SubResource("StyleBoxFlat_8upip")
 icon = ExtResource("6_6kwkn")
 
 [node name="StudentCard3" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=2041846605]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_student")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = ExtResource("7_0er8t")
 
 [node name="StudentCard4" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=1970074481]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_student")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = ExtResource("8_cq3so")
 
@@ -239,22 +251,30 @@ columns = 2
 
 [node name="TeacherCard" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=1369578040]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_teacher")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = SubResource("CompressedTexture2D_a3jpw")
 clip_text = true
 
 [node name="TeacherCard2" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=1629558243]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_teacher")
 theme_override_styles/normal = SubResource("StyleBoxFlat_8upip")
 icon = ExtResource("10_6kwkn")
 
 [node name="TeacherCard3" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=1203253639]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_teacher")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = ExtResource("11_0er8t")
 
 [node name="TeacherCard4" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=706172558]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_teacher")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = ExtResource("12_cq3so")
 
