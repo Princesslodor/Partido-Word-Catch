@@ -14,6 +14,11 @@ extends Control
 @onready var sound_toggle: Button = $BackgroundOverlay/PopupBoard/CustomToggle/Panel/SoundRow/SoundToggle if has_node("BackgroundOverlay/PopupBoard/CustomToggle/Panel/SoundRow/SoundToggle") else null
 @onready var music_toggle: Button = $BackgroundOverlay/PopupBoard/CustomToggle/Panel/MusicRow/MusicToggle if has_node("BackgroundOverlay/PopupBoard/CustomToggle/Panel/MusicRow/MusicToggle") else null
 
+# Account Information
+@onready var name_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/NameLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/NameLabel") else null
+@onready var grade_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/GradeLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/GradeLabel") else null
+@onready var section_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/SectionLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/SectionLabel") else null
+
 func _ready():
 	hide()
 	_fix_mouse_filters()
@@ -21,6 +26,24 @@ func _ready():
 		quit_game_button.text = quit_button_text
 	_connect_signals()
 	_load_saved_settings()
+	_load_account_info()
+
+func _load_account_info():
+	var gm = get_node_or_null("/root/GameManager")
+	if not gm:
+		return
+
+	var display_name: String = gm.player_name if "player_name" in gm and gm.player_name != "" else "-"
+	if name_label:
+		name_label.text = "Name: " + display_name
+
+	var grade_subject: String = gm.joined_grade_subject if "joined_grade_subject" in gm and gm.joined_grade_subject != "" else "-"
+	if grade_label:
+		grade_label.text = "Grade Level: " + grade_subject
+
+	var section: String = gm.joined_class_name if "joined_class_name" in gm and gm.joined_class_name != "" else "-"
+	if section_label:
+		section_label.text = "Section: " + section
 
 func _fix_mouse_filters():
 	if has_node("BackgroundOverlay"):

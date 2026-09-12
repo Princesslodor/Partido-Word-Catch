@@ -201,6 +201,7 @@ func _on_welcome_back_not_you_pressed():
 		gm.set("avatar_id", "")
 		gm.set("joined_teacher_name", "")
 		gm.set("joined_class_name", "")
+		gm.set("joined_grade_subject", "")
 		gm.set("unlocked_level", 1)
 		gm.set("player_coins", 0)
 		gm.set("player_hearts", 4)
@@ -256,6 +257,7 @@ func _on_join_class_pressed():
 			gm.set("class_code", typed_code)
 			gm.set("joined_teacher_name", str(class_row.get("teacher_name", "")))
 			gm.set("joined_class_name", str(class_row.get("teacher_class_name", "")))
+			gm.set("joined_grade_subject", str(class_row.get("grade_subject", "")))
 			if gm.has_method("save_game"):
 				gm.save_game()
 		_show_student_registration_screen()
