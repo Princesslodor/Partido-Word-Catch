@@ -259,7 +259,8 @@ func _on_join_class_pressed():
 		if join_class_button: join_class_button.disabled = false
 
 		if class_row == null:
-			_show_join_status("No internet connection. Try again.")
+			var reason: String = sync.last_error if "last_error" in sync and sync.last_error != "" else ""
+			_show_join_status("No internet connection. Try again." + (" (" + reason + ")" if reason != "" else ""))
 			return
 		if not (class_row is Dictionary):
 			_show_join_status("No class found with that code.")
@@ -309,7 +310,8 @@ func _on_teacher_login_pressed():
 		if login_button: login_button.disabled = false
 
 		if class_row == null:
-			_show_login_status("No internet connection. Try again.")
+			var reason: String = sync.last_error if "last_error" in sync and sync.last_error != "" else ""
+			_show_login_status("No internet connection. Try again." + (" (" + reason + ")" if reason != "" else ""))
 			return
 		if not (class_row is Dictionary):
 			_show_login_status("No account found with that email.")

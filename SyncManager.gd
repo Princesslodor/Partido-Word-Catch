@@ -20,6 +20,31 @@ const SUPABASE_ANON_KEY: String = "sb_publishable_7rWRg70DOh-DPu6xUy5XWg_61DHfI7
 
 const REQUEST_TIMEOUT: float = 8.0
 
+## Short human-readable reason the most recent failed request failed, so
+## screens can show it to the user instead of a generic "no internet" -
+## that's the only way to see what's actually going wrong on a device we
+## can't attach a debugger to.
+var last_error: String = ""
+
+func _result_to_text(result: int) -> String:
+	match result:
+		HTTPRequest.RESULT_CANT_RESOLVE:
+			return "can't resolve host"
+		HTTPRequest.RESULT_CANT_CONNECT:
+			return "can't connect"
+		HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR:
+			return "TLS handshake error"
+		HTTPRequest.RESULT_TIMEOUT:
+			return "timed out"
+		HTTPRequest.RESULT_CONNECTION_ERROR:
+			return "connection error"
+		HTTPRequest.RESULT_NO_RESPONSE:
+			return "no response"
+		HTTPRequest.RESULT_SUCCESS:
+			return "http "
+		_:
+			return "error code " + str(result)
+
 func is_configured() -> bool:
 	return SUPABASE_URL != "" and SUPABASE_ANON_KEY != ""
 
@@ -41,9 +66,16 @@ func _request(path: String, method: int, body: String = "", extra_headers: Array
 	var full_url := SUPABASE_URL + path
 	var send_err := http.request(full_url, _headers(extra_headers), method, body)
 	if send_err != OK:
+		last_error = "couldn't start request (code " + str(send_err) + ")"
 		push_warning("SyncManager: request() failed to even start for %s - error code %s" % [full_url, send_err])
+		# request() failing synchronously means request_completed will NEVER
+		# fire on its own - callers (who connect to it right after this
+		# function returns) would otherwise wait forever. Fire it ourselves,
+		# deferred so it happens after callers have had a chance to connect.
+		http.call_deferred("emit_signal", "request_completed", HTTPRequest.RESULT_CANT_CONNECT, 0, PackedStringArray(), PackedByteArray())
 	http.request_completed.connect(func(result, response_code, _h, resp_body: PackedByteArray):
 		if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
+			last_error = _result_to_text(result) + (str(response_code) if result == HTTPRequest.RESULT_SUCCESS else "")
 			push_warning("SyncManager: request to %s failed - result=%s response_code=%s body=%s" % [
 				full_url, result, response_code, resp_body.get_string_from_utf8()
 			])
