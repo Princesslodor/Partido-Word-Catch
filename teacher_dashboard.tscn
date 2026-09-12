@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://cwowvyi8gp0nw" path="res://book_icon.png" id="11_otlon"]
 [ext_resource type="Texture2D" uid="uid://bi4fk8k0a5sw" path="res://key_icon.png" id="12_bdjbp"]
 [ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://Back.png" id="13_bdjbp"]
-[ext_resource type="Script" path="res://teacher_dashboard.gd" id="14_dashboard_script"]
+[ext_resource type="Script" uid="uid://dsne1cp5umdhs" path="res://teacher_dashboard.gd" id="14_dashboard_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2s3ny"]
 bg_color = Color(0.043137256, 0.043137256, 0.043137256, 0.6745098)
