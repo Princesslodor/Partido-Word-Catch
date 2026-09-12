@@ -15,8 +15,8 @@ extends Node
 # supabase_schema.sql in the Supabase SQL Editor once.
 # ============================================
 
-const SUPABASE_URL: String = ""        # e.g. "https://xxxxxxxx.supabase.co"
-const SUPABASE_ANON_KEY: String = ""   # the "anon" / "public" API key
+const SUPABASE_URL: String = "https://uufsrfizpvgjuipkpqzv.supabase.co"
+const SUPABASE_ANON_KEY: String = "sb_publishable_7rWRg70DOh-DPu6xUy5XWg_61DHfI7_"
 
 const REQUEST_TIMEOUT: float = 8.0
 
