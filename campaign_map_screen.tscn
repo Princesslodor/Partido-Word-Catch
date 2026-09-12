@@ -4,15 +4,15 @@
 [ext_resource type="Script" uid="uid://cwfgklaon7puh" path="res://campaign_map_screen.gd" id="1_o4pao"]
 [ext_resource type="FontFile" uid="uid://binoho5ooy4hp" path="res://Nunito-Black.ttf" id="2_012ip"]
 [ext_resource type="FontFile" uid="uid://c5ljwdm2jx37j" path="res://LuckiestGuy-Regular.ttf" id="2_hsl7m"]
-[ext_resource type="Texture2D" uid="uid://oimv8pj856sw" path="res://Back.png" id="3_t1kwc"]
 [ext_resource type="Texture2D" uid="uid://cmxevj1plrq8m" path="res://Coin.png" id="4_aur43"]
 [ext_resource type="Texture2D" uid="uid://chpnym703pgnw" path="res://Gold Lock icon.png" id="4_fv1ni"]
 [ext_resource type="FontFile" uid="uid://bxcd657qk3tam" path="res://Fredoka-Medium.ttf" id="5_jdswi"]
-[ext_resource type="Texture2D" uid="uid://datox2bdfkcv8" path="res://addbutton.png" id="6_0p80x"]
 [ext_resource type="Texture2D" uid="uid://ucr37oowu8ku" path="res://Setting Icon.png" id="8_aur43"]
 [ext_resource type="Texture2D" uid="uid://bc6gxmlb47db" path="res://Lagonoy Valley.png" id="8_hgfbm"]
 [ext_resource type="Texture2D" uid="uid://eqx8hciieu62" path="res://Isarog Foothills.png" id="9_0a1fm"]
+[ext_resource type="Texture2D" uid="uid://0v0m0g86cv3g" path="res://Word of the Day.png" id="11_fv1ni"]
 [ext_resource type="Texture2D" uid="uid://bg1r4sixynhkt" path="res://Wood.png" id="11_o4pao"]
+[ext_resource type="PackedScene" uid="uid://brbxr71qdww6a" path="res://settings_menu.tscn" id="13_o4pao"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
 bg_color = Color(0.90588236, 0.84705883, 0.6784314, 1)
@@ -66,6 +66,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="CoastalShoreLevels" type="Control" parent="Level Container" unique_id=2111809352]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -247,12 +248,12 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "8"
 
-[node name="LockIcon8" type="TextureRect" parent="Level Container/CoastalShoreLevels" unique_id=252492745]
+[node name="LockIcon8" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level8" unique_id=252492745]
 layout_mode = 0
-offset_left = 381.0
-offset_top = 881.00006
-offset_right = 430.0
-offset_bottom = 935.00006
+offset_left = 23.0
+offset_top = 17.000061
+offset_right = 72.0
+offset_bottom = 71.00006
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
@@ -309,12 +310,13 @@ expand_mode = 1
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 
 [node name="TitleBanner" type="TextureRect" parent="Level Container/CoastalShoreLevels/Header" unique_id=1522871851]
 layout_mode = 0
-offset_left = 141.0
+offset_left = 109.0
 offset_top = -2.0
-offset_right = 529.0
+offset_right = 497.0
 offset_bottom = 126.0
 texture = SubResource("CompressedTexture2D_nvpfi")
 expand_mode = 1
@@ -329,20 +331,20 @@ theme_override_fonts/font = ExtResource("2_hsl7m")
 theme_override_font_sizes/font_size = 40
 text = "CAMPAIGN MAP"
 
-[node name="Backbutton" type="TextureRect" parent="Level Container/CoastalShoreLevels/Header" unique_id=2090958884]
+[node name="WordoftheDaybutton" type="TextureButton" parent="Level Container/CoastalShoreLevels/Header" unique_id=1211321949]
 layout_mode = 0
-offset_left = 11.000001
-offset_top = 19.0
-offset_right = 292.0
-offset_bottom = 300.0
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("3_t1kwc")
+offset_left = 4.0
+offset_top = 25.000002
+offset_right = 509.0
+offset_bottom = 362.0
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("11_fv1ni")
 
 [node name="CoinDisplay" type="Panel" parent="Level Container/CoastalShoreLevels/Header" unique_id=1014263039]
 layout_mode = 0
-offset_left = 539.0
+offset_left = 509.0
 offset_top = 27.0
-offset_right = 710.0
+offset_right = 622.0
 offset_bottom = 80.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_2w0kd")
 
@@ -367,16 +369,6 @@ theme_override_fonts/font = ExtResource("5_jdswi")
 theme_override_font_sizes/font_size = 25
 text = "20"
 horizontal_alignment = 1
-
-[node name="AddButton" type="TextureButton" parent="Level Container/CoastalShoreLevels/Header/CoinDisplay" unique_id=1965478477]
-layout_mode = 0
-offset_left = 100.0
-offset_top = -15.0
-offset_right = 190.0
-offset_bottom = 71.0
-texture_normal = ExtResource("6_0p80x")
-ignore_texture_size = true
-stretch_mode = 0
 
 [node name="LagonoyValleyLevels" type="Control" parent="Level Container" unique_id=459598532]
 visible = false
@@ -640,9 +632,9 @@ offset_bottom = 40.0
 
 [node name="TitleBanner" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Header" unique_id=1194037854]
 layout_mode = 0
-offset_left = 141.0
+offset_left = 113.0
 offset_top = -2.0
-offset_right = 529.0
+offset_right = 501.0
 offset_bottom = 126.0
 texture = SubResource("CompressedTexture2D_nvpfi")
 expand_mode = 1
@@ -657,21 +649,21 @@ theme_override_fonts/font = ExtResource("2_hsl7m")
 theme_override_font_sizes/font_size = 40
 text = "CAMPAIGN MAP"
 
-[node name="Backbutton" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Header" unique_id=751877078]
+[node name="WordoftheDaybutton" type="TextureButton" parent="Level Container/LagonoyValleyLevels/Header" unique_id=1269135809]
 layout_mode = 0
-offset_left = 11.000001
-offset_top = 19.0
-offset_right = 292.0
-offset_bottom = 300.0
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("3_t1kwc")
+offset_left = 7.0000024
+offset_top = 28.000002
+offset_right = 512.0
+offset_bottom = 365.0
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("11_fv1ni")
 
 [node name="CoinDisplay" type="Panel" parent="Level Container/LagonoyValleyLevels/Header" unique_id=171729225]
 layout_mode = 0
-offset_left = 539.0
-offset_top = 27.0
-offset_right = 710.0
-offset_bottom = 80.0
+offset_left = 511.0
+offset_top = 28.0
+offset_right = 631.0
+offset_bottom = 81.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_2w0kd")
 
 [node name="Coin" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Header/CoinDisplay" unique_id=1536544762]
@@ -696,18 +688,7 @@ theme_override_font_sizes/font_size = 25
 text = "20"
 horizontal_alignment = 1
 
-[node name="AddButton" type="TextureButton" parent="Level Container/LagonoyValleyLevels/Header/CoinDisplay" unique_id=1504657648]
-layout_mode = 0
-offset_left = 100.0
-offset_top = -15.0
-offset_right = 190.0
-offset_bottom = 71.0
-texture_normal = ExtResource("6_0p80x")
-ignore_texture_size = true
-stretch_mode = 0
-
 [node name="IsarogFoothillsLevels" type="Control" parent="Level Container" unique_id=1900491580]
-visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -721,10 +702,10 @@ expand_mode = 1
 
 [node name="Level21" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=202899905]
 layout_mode = 0
-offset_left = 392.0
-offset_top = 228.0
-offset_right = 469.0
-offset_bottom = 302.0
+offset_left = 364.0
+offset_top = 197.0
+offset_right = 441.0
+offset_bottom = 271.0
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -769,10 +750,10 @@ expand_mode = 1
 
 [node name="Level23" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=260646892]
 layout_mode = 0
-offset_left = 332.0
-offset_top = 315.0
-offset_right = 409.0
-offset_bottom = 389.0
+offset_left = 341.0
+offset_top = 324.0
+offset_right = 418.0
+offset_bottom = 398.0
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -963,13 +944,14 @@ expand_mode = 1
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+mouse_filter = 2
 
 [node name="TitleBanner" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Header" unique_id=1178854172]
 layout_mode = 0
-offset_left = 141.0
-offset_top = -2.0
-offset_right = 529.0
-offset_bottom = 126.0
+offset_left = 109.0
+offset_top = -4.0
+offset_right = 497.0
+offset_bottom = 124.0
 texture = SubResource("CompressedTexture2D_nvpfi")
 expand_mode = 1
 
@@ -983,21 +965,21 @@ theme_override_fonts/font = ExtResource("2_hsl7m")
 theme_override_font_sizes/font_size = 40
 text = "CAMPAIGN MAP"
 
-[node name="Backbutton" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Header" unique_id=1811463063]
+[node name="WordOftheDaybutton" type="TextureButton" parent="Level Container/IsarogFoothillsLevels/Header" unique_id=1744658013]
 layout_mode = 0
-offset_left = 11.000001
-offset_top = 19.0
-offset_right = 292.0
-offset_bottom = 300.0
-scale = Vector2(0.3, 0.3)
-texture = ExtResource("3_t1kwc")
+offset_left = 8.000001
+offset_top = 31.000002
+offset_right = 513.0
+offset_bottom = 368.0
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("11_fv1ni")
 
 [node name="CoinDisplay" type="Panel" parent="Level Container/IsarogFoothillsLevels/Header" unique_id=763623163]
 layout_mode = 0
-offset_left = 539.0
-offset_top = 27.0
-offset_right = 710.0
-offset_bottom = 80.0
+offset_left = 515.0
+offset_top = 32.0
+offset_right = 632.0
+offset_bottom = 85.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_2w0kd")
 
 [node name="Coin" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Header/CoinDisplay" unique_id=1653677554]
@@ -1022,25 +1004,16 @@ theme_override_font_sizes/font_size = 25
 text = "20"
 horizontal_alignment = 1
 
-[node name="AddButton" type="TextureButton" parent="Level Container/IsarogFoothillsLevels/Header/CoinDisplay" unique_id=592039343]
-layout_mode = 0
-offset_left = 100.0
-offset_top = -15.0
-offset_right = 190.0
-offset_bottom = 71.0
-texture_normal = ExtResource("6_0p80x")
-ignore_texture_size = true
-stretch_mode = 0
-
 [node name="RegionOptionButton" type="OptionButton" parent="." unique_id=1936397783]
+unique_name_in_owner = true
 layout_mode = 0
-offset_left = 23.0
-offset_top = 1126.0
-offset_right = 323.0
-offset_bottom = 1242.0
+offset_left = 8.0
+offset_top = 1122.0
+offset_right = 353.0
+offset_bottom = 1238.0
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
-theme_override_font_sizes/font_size = 28
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_drsw1")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_hgfbm")
 alignment = 1
@@ -1054,11 +1027,15 @@ popup/item_2/id = 2
 
 [node name="SettingsButton" type="TextureButton" parent="." unique_id=375040293]
 layout_mode = 0
-offset_left = 623.0
-offset_top = 100.0
-offset_right = 960.0
-offset_bottom = 437.0
-scale = Vector2(0.25, 0.25)
+offset_left = 634.0
+offset_top = 17.0
+offset_right = 971.0
+offset_bottom = 354.0
+scale = Vector2(0.23, 0.23)
 texture_normal = ExtResource("8_aur43")
 ignore_texture_size = true
 stretch_mode = 0
+
+[node name="SettingsMenu" parent="." unique_id=707809916 instance=ExtResource("13_o4pao")]
+visible = false
+layout_mode = 1

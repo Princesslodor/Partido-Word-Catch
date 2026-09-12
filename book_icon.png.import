@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sjx5jvdf6jof"
-path="res://.godot/imported/level_19.jpg-9b0a2c25ac5f64935f95120934d843a8.ctex"
+uid="uid://cwowvyi8gp0nw"
+path="res://.godot/imported/book_icon.png-25acc0def7ff3c63776aef8f47b2bbec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Picture_HintLevel/level_19.jpg"
-dest_files=["res://.godot/imported/level_19.jpg-9b0a2c25ac5f64935f95120934d843a8.ctex"]
+source_file="res://book_icon.png"
+dest_files=["res://.godot/imported/book_icon.png-25acc0def7ff3c63776aef8f47b2bbec.ctex"]
 
 [params]
 

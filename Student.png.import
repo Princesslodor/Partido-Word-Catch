@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://sjx5jvdf6jof"
-path="res://.godot/imported/level_19.jpg-9b0a2c25ac5f64935f95120934d843a8.ctex"
+uid="uid://dm36qy402y4ka"
+path="res://.godot/imported/Student.png-7253dc5f41cfd5f5c4f4e8bc1be431b7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Picture_HintLevel/level_19.jpg"
-dest_files=["res://.godot/imported/level_19.jpg-9b0a2c25ac5f64935f95120934d843a8.ctex"]
+source_file="res://Student.png"
+dest_files=["res://.godot/imported/Student.png-7253dc5f41cfd5f5c4f4e8bc1be431b7.ctex"]
 
 [params]
 
