@@ -1,0 +1,1007 @@
+[gd_scene format=3 uid="uid://bc8q6iwffqkb1"]
+
+[ext_resource type="Texture2D" uid="uid://dg0yp5yj5eorl" path="res://Background Image.png" id="1_rdkic"]
+[ext_resource type="Texture2D" uid="uid://c61g3y8xbiy3x" path="res://TeacherBoard.png" id="2_ij1v3"]
+[ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://Nunito-Black.ttf" id="3_2jwbv"]
+[ext_resource type="Texture2D" uid="uid://boj4nki3mlltc" path="res://sun.png" id="4_eb3uo"]
+[ext_resource type="FontFile" uid="uid://b0yhtkwh7o06h" path="res://Nunito-Bold.ttf" id="5_kpsdq"]
+[ext_resource type="Texture2D" uid="uid://b0p716ix35uud" path="res://icon_blue.png" id="6_48pe7"]
+[ext_resource type="Texture2D" uid="uid://cj8k0kmwg68pt" path="res://gameicon.png" id="7_otlon"]
+[ext_resource type="Texture2D" uid="uid://ds6x2sasc0cgb" path="res://starviolet.png" id="8_bdjbp"]
+[ext_resource type="Texture2D" uid="uid://58h630xls4fo" path="res://AvatarTeacherF.png" id="9_p44m3"]
+[ext_resource type="Texture2D" uid="uid://58bdbuwtorss" path="res://download.png" id="10_je1cc"]
+[ext_resource type="Texture2D" uid="uid://cwowvyi8gp0nw" path="res://book_icon.png" id="11_otlon"]
+[ext_resource type="Texture2D" uid="uid://bi4fk8k0a5sw" path="res://key_icon.png" id="12_bdjbp"]
+[ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://Back.png" id="13_bdjbp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2s3ny"]
+bg_color = Color(0.043137256, 0.043137256, 0.043137256, 0.6745098)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2sdbu"]
+bg_color = Color(0.9137255, 0.47843137, 0.23529412, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
+bg_color = Color(0.9843137, 0.96862745, 0.9098039, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.95686275, 0.54509807, 0.29411766, 0.7764706)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8upip"]
+bg_color = Color(0.9882353, 0.972549, 0.9137255, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.1882353, 0.5176471, 0.8666667, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpga7"]
+bg_color = Color(0.99215686, 0.972549, 0.9098039, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.09019608, 0.49411765, 0.13333334, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_drsw1"]
+bg_color = Color(0.99215686, 0.972549, 0.9137255, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.8, 0.36078432, 0.8, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hrfpl"]
+bg_color = Color(0.99215686, 0.96862745, 0.9098039, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.7294118, 0.35686275, 0.10980392, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lwcwy"]
+bg_color = Color(0.06666667, 0.4392157, 0.14509805, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2w0kd"]
+bg_color = Color(0.9490196, 0.5882353, 0.16078432, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_h3vdb"]
+bg_color = Color(0.15294118, 0.50980395, 0.8784314, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6k0s3"]
+bg_color = Color(0.9843137, 0.972549, 0.90588236, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.63529414, 0.29803923, 0.07450981, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_08xds"]
+bg_color = Color(0.9843137, 0.972549, 0.90588236, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.62352943, 0.28235295, 0.0627451, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_p44m3"]
+bg_color = Color(0.9882353, 0.93333334, 0.78431374, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.4627451, 0.22745098, 0.003921569, 1)
+corner_radius_top_left = 15
+corner_radius_top_right = 15
+corner_radius_bottom_right = 15
+corner_radius_bottom_left = 15
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n5cb2"]
+bg_color = Color(0.13725491, 0.49803922, 0.21176471, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_fja6g"]
+bg_color = Color(0.11764706, 0.49803922, 0.9137255, 1)
+corner_radius_top_left = 25
+corner_radius_top_right = 25
+corner_radius_bottom_right = 25
+corner_radius_bottom_left = 25
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wtmfv"]
+bg_color = Color(0.9882353, 0.9607843, 0.88235295, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.65882355, 0.30980393, 0.08627451, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8ldig"]
+bg_color = Color(0.98039216, 0.94509804, 0.8509804, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.62352943, 0.28627452, 0.07058824, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sop33"]
+bg_color = Color(0.9607843, 0.7411765, 0.16862746, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aevv4"]
+bg_color = Color(0.98039216, 0.94509804, 0.8509804, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_twpk4"]
+bg_color = Color(0.9607843, 0.7411765, 0.16862746, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_don4i"]
+bg_color = Color(0.3019608, 0.63529414, 0.9019608, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7xa4r"]
+bg_color = Color(0.3019608, 0.63529414, 0.9019608, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yhkm3"]
+bg_color = Color(0.9137255, 0.47843137, 0.23529412, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+
+[node name="TeacherDashboard" type="Control" unique_id=418423726]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" type="TextureRect" parent="." unique_id=119301735]
+layout_mode = 1
+offset_right = 720.0
+offset_bottom = 1280.0
+texture = ExtResource("1_rdkic")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="GameLogo" type="TextureRect" parent="." unique_id=820270327]
+visible = false
+layout_mode = 0
+offset_left = -44.0
+offset_top = -12.0
+offset_right = 347.0
+offset_bottom = 136.0
+texture = ExtResource("10_je1cc")
+expand_mode = 1
+
+[node name="TeacherProfilePanel" type="Panel" parent="." unique_id=982788672]
+layout_mode = 0
+offset_left = 414.0
+offset_top = 17.0
+offset_right = 708.0
+offset_bottom = 95.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2s3ny")
+
+[node name="Label" type="Label" parent="TeacherProfilePanel" unique_id=882910122]
+layout_mode = 0
+offset_left = 71.0
+offset_top = 14.0
+offset_right = 227.0
+offset_bottom = 56.0
+theme_override_font_sizes/font_size = 30
+text = "Ms. Santos"
+
+[node name="Panel2" type="Panel" parent="TeacherProfilePanel" unique_id=352713124]
+layout_mode = 0
+offset_left = -66.0
+offset_top = -14.0
+offset_right = 43.0
+offset_bottom = 95.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2sdbu")
+
+[node name="TextureRect" type="TextureRect" parent="TeacherProfilePanel/Panel2" unique_id=1880588697]
+layout_mode = 0
+offset_left = 6.0
+offset_right = 95.0
+offset_bottom = 100.0
+texture = ExtResource("9_p44m3")
+expand_mode = 1
+
+[node name="Dashboard" type="Control" parent="." unique_id=78130873]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Teacherboard" type="TextureRect" parent="Dashboard" unique_id=1611699202]
+layout_mode = 0
+offset_top = 76.0
+offset_right = 719.0
+offset_bottom = 1255.0
+texture = ExtResource("2_ij1v3")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Dashboard" unique_id=1552117513]
+layout_mode = 0
+offset_left = 179.0
+offset_top = 138.0
+offset_right = 553.0
+offset_bottom = 194.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 40
+text = "Teacher Dashboard"
+
+[node name="GreetingPanel" type="Panel" parent="Dashboard" unique_id=726555258]
+layout_mode = 0
+offset_left = 86.0
+offset_top = 266.0
+offset_right = 630.0
+offset_bottom = 425.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_3owqy")
+
+[node name="TextureRect" type="TextureRect" parent="Dashboard/GreetingPanel" unique_id=2004000549]
+layout_mode = 0
+offset_left = 10.0
+offset_top = -2.0
+offset_right = 129.0
+offset_bottom = 116.0
+texture = ExtResource("4_eb3uo")
+expand_mode = 1
+
+[node name="GreetingLabel" type="Label" parent="Dashboard/GreetingPanel" unique_id=923107195]
+layout_mode = 0
+offset_left = 127.0
+offset_top = 2.0
+offset_right = 328.0
+offset_bottom = 41.0
+theme_override_colors/font_color = Color(0.105882354, 0.49803922, 0.11372549, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 28
+text = "Good Morning,"
+
+[node name="GreetingLabel2" type="Label" parent="Dashboard/GreetingPanel" unique_id=905912863]
+layout_mode = 0
+offset_left = 127.0
+offset_top = 41.0
+offset_right = 328.0
+offset_bottom = 80.0
+theme_override_colors/font_color = Color(0.105882354, 0.49803922, 0.11372549, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 39
+text = "Ms. Santos!"
+
+[node name="SubtittleLabel" type="Label" parent="Dashboard/GreetingPanel" unique_id=323211529]
+layout_mode = 0
+offset_left = 127.0
+offset_top = 103.0
+offset_right = 516.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0.30980393, 0.61960787, 0.9882353, 1)
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 22
+text = "Here's your class overview for today."
+
+[node name="Control2" type="Control" parent="Dashboard" unique_id=1541019887]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TotalStudentsPanel" type="Panel" parent="Dashboard/Control2" unique_id=1316946678]
+layout_mode = 0
+offset_left = 87.0
+offset_top = 448.0
+offset_right = 256.0
+offset_bottom = 639.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8upip")
+
+[node name="StudentIcon" type="TextureRect" parent="Dashboard/Control2/TotalStudentsPanel" unique_id=1923492785]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 6.0
+offset_right = 136.0
+offset_bottom = 103.0
+texture = ExtResource("6_48pe7")
+expand_mode = 1
+
+[node name="TotalStudentsLabel" type="Label" parent="Dashboard/Control2/TotalStudentsPanel" unique_id=1246583542]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 103.0
+offset_right = 155.0
+offset_bottom = 132.0
+theme_override_colors/font_color = Color(0.16470589, 0.5137255, 0.88235295, 1)
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 20
+text = "Total Students"
+
+[node name="TotalNumberLabel" type="Label" parent="Dashboard/Control2/TotalStudentsPanel" unique_id=1409560450]
+layout_mode = 0
+offset_left = 14.0
+offset_top = 138.0
+offset_right = 154.0
+offset_bottom = 184.0
+theme_override_colors/font_color = Color(0.16470589, 0.5137255, 0.88235295, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 33
+text = "28"
+horizontal_alignment = 1
+
+[node name="ActivePlayerPanel" type="Panel" parent="Dashboard/Control2" unique_id=1152368770]
+layout_mode = 0
+offset_left = 271.0
+offset_top = 448.0
+offset_right = 440.0
+offset_bottom = 639.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_dpga7")
+
+[node name="TextureRect" type="TextureRect" parent="Dashboard/Control2/ActivePlayerPanel" unique_id=1692941096]
+layout_mode = 0
+offset_left = 27.0
+offset_right = 135.0
+offset_bottom = 117.0
+texture = ExtResource("7_otlon")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Dashboard/Control2/ActivePlayerPanel" unique_id=704745441]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 111.0
+offset_right = 128.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0.23137255, 0.6392157, 0.29803923, 1)
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 20
+text = "Active Player"
+
+[node name="Label2" type="Label" parent="Dashboard/Control2/ActivePlayerPanel" unique_id=1321392322]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 141.0
+offset_right = 130.0
+offset_bottom = 170.0
+theme_override_colors/font_color = Color(0.23137255, 0.6392157, 0.29803923, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 33
+text = "25"
+horizontal_alignment = 1
+
+[node name="TotalClassPanel" type="Panel" parent="Dashboard/Control2" unique_id=1654240852]
+layout_mode = 0
+offset_left = 455.0
+offset_top = 447.0
+offset_right = 624.0
+offset_bottom = 638.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_drsw1")
+
+[node name="TextureRect" type="TextureRect" parent="Dashboard/Control2/TotalClassPanel" unique_id=1634563340]
+layout_mode = 0
+offset_left = 33.0
+offset_top = -24.0
+offset_right = 136.0
+offset_bottom = 132.0
+texture = ExtResource("8_bdjbp")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Dashboard/Control2/TotalClassPanel" unique_id=772181183]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 111.0
+offset_right = 128.0
+offset_bottom = 134.0
+theme_override_colors/font_color = Color(0.7019608, 0.3647059, 0.9019608, 1)
+theme_override_fonts/font = ExtResource("5_kpsdq")
+theme_override_font_sizes/font_size = 20
+text = "Total Class"
+
+[node name="Label2" type="Label" parent="Dashboard/Control2/TotalClassPanel" unique_id=1360706662]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 141.0
+offset_right = 130.0
+offset_bottom = 170.0
+theme_override_colors/font_color = Color(0.7019608, 0.3647059, 0.9019608, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 33
+text = "3"
+horizontal_alignment = 1
+
+[node name="Control3" type="Control" parent="Dashboard" unique_id=2086909344]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+metadata/_edit_use_anchors_ = true
+
+[node name="Panel" type="Panel" parent="Dashboard/Control3" unique_id=301893093]
+layout_mode = 0
+offset_left = 85.0
+offset_top = 685.0
+offset_right = 630.0
+offset_bottom = 1101.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_hrfpl")
+
+[node name="Label" type="Label" parent="Dashboard/Control3/Panel" unique_id=876574457]
+layout_mode = 0
+offset_left = 16.0
+offset_top = 6.0
+offset_right = 184.0
+offset_bottom = 41.0
+theme_override_colors/font_color = Color(0.0627451, 0.45490196, 0.12156863, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 25
+text = "Quick Actions"
+
+[node name="CreateClassCodeButton" type="Button" parent="Dashboard/Control3/Panel" unique_id=2037555872]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 53.0
+offset_right = 504.0
+offset_bottom = 152.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_lwcwy")
+text = "Create Class Code"
+
+[node name="StudentButton" type="Button" parent="Dashboard/Control3/Panel" unique_id=994212987]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 163.0
+offset_right = 504.0
+offset_bottom = 262.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
+text = "Student"
+
+[node name="LeaderboardButton" type="Button" parent="Dashboard/Control3/Panel" unique_id=1783666737]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 276.0
+offset_right = 504.0
+offset_bottom = 375.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
+text = "Leaderboard"
+
+[node name="CreateClasscode" type="Control" parent="." unique_id=904867988]
+visible = false
+anchors_preset = 0
+offset_left = 4.0
+offset_top = 21.0
+offset_right = 758.0
+offset_bottom = 1177.0
+
+[node name="TextureRect" type="TextureRect" parent="CreateClasscode" unique_id=794485748]
+layout_mode = 0
+offset_top = 105.0
+offset_right = 716.0
+offset_bottom = 1013.0
+texture = ExtResource("2_ij1v3")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="CreateClasscode" unique_id=2044399197]
+layout_mode = 0
+offset_left = 213.0
+offset_top = 150.0
+offset_right = 521.0
+offset_bottom = 218.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 46
+text = "Manage Class"
+
+[node name="Panel" type="Panel" parent="CreateClasscode" unique_id=1344506609]
+layout_mode = 0
+offset_left = 101.0
+offset_top = 284.0
+offset_right = 621.0
+offset_bottom = 437.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_6k0s3")
+
+[node name="TextureRect" type="TextureRect" parent="CreateClasscode/Panel" unique_id=217132952]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 16.0
+offset_right = 122.0
+offset_bottom = 112.0
+texture = ExtResource("11_otlon")
+expand_mode = 1
+
+[node name="GradeLabel" type="Label" parent="CreateClasscode/Panel" unique_id=1260932594]
+layout_mode = 0
+offset_left = 135.0
+offset_top = 11.0
+offset_right = 250.0
+offset_bottom = 53.0
+theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 23
+text = "Grade 3"
+
+[node name="SubjectLabel" type="Label" parent="CreateClasscode/Panel" unique_id=513025693]
+layout_mode = 0
+offset_left = 138.0
+offset_top = 54.0
+offset_right = 311.0
+offset_bottom = 96.0
+theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 23
+text = "Bikol Language"
+
+[node name="TeacherLabel" type="Label" parent="CreateClasscode/Panel" unique_id=889209971]
+layout_mode = 0
+offset_left = 137.0
+offset_top = 97.0
+offset_right = 363.0
+offset_bottom = 139.0
+theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 23
+text = "Teacher: Ms. Santos"
+
+[node name="TextureRect2" type="TextureRect" parent="CreateClasscode/Panel" unique_id=1470983759]
+layout_mode = 0
+offset_left = 362.0
+offset_top = 20.0
+offset_right = 452.0
+offset_bottom = 95.0
+texture = ExtResource("6_48pe7")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="CreateClasscode/Panel/TextureRect2" unique_id=92304965]
+layout_mode = 0
+offset_left = 93.0
+offset_top = 9.0
+offset_right = 135.0
+offset_bottom = 51.0
+theme_override_colors/font_color = Color(0.16078432, 0.5058824, 0.8862745, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 30
+text = "28"
+
+[node name="Label2" type="Label" parent="CreateClasscode/Panel/TextureRect2" unique_id=14542536]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 53.0
+offset_right = 148.0
+offset_bottom = 76.0
+theme_override_colors/font_color = Color(0.16078432, 0.5058824, 0.8862745, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+text = "Students"
+
+[node name="CodeGeneratorPanel" type="Panel" parent="CreateClasscode" unique_id=1992728441]
+layout_mode = 0
+offset_left = 105.0
+offset_top = 479.0
+offset_right = 616.0
+offset_bottom = 843.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_08xds")
+
+[node name="TextureRect" type="TextureRect" parent="CreateClasscode/CodeGeneratorPanel" unique_id=68598726]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 7.0
+offset_right = 147.0
+offset_bottom = 62.0
+texture = ExtResource("12_bdjbp")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="CreateClasscode/CodeGeneratorPanel" unique_id=1982432196]
+layout_mode = 0
+offset_left = 152.0
+offset_top = 13.0
+offset_right = 369.0
+offset_bottom = 48.0
+theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 30
+text = "Class Joined Code"
+
+[node name="ClassCodeEdit" type="LineEdit" parent="CreateClasscode/CodeGeneratorPanel" unique_id=890018506]
+layout_mode = 0
+offset_left = 21.0
+offset_top = 84.0
+offset_right = 488.0
+offset_bottom = 207.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_p44m3")
+
+[node name="CopyCodeButton" type="Button" parent="CreateClasscode/CodeGeneratorPanel" unique_id=1142309942]
+layout_mode = 0
+offset_left = 28.0
+offset_top = 256.0
+offset_right = 220.0
+offset_bottom = 320.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_n5cb2")
+text = "Copy Code"
+
+[node name="GenerateNewCodeButton" type="Button" parent="CreateClasscode/CodeGeneratorPanel" unique_id=181950143]
+layout_mode = 0
+offset_left = 273.0
+offset_top = 256.0
+offset_right = 492.0
+offset_bottom = 320.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_fja6g")
+text = "Generate New Code"
+
+[node name="Students" type="Control" parent="." unique_id=509752367]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TextureRect" type="TextureRect" parent="Students" unique_id=1080743086]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 110.0
+offset_right = 697.0
+offset_bottom = 1118.0
+texture = ExtResource("2_ij1v3")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Students" unique_id=2005396845]
+layout_mode = 0
+offset_left = 213.0
+offset_top = 150.0
+offset_right = 521.0
+offset_bottom = 218.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 50
+text = "Students"
+horizontal_alignment = 1
+
+[node name="Panel" type="Panel" parent="Students" unique_id=737261814]
+layout_mode = 0
+offset_left = 91.0
+offset_top = 281.0
+offset_right = 614.0
+offset_bottom = 970.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_wtmfv")
+
+[node name="Icon" type="TextureRect" parent="Students" unique_id=1206261169]
+layout_mode = 0
+offset_left = 89.0
+offset_top = 286.0
+offset_right = 173.0
+offset_bottom = 361.0
+texture = ExtResource("6_48pe7")
+expand_mode = 1
+
+[node name="StudentLabel" type="Label" parent="Students" unique_id=820670684]
+layout_mode = 0
+offset_left = 176.0
+offset_top = 304.0
+offset_right = 294.0
+offset_bottom = 333.0
+theme_override_colors/font_color = Color(0.16078432, 0.3764706, 0.5647059, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 25
+text = "Students"
+horizontal_alignment = 1
+
+[node name="ViewAllLabel" type="Label" parent="Students" unique_id=849013641]
+layout_mode = 0
+offset_left = 448.0
+offset_top = 304.0
+offset_right = 566.0
+offset_bottom = 333.0
+theme_override_colors/font_color = Color(0.16078432, 0.3764706, 0.5647059, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 23
+text = "View All   >"
+horizontal_alignment = 1
+
+[node name="Leaderboard" type="Control" parent="." unique_id=2026712972]
+anchors_preset = 0
+offset_right = 734.0
+offset_bottom = 1292.0
+
+[node name="TextureRect" type="TextureRect" parent="Leaderboard" unique_id=2145888276]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 110.0
+offset_right = 697.0
+offset_bottom = 1118.0
+texture = ExtResource("2_ij1v3")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Leaderboard" unique_id=333892045]
+layout_mode = 0
+offset_left = 209.0
+offset_top = 150.0
+offset_right = 517.0
+offset_bottom = 219.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 50
+text = "Leaderboard"
+horizontal_alignment = 1
+
+[node name="Panel" type="Panel" parent="Leaderboard" unique_id=1761054355]
+layout_mode = 0
+offset_left = 78.0
+offset_top = 254.0
+offset_right = 636.0
+offset_bottom = 1015.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_8ldig")
+
+[node name="First" type="Panel" parent="Leaderboard" unique_id=1063817914]
+layout_mode = 0
+offset_left = 253.0
+offset_top = 435.0
+offset_right = 450.0
+offset_bottom = 682.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_sop33")
+
+[node name="Label" type="Label" parent="Leaderboard/First" unique_id=2135360475]
+layout_mode = 0
+offset_left = 84.0
+offset_top = 18.0
+offset_right = 142.0
+offset_bottom = 78.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 50
+text = "1"
+
+[node name="Panel" type="Panel" parent="Leaderboard/First" unique_id=2004798264]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 96.0
+offset_right = 191.0
+offset_bottom = 188.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aevv4")
+
+[node name="Label" type="Label" parent="Leaderboard/First/Panel" unique_id=1190839377]
+layout_mode = 0
+offset_left = 52.0
+offset_top = 10.0
+offset_right = 148.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.080783345, 0.080783345, 0.080783345, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 25
+text = "Name"
+
+[node name="Label2" type="Label" parent="Leaderboard/First/Panel" unique_id=388239252]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 40.0
+offset_right = 122.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(0.080783345, 0.080783345, 0.080783345, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 25
+text = "Score"
+
+[node name="Panel2" type="Panel" parent="Leaderboard/First" unique_id=1610569556]
+layout_mode = 0
+offset_left = 53.0
+offset_top = -126.0
+offset_right = 162.0
+offset_bottom = -17.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_twpk4")
+
+[node name="TextureRect" type="TextureRect" parent="Leaderboard/First/Panel2" unique_id=16747271]
+layout_mode = 0
+offset_left = 6.0
+offset_right = 95.0
+offset_bottom = 100.0
+expand_mode = 1
+
+[node name="Second" type="Panel" parent="Leaderboard" unique_id=813970005]
+layout_mode = 0
+offset_left = 103.0
+offset_top = 508.0
+offset_right = 254.0
+offset_bottom = 684.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_don4i")
+
+[node name="Label" type="Label" parent="Leaderboard/Second" unique_id=1302514044]
+layout_mode = 0
+offset_left = 55.0
+offset_right = 113.0
+offset_bottom = 69.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 50
+text = "2"
+
+[node name="Panel" type="Panel" parent="Leaderboard/Second" unique_id=629600330]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 60.0
+offset_right = 150.0
+offset_bottom = 152.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aevv4")
+
+[node name="Label" type="Label" parent="Leaderboard/Second/Panel" unique_id=406508935]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 10.0
+offset_right = 134.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.080783345, 0.080783345, 0.080783345, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 25
+text = "Name"
+
+[node name="Label2" type="Label" parent="Leaderboard/Second/Panel" unique_id=1715683335]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 40.0
+offset_right = 105.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(0.080783345, 0.080783345, 0.080783345, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 25
+text = "Score"
+
+[node name="Panel2" type="Panel" parent="Leaderboard/Second" unique_id=1031944368]
+layout_mode = 0
+offset_left = 19.0
+offset_top = -118.0
+offset_right = 128.0
+offset_bottom = -9.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_7xa4r")
+
+[node name="TextureRect" type="TextureRect" parent="Leaderboard/Second/Panel2" unique_id=1153777147]
+layout_mode = 0
+offset_left = 6.0
+offset_right = 95.0
+offset_bottom = 100.0
+expand_mode = 1
+
+[node name="Third" type="Panel" parent="Leaderboard" unique_id=1773605354]
+layout_mode = 0
+offset_left = 451.0
+offset_top = 529.0
+offset_right = 605.0
+offset_bottom = 685.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_yhkm3")
+
+[node name="Label" type="Label" parent="Leaderboard/Third" unique_id=49676631]
+layout_mode = 0
+offset_left = 64.0
+offset_top = 2.0
+offset_right = 122.0
+offset_bottom = 71.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 50
+text = "3"
+
+[node name="Panel" type="Panel" parent="Leaderboard/Third" unique_id=1538172342]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 60.0
+offset_right = 150.0
+offset_bottom = 152.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_aevv4")
+
+[node name="Label" type="Label" parent="Leaderboard/Third/Panel" unique_id=1569622494]
+layout_mode = 0
+offset_left = 38.0
+offset_top = 10.0
+offset_right = 134.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0.080783345, 0.080783345, 0.080783345, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 25
+text = "Name"
+
+[node name="Label2" type="Label" parent="Leaderboard/Third/Panel" unique_id=1237387273]
+layout_mode = 0
+offset_left = 37.0
+offset_top = 40.0
+offset_right = 105.0
+offset_bottom = 75.0
+theme_override_colors/font_color = Color(0.080783345, 0.080783345, 0.080783345, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 25
+text = "Score"
+
+[node name="Panel2" type="Panel" parent="Leaderboard/Third" unique_id=434124399]
+layout_mode = 0
+offset_left = 20.0
+offset_top = -116.0
+offset_right = 129.0
+offset_bottom = -7.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2sdbu")
+
+[node name="TextureRect" type="TextureRect" parent="Leaderboard/Third/Panel2" unique_id=1189499204]
+layout_mode = 0
+offset_left = 6.0
+offset_right = 95.0
+offset_bottom = 100.0
+expand_mode = 1
+
+[node name="Label2" type="Label" parent="Leaderboard" unique_id=499143317]
+layout_mode = 0
+offset_left = 90.0
+offset_top = 708.0
+offset_right = 668.0
+offset_bottom = 766.0
+theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 30
+text = "     #           Name                  Score"
+
+[node name="BackButton" type="TextureButton" parent="." unique_id=409611384]
+layout_mode = 0
+offset_left = 17.999998
+offset_top = 4.9999995
+offset_right = 299.0
+offset_bottom = 286.0
+scale = Vector2(0.4, 0.4)
+texture_normal = ExtResource("13_bdjbp")
