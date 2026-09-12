@@ -1045,6 +1045,7 @@ layout_mode = 1
 [node name="ExitConfirmationPopup" parent="." instance=ExtResource("14_exitpop")]
 visible = false
 layout_mode = 1
+quit_app = true
 
 [node name="LevelInfoPopup" parent="." instance=ExtResource("15_lvlinfo")]
 visible = false

@@ -1,5 +1,11 @@
 extends Control
 
+# Override the QuitGameButton's label per-instance - e.g. "MENU" when this
+# settings menu is opened from inside a level (where it just returns to the
+# campaign map, not a real app quit), left blank to keep the scene's default
+# "QUIT GAME" wording elsewhere.
+@export var quit_button_text: String = ""
+
 # --- SCENE NODE REFERENCES ---
 @onready var close_button: BaseButton = $BackgroundOverlay/PopupBoard/CloseButton if has_node("BackgroundOverlay/PopupBoard/CloseButton") else null
 @onready var quit_game_button: BaseButton = $QuitGameButton if has_node("QuitGameButton") else null
@@ -11,6 +17,8 @@ extends Control
 func _ready():
 	hide()
 	_fix_mouse_filters()
+	if quit_game_button and quit_button_text != "":
+		quit_game_button.text = quit_button_text
 	_connect_signals()
 	_load_saved_settings()
 
