@@ -22,6 +22,7 @@ var player_name: String = ""          # Name of the currently logged-in player
 var role: String = "STUDENT"          # "STUDENT" or "TEACHER"
 var student_pin: String = ""          # 4-digit PIN a student registers with
 var avatar_id: String = ""            # Which avatar card the player picked
+var device_id: String = ""            # Stable per-install id used to identify this player when syncing online
 
 ## --- TEACHER ACCOUNT INFO ---
 var teacher_email: String = ""
@@ -56,6 +57,11 @@ func _ready() -> void:
 	# In the next step, this is where we'll LOAD saved data
 	# from a file (user://save_data.json) when the app starts.
 	load_game()
+
+	if device_id == "":
+		device_id = _generate_device_id()
+		save_game()
+
 	print("GameManager ready! Player: ", player_name, " | Unlocked level: ", unlocked_level)
 
 	# Safety net: always flush the latest data to disk when the app is
@@ -85,6 +91,7 @@ func save_game() -> void:
 		"grade_subject": grade_subject,
 		"teacher_class_name": teacher_class_name,
 		"class_code": class_code,
+		"device_id": device_id,
 		"unlocked_level": unlocked_level,
 		"player_coins": player_coins,
 		"completed_levels": completed_levels,
@@ -104,6 +111,16 @@ func save_game() -> void:
 	file.close()
 
 	print("Game saved successfully.")
+
+	# Opportunistic online sync: fires and forgets. If there's no internet
+	# or Supabase isn't configured yet, this just fails silently and the
+	# local save above (already done) stays the source of truth.
+	var sync = get_node_or_null("/root/SyncManager")
+	if sync:
+		if role == "STUDENT" and sync.has_method("sync_student_progress"):
+			sync.sync_student_progress()
+		elif role == "TEACHER" and class_code != "" and sync.has_method("upsert_class"):
+			sync.upsert_class(class_code, player_name, school_name, grade_subject, teacher_class_name)
 
 
 ## --- LOAD ---
@@ -142,6 +159,7 @@ func load_game() -> void:
 	grade_subject = save_data.get("grade_subject", "")
 	teacher_class_name = save_data.get("teacher_class_name", "")
 	class_code = save_data.get("class_code", "")
+	device_id = save_data.get("device_id", "")
 	unlocked_level = save_data.get("unlocked_level", 1)
 	player_coins = save_data.get("player_coins", 0)
 	completed_levels = save_data.get("completed_levels", {})
@@ -152,6 +170,15 @@ func load_game() -> void:
 	
 	
 	## --- GAMEPLAY ACTIONS ---
+
+## Generates a random per-install id (not tied to real hardware/account),
+## used to tell players apart when syncing to the online leaderboard.
+func _generate_device_id() -> String:
+	var chars := "abcdefghijklmnopqrstuvwxyz0123456789"
+	var id := ""
+	for i in range(16):
+		id += chars[randi() % chars.length()]
+	return id
 
 ## Sets the current player's role and saves immediately.
 func set_role(new_role: String) -> void:

@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 LevelData="*uid://blju7gpqmr7tu"
 Global="*uid://beufhve7kspn2"
 GameManager="*uid://btt20whkyb6yr"
+SyncManager="*res://SyncManager.gd"
 
 [display]
 
