@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Partido_word_catch"
-run/main_scene="uid://b7rb163l11uag"
+run/main_scene="uid://bkx1m8smwlr7u"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
@@ -25,7 +25,12 @@ GameManager="*uid://bkptaivocalkw"
 
 window/size/viewport_width=720
 window/size/viewport_height=1280
+window/size/mode=2
+window/size/window_width_override=576
+window/size/window_height_override=768
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
 
 [physics]
 

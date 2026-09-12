@@ -1,0 +1,86 @@
+[gd_scene format=3 uid="uid://dc3itlbsj88f7"]
+
+[ext_resource type="Texture2D" uid="uid://d4eaqdf3gk3uj" path="res://Exit Confirmation Pop up.png" id="1_7fuk7"]
+[ext_resource type="Script" uid="uid://b1jmx6wv57uqs" path="res://exit_confirmation_popup.gd" id="1_ovqrb"]
+[ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://Nunito-Black.ttf" id="2_ovqrb"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
+bg_color = Color(0.10980392, 0.4509804, 0.12156863, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.74509805, 0.43529412, 0.18039216, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8upip"]
+bg_color = Color(0.9254902, 0.2784314, 0.2784314, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.7761083, 0.18388686, 0.19704294, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[node name="ExitConfirmationPopup" type="Control" unique_id=2107957645]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_ovqrb")
+
+[node name="BackgroundOverlay" type="ColorRect" parent="." unique_id=2120925174]
+layout_mode = 0
+offset_right = 721.0
+offset_bottom = 1280.0
+color = Color(0.011764706, 0.011764706, 0.011764706, 0.43137255)
+
+[node name="ExitConfirmationBackground" type="TextureRect" parent="BackgroundOverlay" unique_id=2046623782]
+layout_mode = 0
+offset_left = -9.0
+offset_top = 329.0
+offset_right = 713.0
+offset_bottom = 844.0
+texture = ExtResource("1_7fuk7")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="BackgroundOverlay/ExitConfirmationBackground" unique_id=1497673397]
+layout_mode = 0
+offset_left = 150.0
+offset_top = 220.0
+offset_right = 593.0
+offset_bottom = 262.0
+theme_override_colors/font_color = Color(0.011087579, 0.011087578, 0.01108758, 1)
+theme_override_fonts/font = ExtResource("2_ovqrb")
+theme_override_font_sizes/font_size = 30
+text = "Gusto mo bang umalis sa laro?"
+
+[node name="OkButton" type="Button" parent="BackgroundOverlay/ExitConfirmationBackground" unique_id=1321715188]
+layout_mode = 0
+offset_left = 399.0
+offset_top = 320.0
+offset_right = 581.0
+offset_bottom = 386.0
+theme_override_fonts/font = ExtResource("2_ovqrb")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+text = "Oo"
+
+[node name="CancelButton" type="Button" parent="BackgroundOverlay/ExitConfirmationBackground" unique_id=505619056]
+layout_mode = 0
+offset_left = 162.0
+offset_top = 318.0
+offset_right = 344.0
+offset_bottom = 384.0
+theme_override_fonts/font = ExtResource("2_ovqrb")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxFlat_8upip")
+text = "Hindi"
