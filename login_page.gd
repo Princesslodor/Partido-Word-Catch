@@ -25,6 +25,7 @@ extends Control
 @onready var register_here_button = $LoginFormContainer/MarginContainer/VBoxContainer/RegisterRow/RegisterButton if has_node("LoginFormContainer/MarginContainer/VBoxContainer/RegisterRow/RegisterButton") else null
 @onready var login_email_input: LineEdit = $LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer/LineEdit if has_node("LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer/LineEdit") else null
 @onready var login_status_label: Label = $LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginStatusLabel if has_node("LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginStatusLabel") else null
+@onready var forgot_password_button: Button = $LoginFormContainer/MarginContainer/VBoxContainer/OptionRow/Button if has_node("LoginFormContainer/MarginContainer/VBoxContainer/OptionRow/Button") else null
 
 # Student Class Code Field
 @onready var class_code_input: LineEdit = $ClassCodeContainer/EnterCodeContainer/ClassCodeEdit if has_node("ClassCodeContainer/EnterCodeContainer/ClassCodeEdit") else null
@@ -61,6 +62,9 @@ func _connect_signals():
 
 	if register_here_button and not register_here_button.pressed.is_connected(_on_register_here_pressed):
 		register_here_button.pressed.connect(_on_register_here_pressed)
+
+	if forgot_password_button and not forgot_password_button.pressed.is_connected(_on_forgot_password_pressed):
+		forgot_password_button.pressed.connect(_on_forgot_password_pressed)
 
 	if student_code_container:
 		_bind_join_class_btn(student_code_container)
@@ -153,6 +157,11 @@ func _on_teacher_selected():
 
 func _on_register_here_pressed():
 	_show_teacher_register_screen()
+
+func _on_forgot_password_pressed():
+	# There's no real password check yet - Login only verifies the email
+	# against the teacher's account, so there's nothing to "reset" yet.
+	_show_login_status("Just log in with your registered email - no password is checked yet.")
 
 # Pagkatapos mag-enter ng Class Code, dadaan muna sa Registration Panel
 func _on_join_class_pressed():
