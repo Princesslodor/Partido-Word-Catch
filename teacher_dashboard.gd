@@ -25,15 +25,21 @@ extends Control
 var _dynamic_student_nodes: Array = []
 
 # --- Leaderboard (populated live from Supabase) ---
-@onready var podium_slots := [$Leaderboard/First, $Leaderboard/Second, $Leaderboard/Third]
-@onready var empty_roster_message: Label = $Leaderboard/EmptyRosterMessage
-@onready var levels_graph_panel: Panel = $Leaderboard/LevelsGraphPanel
-@onready var empty_graph_message: Label = $Leaderboard/LevelsGraphPanel/EmptyGraphMessage
+@onready var leaderboard_content: Control = $Leaderboard/LeaderboardScroll/LeaderboardContent
+@onready var podium_slots := [
+	$Leaderboard/LeaderboardScroll/LeaderboardContent/First,
+	$Leaderboard/LeaderboardScroll/LeaderboardContent/Second,
+	$Leaderboard/LeaderboardScroll/LeaderboardContent/Third,
+]
+@onready var empty_roster_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/EmptyRosterMessage
+@onready var levels_graph_panel: Panel = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel
+@onready var empty_graph_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel/EmptyGraphMessage
 
 const MAX_EXTRA_ROWS := 5
 const MAX_GRAPH_BARS := 6
 var _dynamic_leaderboard_nodes: Array = []
 var _bold_font: FontFile = load("res://Nunito-Bold.ttf")
+var _star_icon: Texture2D = load("res://Partido Word Catch Game Pic/Star with fill.png")
 
 func _ready() -> void:
 	_load_teacher_info()
@@ -214,6 +220,29 @@ func _render_leaderboard(students_data: Array) -> void:
 	_render_extra_rows(students_data)
 	_render_graph(students_data)
 
+## Sums the 0-3 star rating earned on every level a student has completed
+## (best_score in GameManager.completed_levels is really a star count, set
+## by the gameplay scenes' player_stars when they call complete_level()).
+func _total_stars(row: Dictionary) -> int:
+	var completed = row.get("completed_levels", {})
+	if not (completed is Dictionary):
+		return 0
+	var total := 0
+	for key in completed.keys():
+		var entry = completed[key]
+		if entry is Dictionary:
+			total += int(entry.get("best_score", 0))
+	return total
+
+## Relative-to-slot placement for the star + points row under each podium
+## card - First (center/tallest stand) has more room below its card than
+## the shorter Second/Third stands, hence the different sizing.
+const _PODIUM_POINTS_LAYOUT := [
+	{"x": 54.0, "y": 192.0, "icon_size": 20.0, "font_size": 18},
+	{"x": 37.0, "y": 156.0, "icon_size": 16.0, "font_size": 15},
+	{"x": 37.0, "y": 156.0, "icon_size": 16.0, "font_size": 15},
+]
+
 func _render_podium(students_data: Array) -> void:
 	for i in range(podium_slots.size()):
 		var slot: Panel = podium_slots[i]
@@ -223,6 +252,25 @@ func _render_podium(students_data: Array) -> void:
 			var row: Dictionary = students_data[i]
 			if name_label: name_label.text = str(row.get("player_name", "Student"))
 			if score_label: score_label.text = "Lvl " + str(int(row.get("unlocked_level", 1)))
+
+			var cfg: Dictionary = _PODIUM_POINTS_LAYOUT[i]
+			var icon := TextureRect.new()
+			icon.texture = _star_icon
+			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			icon.position = Vector2(cfg.x, cfg.y)
+			icon.size = Vector2(cfg.icon_size, cfg.icon_size)
+			slot.add_child(icon)
+			_dynamic_leaderboard_nodes.append(icon)
+
+			var points_label := Label.new()
+			points_label.text = str(_total_stars(row))
+			points_label.add_theme_font_override("font", _bold_font)
+			points_label.add_theme_font_size_override("font_size", cfg.font_size)
+			points_label.add_theme_color_override("font_color", Color(0.16, 0.16, 0.16, 1))
+			points_label.position = Vector2(cfg.x + cfg.icon_size + 4, cfg.y - 3)
+			points_label.size = Vector2(50, cfg.icon_size + 8)
+			slot.add_child(points_label)
+			_dynamic_leaderboard_nodes.append(points_label)
 		else:
 			if name_label: name_label.text = "—"
 			if score_label: score_label.text = "—"
@@ -241,15 +289,35 @@ func _render_extra_rows(students_data: Array) -> void:
 	var row_height := 44.0
 	for i in range(extra.size()):
 		var row: Dictionary = extra[i]
+		var y := row_top + i * row_height
+
 		var label := Label.new()
 		label.text = "     %d           %s          Lvl %s" % [i + 4, str(row.get("player_name", "Student")), str(int(row.get("unlocked_level", 1)))]
 		label.add_theme_font_override("font", _bold_font)
 		label.add_theme_font_size_override("font_size", 24)
 		label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
-		label.position = Vector2(90, row_top + i * row_height)
-		label.size = Vector2(578, row_height)
-		leaderboard.add_child(label)
+		label.position = Vector2(90, y)
+		label.size = Vector2(430, row_height)
+		leaderboard_content.add_child(label)
 		_dynamic_leaderboard_nodes.append(label)
+
+		var icon := TextureRect.new()
+		icon.texture = _star_icon
+		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		icon.position = Vector2(500, y + 10)
+		icon.size = Vector2(22, 22)
+		leaderboard_content.add_child(icon)
+		_dynamic_leaderboard_nodes.append(icon)
+
+		var points_label := Label.new()
+		points_label.text = str(_total_stars(row))
+		points_label.add_theme_font_override("font", _bold_font)
+		points_label.add_theme_font_size_override("font_size", 24)
+		points_label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
+		points_label.position = Vector2(528, y)
+		points_label.size = Vector2(50, row_height)
+		leaderboard_content.add_child(points_label)
+		_dynamic_leaderboard_nodes.append(points_label)
 
 func _render_graph(students_data: Array) -> void:
 	if not levels_graph_panel:

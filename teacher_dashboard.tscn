@@ -754,7 +754,17 @@ anchors_preset = 0
 offset_right = 734.0
 offset_bottom = 1420.0
 
-[node name="TextureRect" type="TextureRect" parent="Leaderboard" unique_id=2145888276]
+[node name="LeaderboardScroll" type="ScrollContainer" parent="Leaderboard" unique_id=1000001000]
+layout_mode = 0
+offset_right = 720.0
+offset_bottom = 1280.0
+horizontal_scroll_mode = 0
+
+[node name="LeaderboardContent" type="Control" parent="Leaderboard/LeaderboardScroll" unique_id=1000001001]
+layout_mode = 2
+custom_minimum_size = Vector2(734, 1420)
+
+[node name="TextureRect" type="TextureRect" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=2145888276]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 110.0
@@ -763,7 +773,7 @@ offset_bottom = 1118.0
 texture = ExtResource("2_ij1v3")
 expand_mode = 1
 
-[node name="Label" type="Label" parent="Leaderboard" unique_id=333892045]
+[node name="Label" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=333892045]
 layout_mode = 0
 offset_left = 209.0
 offset_top = 150.0
@@ -774,7 +784,7 @@ theme_override_font_sizes/font_size = 50
 text = "Leaderboard"
 horizontal_alignment = 1
 
-[node name="Panel" type="Panel" parent="Leaderboard" unique_id=1761054355]
+[node name="Panel" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=1761054355]
 layout_mode = 0
 offset_left = 78.0
 offset_top = 254.0
@@ -782,7 +792,7 @@ offset_right = 636.0
 offset_bottom = 1015.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8ldig")
 
-[node name="First" type="Panel" parent="Leaderboard" unique_id=1063817914]
+[node name="First" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=1063817914]
 layout_mode = 0
 offset_left = 253.0
 offset_top = 435.0
@@ -790,7 +800,7 @@ offset_right = 450.0
 offset_bottom = 682.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_sop33")
 
-[node name="Label" type="Label" parent="Leaderboard/First" unique_id=2135360475]
+[node name="Label" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/First" unique_id=2135360475]
 layout_mode = 0
 offset_left = 84.0
 offset_top = 18.0
@@ -800,7 +810,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 50
 text = "1"
 
-[node name="Panel" type="Panel" parent="Leaderboard/First" unique_id=2004798264]
+[node name="Panel" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/First" unique_id=2004798264]
 layout_mode = 0
 offset_left = 6.0
 offset_top = 96.0
@@ -808,7 +818,7 @@ offset_right = 191.0
 offset_bottom = 188.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_aevv4")
 
-[node name="Label" type="Label" parent="Leaderboard/First/Panel" unique_id=1190839377]
+[node name="Label" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/First/Panel" unique_id=1190839377]
 layout_mode = 0
 offset_left = 52.0
 offset_top = 10.0
@@ -819,7 +829,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 25
 text = "Name"
 
-[node name="Label2" type="Label" parent="Leaderboard/First/Panel" unique_id=388239252]
+[node name="Label2" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/First/Panel" unique_id=388239252]
 layout_mode = 0
 offset_left = 54.0
 offset_top = 40.0
@@ -830,7 +840,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 25
 text = "Score"
 
-[node name="Panel2" type="Panel" parent="Leaderboard/First" unique_id=1610569556]
+[node name="Panel2" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/First" unique_id=1610569556]
 layout_mode = 0
 offset_left = 53.0
 offset_top = -126.0
@@ -838,14 +848,14 @@ offset_right = 162.0
 offset_bottom = -17.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_twpk4")
 
-[node name="TextureRect" type="TextureRect" parent="Leaderboard/First/Panel2" unique_id=16747271]
+[node name="TextureRect" type="TextureRect" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/First/Panel2" unique_id=16747271]
 layout_mode = 0
 offset_left = 6.0
 offset_right = 95.0
 offset_bottom = 100.0
 expand_mode = 1
 
-[node name="Second" type="Panel" parent="Leaderboard" unique_id=813970005]
+[node name="Second" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=813970005]
 layout_mode = 0
 offset_left = 103.0
 offset_top = 508.0
@@ -853,7 +863,7 @@ offset_right = 254.0
 offset_bottom = 684.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_don4i")
 
-[node name="Label" type="Label" parent="Leaderboard/Second" unique_id=1302514044]
+[node name="Label" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Second" unique_id=1302514044]
 layout_mode = 0
 offset_left = 55.0
 offset_right = 113.0
@@ -862,7 +872,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 50
 text = "2"
 
-[node name="Panel" type="Panel" parent="Leaderboard/Second" unique_id=629600330]
+[node name="Panel" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Second" unique_id=629600330]
 layout_mode = 0
 offset_left = 1.0
 offset_top = 60.0
@@ -870,7 +880,7 @@ offset_right = 150.0
 offset_bottom = 152.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_aevv4")
 
-[node name="Label" type="Label" parent="Leaderboard/Second/Panel" unique_id=406508935]
+[node name="Label" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Second/Panel" unique_id=406508935]
 layout_mode = 0
 offset_left = 38.0
 offset_top = 10.0
@@ -881,7 +891,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 25
 text = "Name"
 
-[node name="Label2" type="Label" parent="Leaderboard/Second/Panel" unique_id=1715683335]
+[node name="Label2" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Second/Panel" unique_id=1715683335]
 layout_mode = 0
 offset_left = 37.0
 offset_top = 40.0
@@ -892,7 +902,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 25
 text = "Score"
 
-[node name="Panel2" type="Panel" parent="Leaderboard/Second" unique_id=1031944368]
+[node name="Panel2" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Second" unique_id=1031944368]
 layout_mode = 0
 offset_left = 19.0
 offset_top = -118.0
@@ -900,14 +910,14 @@ offset_right = 128.0
 offset_bottom = -9.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_7xa4r")
 
-[node name="TextureRect" type="TextureRect" parent="Leaderboard/Second/Panel2" unique_id=1153777147]
+[node name="TextureRect" type="TextureRect" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Second/Panel2" unique_id=1153777147]
 layout_mode = 0
 offset_left = 6.0
 offset_right = 95.0
 offset_bottom = 100.0
 expand_mode = 1
 
-[node name="Third" type="Panel" parent="Leaderboard" unique_id=1773605354]
+[node name="Third" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=1773605354]
 layout_mode = 0
 offset_left = 451.0
 offset_top = 529.0
@@ -915,7 +925,7 @@ offset_right = 605.0
 offset_bottom = 685.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_yhkm3")
 
-[node name="Label" type="Label" parent="Leaderboard/Third" unique_id=49676631]
+[node name="Label" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Third" unique_id=49676631]
 layout_mode = 0
 offset_left = 64.0
 offset_top = 2.0
@@ -925,7 +935,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 50
 text = "3"
 
-[node name="Panel" type="Panel" parent="Leaderboard/Third" unique_id=1538172342]
+[node name="Panel" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Third" unique_id=1538172342]
 layout_mode = 0
 offset_left = 1.0
 offset_top = 60.0
@@ -933,7 +943,7 @@ offset_right = 150.0
 offset_bottom = 152.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_aevv4")
 
-[node name="Label" type="Label" parent="Leaderboard/Third/Panel" unique_id=1569622494]
+[node name="Label" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Third/Panel" unique_id=1569622494]
 layout_mode = 0
 offset_left = 38.0
 offset_top = 10.0
@@ -944,7 +954,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 25
 text = "Name"
 
-[node name="Label2" type="Label" parent="Leaderboard/Third/Panel" unique_id=1237387273]
+[node name="Label2" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Third/Panel" unique_id=1237387273]
 layout_mode = 0
 offset_left = 37.0
 offset_top = 40.0
@@ -955,7 +965,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 25
 text = "Score"
 
-[node name="Panel2" type="Panel" parent="Leaderboard/Third" unique_id=434124399]
+[node name="Panel2" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Third" unique_id=434124399]
 layout_mode = 0
 offset_left = 20.0
 offset_top = -116.0
@@ -963,14 +973,14 @@ offset_right = 129.0
 offset_bottom = -7.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_2sdbu")
 
-[node name="TextureRect" type="TextureRect" parent="Leaderboard/Third/Panel2" unique_id=1189499204]
+[node name="TextureRect" type="TextureRect" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/Third/Panel2" unique_id=1189499204]
 layout_mode = 0
 offset_left = 6.0
 offset_right = 95.0
 offset_bottom = 100.0
 expand_mode = 1
 
-[node name="Label2" type="Label" parent="Leaderboard" unique_id=499143317]
+[node name="Label2" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=499143317]
 layout_mode = 0
 offset_left = 90.0
 offset_top = 708.0
@@ -979,9 +989,9 @@ offset_bottom = 766.0
 theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 30
-text = "     #           Name                  Level"
+text = "     #           Name           Level    Pts"
 
-[node name="EmptyRosterMessage" type="Label" parent="Leaderboard" unique_id=1000000401]
+[node name="EmptyRosterMessage" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=1000000401]
 layout_mode = 0
 offset_left = 90.0
 offset_top = 800.0
@@ -994,7 +1004,7 @@ text = "No students yet — rankings will appear once your class starts playing.
 autowrap_mode = 3
 horizontal_alignment = 1
 
-[node name="LevelsGraphPanel" type="Panel" parent="Leaderboard" unique_id=1000000700]
+[node name="LevelsGraphPanel" type="Panel" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=1000000700]
 layout_mode = 0
 offset_left = 11.0
 offset_top = 1140.0
@@ -1002,7 +1012,7 @@ offset_right = 697.0
 offset_bottom = 1400.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_8ldig")
 
-[node name="GraphTitle" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000701]
+[node name="GraphTitle" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel" unique_id=1000000701]
 layout_mode = 0
 offset_left = 30.0
 offset_top = 20.0
@@ -1013,7 +1023,7 @@ theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 32
 text = "Levels reached, whole class"
 
-[node name="EmptyGraphMessage" type="Label" parent="Leaderboard/LevelsGraphPanel" unique_id=1000000710]
+[node name="EmptyGraphMessage" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel" unique_id=1000000710]
 layout_mode = 0
 offset_left = 30.0
 offset_top = 90.0
