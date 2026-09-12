@@ -676,6 +676,9 @@ offset_left = 21.0
 offset_top = 84.0
 offset_right = 488.0
 offset_bottom = 207.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_p44m3")
 
 [node name="CopyCodeButton" type="Button" parent="CreateClasscode/CodeGeneratorPanel" unique_id=1142309942]

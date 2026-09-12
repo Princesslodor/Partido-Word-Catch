@@ -420,6 +420,9 @@ offset_left = -19.0
 offset_top = -14.0
 offset_right = 533.0
 offset_bottom = 66.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
 
 [node name="FieldContainer2" type="Control" parent="LoginFormContainer/MarginContainer/VBoxContainer" unique_id=1222023333]
@@ -446,6 +449,9 @@ offset_left = -15.0
 offset_top = 97.0
 offset_right = 528.0
 offset_bottom = 172.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
 secret = true
 
@@ -579,6 +585,9 @@ offset_left = 111.0
 offset_top = 302.0
 offset_right = 578.0
 offset_bottom = 425.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2sdbu")
 
 [node name="Button" type="Button" parent="ClassCodeContainer/EnterCodeContainer" unique_id=1643597482]
@@ -674,6 +683,9 @@ offset_left = 13.0
 offset_top = -68.0
 offset_right = 533.0
 offset_bottom = 11.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
 text = "Maria"
 placeholder_text = "e.g. Maria Clara"
@@ -702,6 +714,9 @@ offset_left = 15.0
 offset_top = 23.0
 offset_right = 530.0
 offset_bottom = 106.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 
 [node name="FieldContainer3" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=1357415941]
@@ -728,6 +743,9 @@ offset_left = 14.0
 offset_top = -36.0
 offset_right = 529.0
 offset_bottom = 41.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
 secret = true
 
@@ -755,6 +773,9 @@ offset_left = 17.0
 offset_top = 407.0
 offset_right = 530.0
 offset_bottom = 489.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
 
 [node name="FieldContainer5" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=387748627]
@@ -781,6 +802,9 @@ offset_left = 21.0
 offset_top = 590.0
 offset_right = 534.0
 offset_bottom = 672.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
 
 [node name="FieldContainer6" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=1782355534]
@@ -807,6 +831,9 @@ offset_left = 23.0
 offset_top = 721.0
 offset_right = 536.0
 offset_bottom = 803.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
 
 [node name="Spacer" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=696567447]
@@ -893,6 +920,9 @@ offset_left = 94.0
 offset_top = 227.0
 offset_right = 578.0
 offset_bottom = 307.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
 
 [node name="FieldContainer2" type="Control" parent="StudentRegistration" unique_id=170310448]
@@ -919,6 +949,9 @@ offset_left = 96.0
 offset_top = 337.0
 offset_right = 575.0
 offset_bottom = 412.0
+theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
 secret = true
 
