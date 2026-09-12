@@ -256,6 +256,7 @@ func _render_podium(students_data: Array) -> void:
 			var cfg: Dictionary = _PODIUM_POINTS_LAYOUT[i]
 			var icon := TextureRect.new()
 			icon.texture = _star_icon
+			icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 			icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 			icon.position = Vector2(cfg.x, cfg.y)
 			icon.size = Vector2(cfg.icon_size, cfg.icon_size)
@@ -303,6 +304,7 @@ func _render_extra_rows(students_data: Array) -> void:
 
 		var icon := TextureRect.new()
 		icon.texture = _star_icon
+		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		icon.position = Vector2(500, y + 10)
 		icon.size = Vector2(22, 22)
