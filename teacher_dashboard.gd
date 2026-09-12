@@ -222,7 +222,7 @@ func _render_podium(students_data: Array) -> void:
 		if i < students_data.size():
 			var row: Dictionary = students_data[i]
 			if name_label: name_label.text = str(row.get("player_name", "Student"))
-			if score_label: score_label.text = "Lvl " + str(row.get("unlocked_level", 1))
+			if score_label: score_label.text = "Lvl " + str(int(row.get("unlocked_level", 1)))
 		else:
 			if name_label: name_label.text = "—"
 			if score_label: score_label.text = "—"
@@ -242,7 +242,7 @@ func _render_extra_rows(students_data: Array) -> void:
 	for i in range(extra.size()):
 		var row: Dictionary = extra[i]
 		var label := Label.new()
-		label.text = "     %d           %s          Lvl %s" % [i + 4, str(row.get("player_name", "Student")), str(row.get("unlocked_level", 1))]
+		label.text = "     %d           %s          Lvl %s" % [i + 4, str(row.get("player_name", "Student")), str(int(row.get("unlocked_level", 1)))]
 		label.add_theme_font_override("font", _bold_font)
 		label.add_theme_font_size_override("font_size", 24)
 		label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))

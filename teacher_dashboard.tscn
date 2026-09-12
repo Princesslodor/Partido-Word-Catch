@@ -979,7 +979,7 @@ offset_bottom = 766.0
 theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 30
-text = "     #           Name                  Score"
+text = "     #           Name                  Level"
 
 [node name="EmptyRosterMessage" type="Label" parent="Leaderboard" unique_id=1000000401]
 layout_mode = 0
