@@ -264,6 +264,38 @@ func _total_stars(row: Dictionary) -> int:
 			total += int(entry.get("best_score", 0))
 	return total
 
+## First letter of a name, uppercased, for an avatar-circle initial -
+## falls back to "?" for a blank name so the circle is never empty.
+func _initial_for(name: String) -> String:
+	var trimmed := name.strip_edges()
+	return trimmed.substr(0, 1).to_upper() if trimmed != "" else "?"
+
+## Builds a small circular avatar with a centered initial letter, matching
+## the reference leaderboard design's plain tan avatar circles.
+func _make_avatar_circle(initial: String, diameter: float, font_size: int) -> Panel:
+	var circle := Panel.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.9137255, 0.8117647, 0.6, 1)
+	var radius := int(diameter / 2.0)
+	style.corner_radius_top_left = radius
+	style.corner_radius_top_right = radius
+	style.corner_radius_bottom_left = radius
+	style.corner_radius_bottom_right = radius
+	circle.add_theme_stylebox_override("panel", style)
+	circle.custom_minimum_size = Vector2(diameter, diameter)
+	circle.size = Vector2(diameter, diameter)
+
+	var label := Label.new()
+	label.text = initial
+	label.add_theme_font_override("font", _bold_font)
+	label.add_theme_font_size_override("font_size", font_size)
+	label.add_theme_color_override("font_color", Color(0.35, 0.25, 0.1, 1))
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	label.size = Vector2(diameter, diameter)
+	circle.add_child(label)
+	return circle
+
 ## Placement of the star + points icon, relative to each podium's own
 ## "Panel" card (same parent/coordinate space as its Level label) - sits
 ## to the right of "Lvl X" on the same row, inside the card, instead of
@@ -277,13 +309,28 @@ const _PODIUM_POINTS_LAYOUT := [
 func _render_podium(students_data: Array) -> void:
 	for i in range(podium_slots.size()):
 		var slot: Panel = podium_slots[i]
+		var avatar_circle: Panel = slot.get_node_or_null("Panel2")
 		var card: Panel = slot.get_node_or_null("Panel")
 		var name_label: Label = slot.get_node_or_null("Panel/Label")
 		var score_label: Label = slot.get_node_or_null("Panel/Label2")
 		if i < students_data.size():
 			var row: Dictionary = students_data[i]
-			if name_label: name_label.text = str(row.get("player_name", "Student"))
-			if score_label: score_label.text = "Lvl " + str(int(row.get("unlocked_level", 1)))
+			var player_name: String = str(row.get("player_name", "Student"))
+			if name_label: name_label.text = player_name
+			if score_label: score_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
+
+			if avatar_circle:
+				var initial_label := Label.new()
+				initial_label.text = _initial_for(player_name)
+				initial_label.add_theme_font_override("font", _bold_font)
+				initial_label.add_theme_font_size_override("font_size", 40)
+				initial_label.add_theme_color_override("font_color", Color(0.35, 0.25, 0.1, 1))
+				initial_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+				initial_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+				initial_label.position = Vector2.ZERO
+				initial_label.size = avatar_circle.size
+				avatar_circle.add_child(initial_label)
+				_dynamic_leaderboard_nodes.append(initial_label)
 
 			if card:
 				var cfg: Dictionary = _PODIUM_POINTS_LAYOUT[i]
@@ -325,21 +372,49 @@ func _render_extra_rows(students_data: Array) -> void:
 		var row: Dictionary = extra[i]
 		var y := row_top + i * row_height
 
-		var label := Label.new()
-		label.text = "     %d           %s          Lvl %s" % [i + 4, str(row.get("player_name", "Student")), str(int(row.get("unlocked_level", 1)))]
-		label.add_theme_font_override("font", _bold_font)
-		label.add_theme_font_size_override("font_size", 24)
-		label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
-		label.position = Vector2(90, y)
-		label.size = Vector2(430, row_height)
-		leaderboard_content.add_child(label)
-		_dynamic_leaderboard_nodes.append(label)
+		var player_name: String = str(row.get("player_name", "Student"))
+
+		var rank_label := Label.new()
+		rank_label.text = str(i + 4)
+		rank_label.add_theme_font_override("font", _bold_font)
+		rank_label.add_theme_font_size_override("font_size", 24)
+		rank_label.add_theme_color_override("font_color", Color(0.6, 0.55, 0.5, 1))
+		rank_label.position = Vector2(90, y)
+		rank_label.size = Vector2(30, row_height)
+		leaderboard_content.add_child(rank_label)
+		_dynamic_leaderboard_nodes.append(rank_label)
+
+		var avatar := _make_avatar_circle(_initial_for(player_name), 38.0, 18)
+		avatar.position = Vector2(130, y + 3)
+		leaderboard_content.add_child(avatar)
+		_dynamic_leaderboard_nodes.append(avatar)
+
+		var name_label := Label.new()
+		name_label.text = player_name
+		name_label.add_theme_font_override("font", _bold_font)
+		name_label.add_theme_font_size_override("font_size", 24)
+		name_label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
+		name_label.position = Vector2(178, y)
+		name_label.size = Vector2(170, row_height)
+		leaderboard_content.add_child(name_label)
+		_dynamic_leaderboard_nodes.append(name_label)
+
+		var level_label := Label.new()
+		level_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
+		level_label.add_theme_font_override("font", _bold_font)
+		level_label.add_theme_font_size_override("font_size", 22)
+		level_label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
+		level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		level_label.position = Vector2(356, y)
+		level_label.size = Vector2(110, row_height)
+		leaderboard_content.add_child(level_label)
+		_dynamic_leaderboard_nodes.append(level_label)
 
 		var icon := TextureRect.new()
 		icon.texture = _star_icon
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-		icon.position = Vector2(500, y + 10)
+		icon.position = Vector2(480, y + 10)
 		icon.size = Vector2(22, 22)
 		leaderboard_content.add_child(icon)
 		_dynamic_leaderboard_nodes.append(icon)
@@ -349,7 +424,7 @@ func _render_extra_rows(students_data: Array) -> void:
 		points_label.add_theme_font_override("font", _bold_font)
 		points_label.add_theme_font_size_override("font_size", 24)
 		points_label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
-		points_label.position = Vector2(528, y)
+		points_label.position = Vector2(506, y)
 		points_label.size = Vector2(50, row_height)
 		leaderboard_content.add_child(points_label)
 		_dynamic_leaderboard_nodes.append(points_label)
