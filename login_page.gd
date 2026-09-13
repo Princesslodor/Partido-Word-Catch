@@ -183,6 +183,12 @@ func _on_student_selected():
 		_show_student_welcome_back_screen()
 		return
 
+	# Same reasoning as _on_teacher_selected(): _save_role_to_gm() saves
+	# immediately, and if this device was just a TEACHER, its class_code
+	# would otherwise get pushed to the students table as if the teacher
+	# were a student of their own class.
+	if gm:
+		gm.set("class_code", "")
 	_save_role_to_gm("STUDENT")
 	_show_student_class_code_screen()
 
@@ -229,6 +235,17 @@ func _on_teacher_selected():
 			get_tree().change_scene_to_file(teacher_dashboard_scene)
 		return
 
+	# _save_role_to_gm() flips role and immediately calls save_game(), which
+	# opportunistically upserts to Supabase's classes table using whatever
+	# class_code/player_name are currently sitting in GameManager. If this
+	# device was just a STUDENT (class_code = the class they joined,
+	# player_name = their own name), that stale data would get upserted as
+	# if THIS device's teacher owns that class - overwriting the real
+	# teacher's row with the student's name and an empty email. Clear it
+	# first so nothing gets pushed until the teacher actually logs in or
+	# registers with real data.
+	if gm:
+		gm.set("class_code", "")
 	_save_role_to_gm("TEACHER")
 	_show_teacher_login_screen()
 
