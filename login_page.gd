@@ -353,6 +353,11 @@ func _on_teacher_create_account_pressed():
 			gm.set("grade_subject", teacher_grade_subject_input.text.strip_edges())
 		if teacher_class_name_input:
 			gm.set("teacher_class_name", teacher_class_name_input.text.strip_edges())
+		# get_or_create_class_code() reuses whatever class_code is already
+		# saved locally - which could belong to a totally different account
+		# (e.g. a class a STUDENT previously joined on this same device).
+		# A brand-new teacher account must always get a genuinely new code.
+		gm.set("class_code", "")
 		if gm.has_method("get_or_create_class_code"):
 			gm.get_or_create_class_code()
 		if gm.has_method("save_game"):

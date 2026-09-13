@@ -55,6 +55,14 @@ func _on_continue_pressed() -> void:
 			gm.set_role("STUDENT")
 		gm.set("player_name", student_name)
 		gm.set("student_pin", student_pin)
+		# A fresh registration must start with a clean slate - otherwise a
+		# new student on a device that previously had another student's
+		# progress saved would inherit their unlocked levels/completed
+		# levels, showing up as an "already unlocked" account.
+		gm.set("avatar_id", "")
+		gm.set("unlocked_level", 1)
+		gm.set("player_hearts", 4)
+		gm.set("completed_levels", {})
 		gm.set("player_coins", 20)   # Starting bonus for a newly-registered student
 		if gm.has_method("save_game"):
 			gm.save_game()
