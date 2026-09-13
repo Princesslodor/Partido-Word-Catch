@@ -1061,9 +1061,15 @@ texture_normal = ExtResource("13_bdjbp")
 [node name="SettingsMenu" parent="." unique_id=1000002001 instance=ExtResource("15_setmnu")]
 visible = false
 layout_mode = 1
-quit_button_text = "LOGOUT"
+show_logout_button = true
 
 [node name="ExitConfirmationPopup" parent="." unique_id=1000002002 instance=ExtResource("16_exitpop")]
 visible = false
 layout_mode = 1
+quit_app = true
+
+[node name="LogoutConfirmationPopup" parent="." unique_id=1000002003 instance=ExtResource("16_exitpop")]
+visible = false
+layout_mode = 1
+quit_app = false
 confirm_message = "Log out of your teacher account?"

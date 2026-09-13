@@ -55,6 +55,18 @@ corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_logout"]
+bg_color = Color(0.16470589, 0.5137255, 0.88235295, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.09803922, 0.32941177, 0.6, 1)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
 [node name="SettingsMenu" type="Control" unique_id=707809916]
 layout_mode = 3
 anchors_preset = 15
@@ -317,3 +329,16 @@ theme_override_fonts/font = ExtResource("7_8pph3")
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
 text = "QUIT GAME"
+
+[node name="LogoutButton" type="Button" parent="." unique_id=1980556816]
+visible = false
+layout_mode = 0
+offset_left = 168.0
+offset_top = 949.0
+offset_right = 526.0
+offset_bottom = 1013.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("7_8pph3")
+theme_override_font_sizes/font_size = 32
+theme_override_styles/normal = SubResource("StyleBoxFlat_logout")
+text = "LOGOUT"

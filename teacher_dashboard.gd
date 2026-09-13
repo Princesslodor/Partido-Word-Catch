@@ -7,7 +7,7 @@ extends Control
 @onready var back_button: TextureButton = $BackButton
 @onready var profile_click_area: Button = $TeacherProfilePanel/ProfileClickArea
 @onready var settings_menu: Control = $SettingsMenu
-@onready var logout_confirmation_popup: Control = $ExitConfirmationPopup
+@onready var logout_confirmation_popup: Control = $LogoutConfirmationPopup
 
 @onready var create_class_code_button: Button = $Dashboard/Control3/Panel/CreateClassCodeButton
 @onready var student_button: Button = $Dashboard/Control3/Panel/StudentButton

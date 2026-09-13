@@ -1041,9 +1041,14 @@ stretch_mode = 0
 [node name="SettingsMenu" parent="." unique_id=707809916 instance=ExtResource("13_o4pao")]
 visible = false
 layout_mode = 1
-quit_button_text = "LOGOUT"
+show_logout_button = true
 
 [node name="ExitConfirmationPopup" parent="." instance=ExtResource("14_exitpop")]
+visible = false
+layout_mode = 1
+quit_app = true
+
+[node name="LogoutConfirmationPopup" parent="." instance=ExtResource("14_exitpop")]
 visible = false
 layout_mode = 1
 quit_app = false

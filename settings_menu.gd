@@ -6,9 +6,15 @@ extends Control
 # "QUIT GAME" wording elsewhere.
 @export var quit_button_text: String = ""
 
+# Shows a separate LOGOUT button (always returns to the role selection
+# screen, res://login_page.tscn) alongside Quit Game - opt-in per instance
+# since it isn't relevant everywhere this menu is used (e.g. mid-level).
+@export var show_logout_button: bool = false
+
 # --- SCENE NODE REFERENCES ---
 @onready var close_button: BaseButton = $BackgroundOverlay/PopupBoard/CloseButton if has_node("BackgroundOverlay/PopupBoard/CloseButton") else null
 @onready var quit_game_button: BaseButton = $QuitGameButton if has_node("QuitGameButton") else null
+@onready var logout_button: BaseButton = $LogoutButton if has_node("LogoutButton") else null
 
 # Custom Toggles
 @onready var sound_toggle: Button = $BackgroundOverlay/PopupBoard/CustomToggle/Panel/SoundRow/SoundToggle if has_node("BackgroundOverlay/PopupBoard/CustomToggle/Panel/SoundRow/SoundToggle") else null
@@ -24,6 +30,8 @@ func _ready():
 	_fix_mouse_filters()
 	if quit_game_button and quit_button_text != "":
 		quit_game_button.text = quit_button_text
+	if logout_button:
+		logout_button.visible = show_logout_button
 	_connect_signals()
 	_load_saved_settings()
 	_load_account_info()
@@ -69,6 +77,9 @@ func _connect_signals():
 	if quit_game_button and not quit_game_button.pressed.is_connected(_on_quit_pressed):
 		quit_game_button.pressed.connect(_on_quit_pressed)
 
+	if logout_button and not logout_button.pressed.is_connected(_on_logout_pressed):
+		logout_button.pressed.connect(_on_logout_pressed)
+
 	# Audio Toggle Signals
 	if sound_toggle and not sound_toggle.toggle_changed.is_connected(_on_sound_toggled):
 		sound_toggle.toggle_changed.connect(_on_sound_toggled)
@@ -94,6 +105,22 @@ func _on_quit_pressed():
 			exit_popup.move_to_front()
 	else:
 		print("ERROR: Hindi mahanap ang ExitConfirmationPopup node!")
+
+func _on_logout_pressed():
+	# Separate from ExitConfirmationPopup so Quit Game and Logout can have
+	# different targets/behavior at the same time.
+	var popup = get_node_or_null("../LogoutConfirmationPopup")
+	if not popup:
+		popup = get_tree().root.find_child("LogoutConfirmationPopup", true, false)
+
+	if popup:
+		if popup.has_method("open_popup"):
+			popup.open_popup()
+		else:
+			popup.show()
+			popup.move_to_front()
+	else:
+		print("ERROR: Hindi mahanap ang LogoutConfirmationPopup node!")
 
 # --- AUDIO LOGIC ---
 func _on_sound_toggled(is_on: bool):
