@@ -61,13 +61,25 @@ const SAVE_FILE_PATH: String = "user://save_data.json"
 
 ## --- LIFECYCLE ---
 func _ready() -> void:
-	# In the next step, this is where we'll LOAD saved data
-	# from a file (user://save_data.json) when the app starts.
+	# Checked BEFORE load_game() runs, so we can tell "no account yet"
+	# (truly fresh install) apart from "an account exists but failed to
+	# load" (e.g. a corrupted save file) - the two cases below handle
+	# these very differently.
+	var had_save_file: bool = FileAccess.file_exists(SAVE_FILE_PATH)
+
 	load_game()
 
 	if device_id == "":
 		device_id = _generate_device_id()
-		save_game()
+		if not had_save_file:
+			save_game()
+		# else: a save file exists but load_game() couldn't parse it -
+		# do NOT immediately overwrite it with blank defaults here. That
+		# would permanently destroy whatever was in it (name, class,
+		# progress) over what might just be a transient read glitch.
+		# The player will get a fresh save written naturally the next
+		# time they register/play, without this code actively erasing
+		# a file it never even confirmed was unrecoverable.
 
 	print("GameManager ready! Player: ", player_name, " | Unlocked level: ", unlocked_level)
 
@@ -110,17 +122,34 @@ func save_game() -> void:
 		"is_music_enabled": is_music_enabled
 	}
 
-	# Step 2: Open the save file for writing (this creates the file if it doesn't exist yet).
-	var file: FileAccess = FileAccess.open(SAVE_FILE_PATH, FileAccess.WRITE)
+	# Step 2: Write to a TEMP file first, then swap it into place. If the
+	# app gets killed mid-write (e.g. force-stopped from the Godot editor,
+	# or a crash) while writing SAVE_FILE_PATH directly, the file is left
+	# half-written and unparseable - and everything in it gets treated as
+	# lost forever the next time the game starts. Writing to a separate
+	# temp file first means a mid-write kill only leaves behind a broken
+	# temp file; the real save file is never touched until the write has
+	# fully succeeded.
+	var temp_path: String = SAVE_FILE_PATH + ".tmp"
+	var file: FileAccess = FileAccess.open(temp_path, FileAccess.WRITE)
 	if file == null:
-		# This means the file couldn't be opened -- print an error so we notice.
-		print("ERROR: Could not open save file for writing. Error code: ", FileAccess.get_open_error())
+		print("ERROR: Could not open temp save file for writing. Error code: ", FileAccess.get_open_error())
 		return
 
 	# Step 3: Convert our Dictionary into a JSON text string, and write it to the file.
 	var json_text: String = JSON.stringify(save_data)
 	file.store_string(json_text)
 	file.close()
+
+	# Step 4: Swap the temp file into place as the real save file.
+	var dir := DirAccess.open("user://")
+	if dir:
+		if dir.file_exists(SAVE_FILE_PATH):
+			dir.remove(SAVE_FILE_PATH)
+		dir.rename(temp_path, SAVE_FILE_PATH)
+	else:
+		print("ERROR: Could not access user:// to finalize the save file.")
+		return
 
 	print("Game saved successfully.")
 
