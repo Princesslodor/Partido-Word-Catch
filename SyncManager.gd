@@ -149,6 +149,7 @@ func sync_student_progress() -> void:
 		"device_id": gm.device_id,
 		"class_code": gm.class_code,
 		"player_name": gm.player_name if gm.player_name != "" else "Student",
+		"student_pin": gm.student_pin,
 		"avatar_id": gm.avatar_id,
 		"unlocked_level": gm.unlocked_level,
 		"player_coins": gm.player_coins,
@@ -159,6 +160,52 @@ func sync_student_progress() -> void:
 		"Prefer: resolution=merge-duplicates"
 	])
 	http.request_completed.connect(func(_result, _code, _h, _b): http.queue_free())
+
+## --- CROSS-DEVICE STUDENT LOGIN ---
+## Looks up an existing student account by class code + exact name + PIN,
+## so a student can retrieve their account on a different device than the
+## one they first registered on. Calls back with the student row
+## (Dictionary) if a match exists, `false` if the lookup succeeded but
+## nothing matched, or `null` if the lookup itself couldn't complete.
+func find_student_account(class_code: String, player_name: String, pin: String, on_result: Callable) -> void:
+	if not is_configured() or class_code.strip_edges() == "" or player_name.strip_edges() == "" or pin.strip_edges() == "":
+		on_result.call(null)
+		return
+
+	var path := "/rest/v1/students?class_code=eq.%s&player_name=eq.%s&student_pin=eq.%s&limit=1" % [
+		class_code.strip_edges().uri_encode(),
+		player_name.strip_edges().uri_encode(),
+		pin.strip_edges().uri_encode(),
+	]
+	var http := _request(path, HTTPClient.METHOD_GET)
+	http.request_completed.connect(func(result, response_code, _h, body: PackedByteArray):
+		http.queue_free()
+		if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+			on_result.call(null)
+			return
+		var parsed = JSON.parse_string(body.get_string_from_utf8())
+		if parsed is Array and parsed.size() > 0:
+			on_result.call(parsed[0])
+		else:
+			on_result.call(false)
+	)
+
+## Re-points an existing student row at a NEW device_id, so logging into an
+## account on a different phone doesn't create a second, duplicate row the
+## next time that account syncs - it keeps updating the same one. Calls
+## back with true/false for whether the claim succeeded.
+func claim_student_account(student_id: String, new_device_id: String, on_result: Callable) -> void:
+	if not is_configured() or student_id == "":
+		on_result.call(false)
+		return
+
+	var body := JSON.stringify({"device_id": new_device_id})
+	var path := "/rest/v1/students?student_id=eq.%s" % student_id.uri_encode()
+	var http := _request(path, HTTPClient.METHOD_PATCH, body)
+	http.request_completed.connect(func(result, response_code, _h, _b):
+		http.queue_free()
+		on_result.call(result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300)
+	)
 
 ## --- TEACHER LEADERBOARD FETCH ---
 ## Calls back with an Array of student rows (each a Dictionary), ordered by

@@ -15,6 +15,7 @@ extends Control
 @onready var back_button = $BackButton if has_node("BackButton") else null
 @onready var class_joined_popup = $ClassJoinedPopup if has_node("ClassJoinedPopup") else null
 @onready var student_welcome_back = $StudentWelcomeBack if has_node("StudentWelcomeBack") else null
+@onready var student_login_container = $StudentLoginContainer if has_node("StudentLoginContainer") else null
 
 # Buttons sa Role Selection
 @onready var student_card = $RoleSelectionContainer/StudentCard/VBoxContainer/Button if has_node("RoleSelectionContainer/StudentCard/VBoxContainer/Button") else null
@@ -32,6 +33,14 @@ extends Control
 @onready var class_code_input: LineEdit = $ClassCodeContainer/EnterCodeContainer/ClassCodeEdit if has_node("ClassCodeContainer/EnterCodeContainer/ClassCodeEdit") else null
 @onready var join_class_button: Button = $ClassCodeContainer/EnterCodeContainer/Button if has_node("ClassCodeContainer/EnterCodeContainer/Button") else null
 @onready var join_status_label: Label = $ClassCodeContainer/EnterCodeContainer/JoinStatusLabel if has_node("ClassCodeContainer/EnterCodeContainer/JoinStatusLabel") else null
+@onready var student_login_link_button: Button = $ClassCodeContainer/EnterCodeContainer/StudentLoginLinkButton if has_node("ClassCodeContainer/EnterCodeContainer/StudentLoginLinkButton") else null
+
+# Student Login Fields (cross-device account retrieval via class code + name + PIN)
+@onready var student_login_class_code_input: LineEdit = $StudentLoginContainer/LoginBoard/ClassCodeEdit if has_node("StudentLoginContainer/LoginBoard/ClassCodeEdit") else null
+@onready var student_login_name_input: LineEdit = $StudentLoginContainer/LoginBoard/NameEdit if has_node("StudentLoginContainer/LoginBoard/NameEdit") else null
+@onready var student_login_pin_input: LineEdit = $StudentLoginContainer/LoginBoard/PinEdit if has_node("StudentLoginContainer/LoginBoard/PinEdit") else null
+@onready var student_login_button: Button = $StudentLoginContainer/LoginBoard/LoginButton if has_node("StudentLoginContainer/LoginBoard/LoginButton") else null
+@onready var student_login_status_label: Label = $StudentLoginContainer/LoginBoard/LoginStatusLabel if has_node("StudentLoginContainer/LoginBoard/LoginStatusLabel") else null
 
 # Student Welcome Back Elements (returning student who already joined a class)
 @onready var welcome_back_greeting_label: Label = $StudentWelcomeBack/Card/GreetingLabel if has_node("StudentWelcomeBack/Card/GreetingLabel") else null
@@ -88,6 +97,12 @@ func _connect_signals():
 		if not class_joined_popup.continue_pressed.is_connected(_on_class_joined_continued):
 			class_joined_popup.continue_pressed.connect(_on_class_joined_continued)
 
+	if student_login_link_button and not student_login_link_button.pressed.is_connected(_show_student_login_screen):
+		student_login_link_button.pressed.connect(_show_student_login_screen)
+
+	if student_login_button and not student_login_button.pressed.is_connected(_on_student_login_pressed):
+		student_login_button.pressed.connect(_on_student_login_pressed)
+
 func _bind_join_class_btn(node: Node):
 	if node is Button or node is TextureButton:
 		if not node.pressed.is_connected(_on_join_class_pressed):
@@ -113,6 +128,7 @@ func _hide_all_screens():
 	if back_button: back_button.hide()
 	if class_joined_popup: class_joined_popup.hide()
 	if student_welcome_back: student_welcome_back.hide()
+	if student_login_container: student_login_container.hide()
 
 func _show_role_selection_screen():
 	_hide_all_screens()
@@ -134,6 +150,12 @@ func _show_student_welcome_back_screen():
 		welcome_back_greeting_label.text = "Hi, " + saved_name + "!"
 	if student_welcome_back:
 		student_welcome_back.show()
+	if back_button: back_button.show()
+
+func _show_student_login_screen():
+	_hide_all_screens()
+	if game_logo: game_logo.hide()
+	if student_login_container: student_login_container.show()
 	if back_button: back_button.show()
 
 func _show_student_registration_screen():
@@ -314,6 +336,84 @@ func _show_join_status(message: String) -> void:
 	join_status_label.text = message
 	join_status_label.visible = message != ""
 
+## Cross-device account retrieval: a student who already has an account
+## (registered on some other phone) looks it up here by class code + exact
+## name + PIN, instead of being stuck creating a new account every time
+## they play on a different device.
+func _on_student_login_pressed() -> void:
+	var typed_code: String = student_login_class_code_input.text.strip_edges() if student_login_class_code_input else ""
+	var typed_name: String = student_login_name_input.text.strip_edges() if student_login_name_input else ""
+	var typed_pin: String = student_login_pin_input.text.strip_edges() if student_login_pin_input else ""
+
+	if typed_code == "" or typed_name == "" or typed_pin == "":
+		_show_student_login_status("Enter your class code, name, and PIN.")
+		return
+
+	var sync = get_node_or_null("/root/SyncManager")
+	if not sync or not sync.has_method("find_student_account"):
+		_show_student_login_status("Login isn't available right now.")
+		return
+
+	_show_student_login_status("Checking...")
+	if student_login_button: student_login_button.disabled = true
+
+	sync.find_student_account(typed_code, typed_name, typed_pin, func(student_row):
+		if student_login_button: student_login_button.disabled = false
+
+		if student_row == null:
+			var reason: String = sync.last_error if "last_error" in sync and sync.last_error != "" else ""
+			_show_student_login_status("No internet connection. Try again." + (" (" + reason + ")" if reason != "" else ""))
+			return
+		if not (student_row is Dictionary):
+			_show_student_login_status("No account found with that class code, name, and PIN.")
+			return
+
+		_show_student_login_status("")
+		var gm = get_node_or_null("/root/GameManager")
+		if not gm:
+			return
+
+		_save_role_to_gm("STUDENT")
+		gm.set("player_name", str(student_row.get("player_name", typed_name)))
+		gm.set("class_code", typed_code)
+		gm.set("student_pin", typed_pin)
+		gm.set("avatar_id", str(student_row.get("avatar_id", "")))
+		gm.set("unlocked_level", int(student_row.get("unlocked_level", 1)))
+		gm.set("player_coins", int(student_row.get("player_coins", 0)))
+		var completed = student_row.get("completed_levels", {})
+		gm.set("completed_levels", completed if completed is Dictionary else {})
+		gm.set("player_hearts", 4)
+
+		# Re-point this account's Supabase row at THIS device, so future
+		# syncs update the same row instead of creating a duplicate one.
+		var student_id: String = str(student_row.get("student_id", ""))
+		if student_id != "" and sync.has_method("claim_student_account"):
+			sync.claim_student_account(student_id, gm.device_id, func(_ok): pass)
+
+		# Also pull the class's teacher/section info for the "joined class"
+		# display fields, same as the normal join-by-code flow does.
+		if sync.has_method("find_class_by_code"):
+			sync.find_class_by_code(typed_code, func(class_row):
+				if class_row is Dictionary:
+					gm.set("joined_teacher_name", str(class_row.get("teacher_name", "")))
+					gm.set("joined_class_name", str(class_row.get("teacher_class_name", "")))
+					gm.set("joined_grade_subject", str(class_row.get("grade_subject", "")))
+				if gm.has_method("save_game"):
+					gm.save_game()
+				get_tree().change_scene_to_file(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
+			)
+		else:
+			if gm.has_method("save_game"):
+				gm.save_game()
+			get_tree().change_scene_to_file(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
+	)
+
+func _show_student_login_status(message: String) -> void:
+	if not student_login_status_label:
+		return
+	student_login_status_label.text = message
+	student_login_status_label.visible = message != ""
+
 func _on_class_joined_continued():
 	_change_to_avatar_selection()
 
@@ -396,6 +496,9 @@ func _on_teacher_create_account_pressed():
 
 func _on_back_button_pressed():
 	if student_registration and student_registration.is_visible_in_tree():
+		_show_student_class_code_screen()
+		return
+	if student_login_container and student_login_container.is_visible_in_tree():
 		_show_student_class_code_screen()
 		return
 	if teacher_register_form and teacher_register_form.is_visible_in_tree():
