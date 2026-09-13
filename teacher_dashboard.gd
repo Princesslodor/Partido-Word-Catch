@@ -311,14 +311,15 @@ func _make_avatar_circle(initial: String, diameter: float, font_size: int) -> Pa
 	circle.add_child(label)
 	return circle
 
-## Placement of the star + points icon, relative to each podium's own
-## "Panel" card (same parent/coordinate space as its Level label) - sits
-## to the right of "Lvl X" on the same row, inside the card, instead of
-## floating below it. First's card is wider than Second/Third's.
+## Placement of the star + points row, relative to each podium's own
+## "Panel" card - now its own centered row below Level (the cards were
+## made taller specifically to fit this), instead of squeezed onto the
+## same line as Level, which felt cramped. First's card is wider than
+## Second/Third's, hence the different sizing.
 const _PODIUM_POINTS_LAYOUT := [
-	{"icon_x": 126.0, "icon_y": 48.0, "icon_size": 18.0, "label_x": 147.0, "label_y": 42.0, "label_w": 40.0, "font_size": 16},
-	{"icon_x": 108.0, "icon_y": 50.0, "icon_size": 14.0, "label_x": 124.0, "label_y": 44.0, "label_w": 26.0, "font_size": 13},
-	{"icon_x": 108.0, "icon_y": 50.0, "icon_size": 14.0, "label_x": 124.0, "label_y": 44.0, "label_w": 26.0, "font_size": 13},
+	{"icon_x": 60.0, "icon_y": 86.0, "icon_size": 20.0, "label_x": 84.0, "label_y": 84.0, "label_w": 40.0, "font_size": 18},
+	{"icon_x": 50.0, "icon_y": 88.0, "icon_size": 16.0, "label_x": 69.0, "label_y": 86.0, "label_w": 30.0, "font_size": 15},
+	{"icon_x": 50.0, "icon_y": 88.0, "icon_size": 16.0, "label_x": 69.0, "label_y": 86.0, "label_w": 30.0, "font_size": 15},
 ]
 
 func _render_podium(students_data: Array) -> void:
@@ -331,11 +332,12 @@ func _render_podium(students_data: Array) -> void:
 		if i < students_data.size():
 			var row: Dictionary = students_data[i]
 			var player_name: String = str(row.get("player_name", "Student"))
-			if name_label: _fit_label_text(name_label, player_name, 90.0, 25, 14)
-			# Kept short here ("Lvl") since this card is very narrow - full
-			# "Level X" wording overflows into the star/points icon next to
-			# it. The fuller wording is used in the roomier rank 4+ list.
-			if score_label: score_label.text = "Lvl " + str(int(row.get("unlocked_level", 1)))
+			var name_max_width: float = 155.0 if i == 0 else 125.0
+			if name_label: _fit_label_text(name_label, player_name, name_max_width, 25, 14)
+			# Now that Level has its own full-width centered row (points
+			# moved to a separate row below it), there's room for the full
+			# word instead of the "Lvl" abbreviation.
+			if score_label: score_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
 
 			if avatar_circle:
 				var initial_label := Label.new()
