@@ -423,6 +423,7 @@ func _ensure_out_of_hearts_modal() -> Control:
 	restore_style.corner_radius_bottom_right = 22
 	out_of_hearts_restore_button.add_theme_stylebox_override("normal", restore_style)
 	out_of_hearts_restore_button.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+	out_of_hearts_restore_button.add_theme_color_override("font_hover_color", Color(1, 1, 1, 1))
 	out_of_hearts_restore_button.pressed.connect(_on_restore_heart_pressed)
 	panel.add_child(out_of_hearts_restore_button)
 
@@ -430,6 +431,8 @@ func _ensure_out_of_hearts_modal() -> Control:
 	back_btn.text = "Back to Map"
 	back_btn.position = Vector2(110, 240)
 	back_btn.size = Vector2(200, 45)
+	back_btn.add_theme_color_override("font_color", Color(0.1, 0.1, 0.1, 1))
+	back_btn.add_theme_color_override("font_hover_color", Color(0.1, 0.1, 0.1, 1))
 	back_btn.pressed.connect(func(): get_tree().change_scene_to_file("res://campaign_map_screen.tscn"))
 	panel.add_child(back_btn)
 

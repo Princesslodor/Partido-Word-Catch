@@ -658,6 +658,7 @@ offset_top = 660.0
 offset_right = 630.0
 offset_bottom = 695.0
 theme_override_colors/font_color = Color(0.16862746, 0.34509805, 0.007843138, 1)
+theme_override_colors/font_hover_color = Color(0.16862746, 0.34509805, 0.007843138, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 24
 flat = true
