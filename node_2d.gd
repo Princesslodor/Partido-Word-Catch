@@ -553,9 +553,14 @@ func _on_back_button_pressed():
 func _on_next_level_button_pressed():
 	current_level += 1
 	if current_level == 17:
+		# level_16_20.gd only adopts this as its starting level if it's set
+		# here first - without it, that scene's own hardcoded default
+		# (current_level = 16) wins instead, silently replaying Level 16
+		# rather than advancing to 17.
+		Global.requested_level = current_level
 		get_tree().change_scene_to_file("res://level_16_20.tscn")
 		return
-		
+
 	if current_level <= LevelData.levels.size():
 		load_current_level()
 		if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)

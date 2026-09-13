@@ -15,16 +15,16 @@ run/main_scene="uid://bkx1m8smwlr7u"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[audio]
+
+buses/default_bus_layout="res://audio/bus_layout.tres"
+
 [autoload]
 
 LevelData="*uid://blju7gpqmr7tu"
 GameManager="*uid://btt20whkyb6yr"
 Global="*uid://beufhve7kspn2"
 SyncManager="*res://SyncManager.gd"
-
-[audio]
-
-buses/default_bus_layout="res://audio/bus_layout.tres"
 
 [display]
 

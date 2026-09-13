@@ -104,6 +104,12 @@ func _connect_signals():
 		student_login_button.pressed.connect(_on_student_login_pressed)
 
 func _bind_join_class_btn(node: Node):
+	# StudentLoginLinkButton lives under this same container but has its
+	# own handler (_show_student_login_screen, wired in _connect_signals) -
+	# skip it here so it doesn't ALSO fire the join-class flow on top of
+	# switching screens.
+	if node.name == "StudentLoginLinkButton":
+		return
 	if node is Button or node is TextureButton:
 		if not node.pressed.is_connected(_on_join_class_pressed):
 			node.pressed.connect(_on_join_class_pressed)

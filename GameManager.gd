@@ -268,15 +268,26 @@ func add_coins(amount: int) -> void:
 ## unlocks the next level if this is a new milestone, and saves immediately.
 ## Call this when a player finishes a level successfully.
 func complete_level(level_num: int, score: int) -> void:
+	# Keyed by STRING, not int - completed_levels round-trips through
+	# JSON.stringify/parse_string (save_game/load_game) and Supabase's
+	# JSONB completed_levels column (student login/registration restore),
+	# both of which always turn dictionary keys into strings. Using an int
+	# key here would never match an existing string-keyed entry after any
+	# relaunch or cross-device login, silently creating a SECOND entry for
+	# an already-completed level instead of updating it - double-counting
+	# its stars wherever completed_levels gets summed (e.g. the teacher
+	# leaderboard's points column).
+	var key := str(level_num)
+
 	# Step 1: Record or update this level's completion data.
-	if completed_levels.has(level_num):
+	if completed_levels.has(key):
 		# Level was already completed before -- only update if this score is better.
-		var previous_best: int = completed_levels[level_num].get("best_score", 0)
+		var previous_best: int = completed_levels[key].get("best_score", 0)
 		if score > previous_best:
-			completed_levels[level_num]["best_score"] = score
+			completed_levels[key]["best_score"] = score
 	else:
 		# First time completing this level.
-		completed_levels[level_num] = {"completed": true, "best_score": score}
+		completed_levels[key] = {"completed": true, "best_score": score}
 
 	# Step 2: Unlock the next level, but only if this level was the current highest.
 	# (Prevents accidentally "un-unlocking" progress if a player replays an old level.)

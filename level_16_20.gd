@@ -390,8 +390,13 @@ func _on_back_button_pressed():
 
 func _on_next_level_button_pressed():
 	current_level += 1
-	
+
 	if current_level == 21:
+		# Without this, level_21_30.gd falls back to its own hardcoded
+		# default starting level instead of actually starting at 21 - it
+		# only happens to match today because that default is coincidentally
+		# also 21, so this is here to not silently break if that ever changes.
+		Global.requested_level = current_level
 		get_tree().change_scene_to_file("res://level_21_30.tscn")
 		return
 
