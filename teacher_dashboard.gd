@@ -317,7 +317,10 @@ func _render_podium(students_data: Array) -> void:
 			var row: Dictionary = students_data[i]
 			var player_name: String = str(row.get("player_name", "Student"))
 			if name_label: name_label.text = player_name
-			if score_label: score_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
+			# Kept short here ("Lvl") since this card is very narrow - full
+			# "Level X" wording overflows into the star/points icon next to
+			# it. The fuller wording is used in the roomier rank 4+ list.
+			if score_label: score_label.text = "Lvl " + str(int(row.get("unlocked_level", 1)))
 
 			if avatar_circle:
 				var initial_label := Label.new()
