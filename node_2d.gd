@@ -13,9 +13,11 @@ var player_hearts: int:
 # Timer para sa 10 minuto (10 * 60 = 600 seconds)
 var heart_regen_timer: Timer
 const REGEN_TIME: float = 600.0
+const RESTORE_HEART_COST: int = 20
 
 var out_of_hearts_modal: Control = null
 var out_of_hearts_countdown_label: Label = null
+var out_of_hearts_restore_button: Button = null
 
 var current_word: String = ""
 var current_placed_letters: Array = []
@@ -312,8 +314,26 @@ func _check_out_of_hearts() -> void:
 		modal.show()
 		modal.move_to_front()
 		update_timer_display()
+		_update_restore_heart_button()
 	elif out_of_hearts_modal and is_instance_valid(out_of_hearts_modal):
 		out_of_hearts_modal.hide()
+
+func _update_restore_heart_button() -> void:
+	if not out_of_hearts_restore_button:
+		return
+	out_of_hearts_restore_button.text = "Restore 1 Heart (🪙 %d)" % RESTORE_HEART_COST
+	out_of_hearts_restore_button.disabled = player_coins < RESTORE_HEART_COST
+	out_of_hearts_restore_button.modulate = Color(1, 1, 1, 1) if player_coins >= RESTORE_HEART_COST else Color(1, 1, 1, 0.5)
+
+func _on_restore_heart_pressed() -> void:
+	if player_coins < RESTORE_HEART_COST or player_hearts > 0:
+		return
+	player_coins -= RESTORE_HEART_COST
+	player_hearts = min(player_hearts + 1, 4)
+	update_hearts_display()
+	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+	GameManager.save_game()
+	_check_out_of_hearts()
 
 func _ensure_out_of_hearts_modal() -> Control:
 	if out_of_hearts_modal and is_instance_valid(out_of_hearts_modal):
@@ -351,8 +371,8 @@ func _ensure_out_of_hearts_modal() -> Control:
 	style.border_width_bottom = 4
 	style.border_color = Color(0.65, 0.27, 0.0, 1)
 	panel.add_theme_stylebox_override("panel", style)
-	panel.position = Vector2(150, 500)
-	panel.size = Vector2(420, 280)
+	panel.position = Vector2(150, 490)
+	panel.size = Vector2(420, 300)
 	overlay.add_child(panel)
 
 	var title := Label.new()
@@ -369,21 +389,35 @@ func _ensure_out_of_hearts_modal() -> Control:
 	message.autowrap_mode = TextServer.AUTOWRAP_WORD
 	message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	message.add_theme_color_override("font_color", Color(0.2, 0.2, 0.2, 1))
-	message.position = Vector2(20, 70)
-	message.size = Vector2(380, 80)
+	message.position = Vector2(20, 65)
+	message.size = Vector2(380, 65)
 	panel.add_child(message)
 
 	out_of_hearts_countdown_label = Label.new()
-	out_of_hearts_countdown_label.add_theme_font_size_override("font_size", 40)
+	out_of_hearts_countdown_label.add_theme_font_size_override("font_size", 34)
 	out_of_hearts_countdown_label.add_theme_color_override("font_color", Color(0.1, 0.3, 0.6, 1))
 	out_of_hearts_countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	out_of_hearts_countdown_label.position = Vector2(20, 155)
-	out_of_hearts_countdown_label.size = Vector2(380, 50)
+	out_of_hearts_countdown_label.position = Vector2(20, 135)
+	out_of_hearts_countdown_label.size = Vector2(380, 40)
 	panel.add_child(out_of_hearts_countdown_label)
+
+	out_of_hearts_restore_button = Button.new()
+	out_of_hearts_restore_button.position = Vector2(20, 185)
+	out_of_hearts_restore_button.size = Vector2(380, 45)
+	var restore_style := StyleBoxFlat.new()
+	restore_style.bg_color = Color(0.91, 0.6, 0.15, 1)
+	restore_style.corner_radius_top_left = 22
+	restore_style.corner_radius_top_right = 22
+	restore_style.corner_radius_bottom_left = 22
+	restore_style.corner_radius_bottom_right = 22
+	out_of_hearts_restore_button.add_theme_stylebox_override("normal", restore_style)
+	out_of_hearts_restore_button.add_theme_color_override("font_color", Color(1, 1, 1, 1))
+	out_of_hearts_restore_button.pressed.connect(_on_restore_heart_pressed)
+	panel.add_child(out_of_hearts_restore_button)
 
 	var back_btn := Button.new()
 	back_btn.text = "Back to Map"
-	back_btn.position = Vector2(110, 220)
+	back_btn.position = Vector2(110, 240)
 	back_btn.size = Vector2(200, 45)
 	back_btn.pressed.connect(func(): get_tree().change_scene_to_file("res://campaign_map_screen.tscn"))
 	panel.add_child(back_btn)
