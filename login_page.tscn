@@ -654,9 +654,9 @@ visible = false
 [node name="StudentLoginLinkButton" type="Button" parent="ClassCodeContainer/EnterCodeContainer" unique_id=2000000100]
 layout_mode = 0
 offset_left = 60.0
-offset_top = 720.0
+offset_top = 690.0
 offset_right = 630.0
-offset_bottom = 760.0
+offset_bottom = 725.0
 theme_override_colors/font_color = Color(0.16862746, 0.34509805, 0.007843138, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 24
