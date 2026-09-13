@@ -190,6 +190,37 @@ func find_student_account(player_name: String, pin: String, on_result: Callable)
 			on_result.call(false)
 	)
 
+## Looks up an existing student account scoped to ONE specific class (used
+## right after entering a class code, before finalizing "registration") -
+## as opposed to find_student_account() above, which searches across every
+## class for the standalone Login screen. Lets the class-code flow tell
+## "this name+PIN already played in this class, restore them" apart from
+## "this is a genuinely new student, start them at zero". Calls back with
+## the student row (Dictionary) if a match exists, `false` if the lookup
+## succeeded but nothing matched, or `null` if it couldn't complete.
+func find_student_in_class(class_code: String, player_name: String, pin: String, on_result: Callable) -> void:
+	if not is_configured() or class_code.strip_edges() == "" or player_name.strip_edges() == "" or pin.strip_edges() == "":
+		on_result.call(null)
+		return
+
+	var path := "/rest/v1/students?class_code=eq.%s&player_name=eq.%s&student_pin=eq.%s&limit=1" % [
+		class_code.strip_edges().uri_encode(),
+		player_name.strip_edges().uri_encode(),
+		pin.strip_edges().uri_encode(),
+	]
+	var http := _request(path, HTTPClient.METHOD_GET)
+	http.request_completed.connect(func(result, response_code, _h, body: PackedByteArray):
+		http.queue_free()
+		if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+			on_result.call(null)
+			return
+		var parsed = JSON.parse_string(body.get_string_from_utf8())
+		if parsed is Array and parsed.size() > 0:
+			on_result.call(parsed[0])
+		else:
+			on_result.call(false)
+	)
+
 ## Re-points an existing student row at a NEW device_id, so logging into an
 ## account on a different phone doesn't create a second, duplicate row the
 ## next time that account syncs - it keeps updating the same one. Calls
