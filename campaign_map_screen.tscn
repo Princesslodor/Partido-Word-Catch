@@ -1041,11 +1041,14 @@ stretch_mode = 0
 [node name="SettingsMenu" parent="." unique_id=707809916 instance=ExtResource("13_o4pao")]
 visible = false
 layout_mode = 1
+quit_button_text = "LOGOUT"
 
 [node name="ExitConfirmationPopup" parent="." instance=ExtResource("14_exitpop")]
 visible = false
 layout_mode = 1
-quit_app = true
+quit_app = false
+confirm_target_scene = "res://login_page.tscn"
+confirm_message = "Log out and return to the role selection screen?"
 
 [node name="LevelInfoPopup" parent="." instance=ExtResource("15_lvlinfo")]
 visible = false
