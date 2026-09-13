@@ -1,7 +1,15 @@
 extends Control
 
+# Coastal Shore's 10 buttons are shared between Yunit 1 (first 5) and
+# Yunit 2 (last 5) - it's the same background/container for both, just
+# showing a different half. Lagonoy Valley now holds only Yunit 3's 5
+# levels, and Isarog Foothills holds all 15 of Yunit 4's (its 10 original
+# levels plus the 5 that used to be Lagonoy's second half), so every unit
+# after the first two has its own single backdrop.
 const COASTAL_TOTAL_LEVELS: int = 10
-const LAGONOY_TOTAL_LEVELS: int = 10
+const LAGONOY_TOTAL_LEVELS: int = 5
+const ISAROG_TOTAL_LEVELS: int = 15
+const UNIT_LEVEL_COUNTS: Array = [5, 5, 5, 15]
 
 # Inayos ang paths batay sa iyong Scene Tree
 @onready var region_option: OptionButton = $RegionOptionButton
@@ -45,20 +53,20 @@ func _setup_option_button() -> void:
 		return
 
 	region_option.clear()
-	
+
 	region_option.add_item("YUNIT 1", 0)
 	region_option.add_item("YUNIT 2", 1)
 	region_option.add_item("YUNIT 3", 2)
-	
+	region_option.add_item("YUNIT 4", 3)
+
 	var current_unlocked_level: int = GameManager.unlocked_level
 
-	region_option.set_item_disabled(0, false)
-	
-	var is_lagonoy_unlocked: bool = current_unlocked_level > COASTAL_TOTAL_LEVELS
-	region_option.set_item_disabled(1, not is_lagonoy_unlocked)
-	
-	var is_isarog_unlocked: bool = current_unlocked_level > (COASTAL_TOTAL_LEVELS + LAGONOY_TOTAL_LEVELS)
-	region_option.set_item_disabled(2, not is_isarog_unlocked)
+	# Each unit unlocks once the player has cleared every level before it -
+	# i.e. their unlocked_level has moved past that unit's last level.
+	var levels_before_unit: int = 0
+	for i in range(UNIT_LEVEL_COUNTS.size()):
+		region_option.set_item_disabled(i, i > 0 and current_unlocked_level <= levels_before_unit)
+		levels_before_unit += UNIT_LEVEL_COUNTS[i]
 
 	region_option.add_theme_color_override("font_color", Color(1, 1, 1, 1))
 	
@@ -82,40 +90,51 @@ func _setup_option_button() -> void:
 func _on_region_selected(index: int) -> void:
 	_load_region(index)
 
-func _load_region(region_index: int) -> void:
+func _load_region(unit_index: int) -> void:
 	if coastal_levels: coastal_levels.hide()
 	if lagonoy_levels: lagonoy_levels.hide()
 	if isarog_levels: isarog_levels.hide()
-	
+
 	var active_container: Control
 	var current_bg_texture: Texture2D
 	var level_offset: int = 0
-	
-	match region_index:
-		0:
+	# Which of the active container's buttons (1-based, by child order)
+	# belong to this unit - everything outside this range gets hidden
+	# entirely rather than just locked. Only Coastal Shore needs this,
+	# since it's the one container shared by two units.
+	var visible_range: Vector2i = Vector2i(1, 999)
+
+	match unit_index:
+		0: # Yunit 1 - Coastal Shore, first 5 buttons
 			active_container = coastal_levels
 			current_bg_texture = coastal_bg
 			level_offset = 0
-		1:
+			visible_range = Vector2i(1, 5)
+		1: # Yunit 2 - Coastal Shore, last 5 buttons
+			active_container = coastal_levels
+			current_bg_texture = coastal_bg
+			level_offset = 0
+			visible_range = Vector2i(6, 10)
+		2: # Yunit 3 - Lagonoy Valley (now just 5 levels)
 			active_container = lagonoy_levels
 			current_bg_texture = lagonoy_bg
 			level_offset = COASTAL_TOTAL_LEVELS
-		2:
+		3: # Yunit 4 - Isarog Foothills (now 15 levels)
 			active_container = isarog_levels
 			current_bg_texture = isarog_bg
 			level_offset = COASTAL_TOTAL_LEVELS + LAGONOY_TOTAL_LEVELS
 
 	if active_container:
 		active_container.show()
-		
+
 		if active_container.has_node("Background"):
 			var bg_node = active_container.get_node("Background") as TextureRect
 			if bg_node:
 				bg_node.texture = current_bg_texture
-				
-		_update_level_locks(active_container, level_offset)
 
-func _update_level_locks(container: Control, offset: int) -> void:
+		_update_level_locks(active_container, level_offset, visible_range)
+
+func _update_level_locks(container: Control, offset: int, visible_range: Vector2i = Vector2i(1, 999)) -> void:
 	var unlocked_limit: int = GameManager.unlocked_level
 
 	var button_counter: int = 1
@@ -125,6 +144,17 @@ func _update_level_locks(container: Control, offset: int) -> void:
 			continue
 
 		var btn = child as Button
+
+		if button_counter < visible_range.x or button_counter > visible_range.y:
+			# Belongs to the OTHER unit sharing this container (e.g. Yunit
+			# 1's buttons while Yunit 2 is selected) - hide entirely rather
+			# than lock, so it doesn't show up as a locked level that isn't
+			# actually part of the unit currently being viewed.
+			btn.hide()
+			button_counter += 1
+			continue
+
+		btn.show()
 		var global_level_num: int = offset + button_counter
 		var lock_icon_name := "LockIcon" + str(global_level_num)
 
@@ -200,9 +230,11 @@ func _on_settings_button_pressed() -> void:
 		settings_menu.move_to_front()
 
 func _unit_label_for_level(level_num: int) -> String:
-	if level_num <= COASTAL_TOTAL_LEVELS:
+	if level_num <= 5:
 		return "Yunit 1"
-	elif level_num <= COASTAL_TOTAL_LEVELS + LAGONOY_TOTAL_LEVELS:
+	elif level_num <= 10:
 		return "Yunit 2"
-	else:
+	elif level_num <= COASTAL_TOTAL_LEVELS + LAGONOY_TOTAL_LEVELS:
 		return "Yunit 3"
+	else:
+		return "Yunit 4"

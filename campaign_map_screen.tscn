@@ -505,128 +505,6 @@ scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level16" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=277251167]
-layout_mode = 0
-offset_left = 186.0
-offset_top = 594.0
-offset_right = 263.0
-offset_bottom = 668.0
-theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("2_012ip")
-theme_override_font_sizes/font_size = 25
-theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
-disabled = true
-text = "16"
-
-[node name="LockIcon16" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level16" unique_id=301550200]
-layout_mode = 0
-offset_left = 25.0
-offset_top = 19.0
-offset_right = 74.0
-offset_bottom = 73.0
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("4_fv1ni")
-expand_mode = 1
-
-[node name="Level17" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1923696761]
-layout_mode = 0
-offset_left = 369.0
-offset_top = 657.0
-offset_right = 446.0
-offset_bottom = 731.0
-theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("2_012ip")
-theme_override_font_sizes/font_size = 25
-theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
-disabled = true
-text = "17"
-
-[node name="LockIcon17" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level17" unique_id=1239332155]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = -0.43500003
-offset_left = 23.0
-offset_top = 50.190002
-offset_right = 72.0
-offset_bottom = 72.0
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("4_fv1ni")
-expand_mode = 1
-
-[node name="Level18" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=470902400]
-layout_mode = 0
-offset_left = 298.0
-offset_top = 810.0
-offset_right = 375.0
-offset_bottom = 884.0
-theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("2_012ip")
-theme_override_font_sizes/font_size = 25
-theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
-disabled = true
-text = "18"
-
-[node name="LockIcon18" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level18" unique_id=339211542]
-layout_mode = 0
-offset_left = 25.0
-offset_top = 16.0
-offset_right = 74.0
-offset_bottom = 70.0
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("4_fv1ni")
-expand_mode = 1
-
-[node name="Level19" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1677428905]
-layout_mode = 0
-offset_left = 283.0
-offset_top = 1000.0
-offset_right = 360.0
-offset_bottom = 1074.0
-theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("2_012ip")
-theme_override_font_sizes/font_size = 25
-theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
-disabled = true
-text = "19"
-
-[node name="LockIcon19" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level19" unique_id=1091217905]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 18.0
-offset_right = 73.0
-offset_bottom = 72.0
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("4_fv1ni")
-expand_mode = 1
-
-[node name="Level20" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1064189368]
-layout_mode = 0
-offset_left = 368.0
-offset_top = 1193.0
-offset_right = 445.0
-offset_bottom = 1267.0
-theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
-theme_override_fonts/font = ExtResource("2_012ip")
-theme_override_font_sizes/font_size = 25
-theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
-theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
-disabled = true
-text = "20"
-
-[node name="LockIcon20" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level20" unique_id=1695376323]
-layout_mode = 0
-offset_left = 24.0
-offset_top = 18.0
-offset_right = 73.0
-offset_bottom = 72.0
-scale = Vector2(0.6, 0.6)
-texture = ExtResource("4_fv1ni")
-expand_mode = 1
-
 [node name="Header" type="Control" parent="Level Container/LagonoyValleyLevels" unique_id=167014152]
 anchors_preset = 0
 offset_right = 40.0
@@ -702,12 +580,132 @@ offset_bottom = 1276.0
 texture = ExtResource("9_0a1fm")
 expand_mode = 1
 
-[node name="Level21" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=202899905]
+[node name="Level16" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000200]
 layout_mode = 0
 offset_left = 364.0
-offset_top = 197.0
+offset_top = 197.5
 offset_right = 441.0
-offset_bottom = 271.0
+offset_bottom = 271.5
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "16"
+
+[node name="LockIcon16" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level16" unique_id=2000000201]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level17" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000202]
+layout_mode = 0
+offset_left = 267.2
+offset_top = 244.1
+offset_right = 344.2
+offset_bottom = 318.1
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "17"
+
+[node name="LockIcon17" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level17" unique_id=2000000203]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level18" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000204]
+layout_mode = 0
+offset_left = 289.3
+offset_top = 294.9
+offset_right = 366.3
+offset_bottom = 368.9
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "18"
+
+[node name="LockIcon18" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level18" unique_id=2000000205]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level19" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000206]
+layout_mode = 0
+offset_left = 384.1
+offset_top = 345.1
+offset_right = 461.1
+offset_bottom = 419.1
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "19"
+
+[node name="LockIcon19" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level19" unique_id=2000000207]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level20" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000208]
+layout_mode = 0
+offset_left = 435.5
+offset_top = 392.6
+offset_right = 512.5
+offset_bottom = 466.6
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "20"
+
+[node name="LockIcon20" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level20" unique_id=2000000209]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level21" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000210]
+layout_mode = 0
+offset_left = 340.9
+offset_top = 443.4
+offset_right = 417.9
+offset_bottom = 517.4
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -716,22 +714,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "21"
 
-[node name="LockIcon21" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level21" unique_id=2079159498]
+[node name="LockIcon21" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level21" unique_id=2000000211]
 layout_mode = 0
-offset_left = 21.0
+offset_left = 24.0
 offset_top = 18.0
-offset_right = 70.0
+offset_right = 73.0
 offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level22" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=1117749832]
+[node name="Level22" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000212]
 layout_mode = 0
-offset_left = 231.0
-offset_top = 261.0
-offset_right = 308.0
-offset_bottom = 335.0
+offset_left = 254.9
+offset_top = 506.4
+offset_right = 331.9
+offset_bottom = 580.4
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -740,22 +738,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "22"
 
-[node name="LockIcon22" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level22" unique_id=744465094]
+[node name="LockIcon22" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level22" unique_id=2000000213]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 15.0
+offset_top = 18.0
 offset_right = 73.0
-offset_bottom = 69.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level23" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=260646892]
+[node name="Level23" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000214]
 layout_mode = 0
-offset_left = 341.0
-offset_top = 324.0
-offset_right = 418.0
-offset_bottom = 398.0
+offset_left = 206.8
+offset_top = 575.1
+offset_right = 283.8
+offset_bottom = 649.1
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -764,22 +762,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "23"
 
-[node name="LockIcon23" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level23" unique_id=1177895734]
+[node name="LockIcon23" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level23" unique_id=2000000215]
 layout_mode = 0
-offset_left = 23.0
-offset_top = 16.0
-offset_right = 72.0
-offset_bottom = 70.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level24" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=1596673345]
+[node name="Level24" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000216]
 layout_mode = 0
-offset_left = 458.0
-offset_top = 380.0
-offset_right = 535.0
-offset_bottom = 454.0
+offset_left = 302.6
+offset_top = 623.7
+offset_right = 379.6
+offset_bottom = 697.7
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -788,22 +786,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "24"
 
-[node name="LockIcon24" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level24" unique_id=2043796216]
+[node name="LockIcon24" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level24" unique_id=2000000217]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 17.0
+offset_top = 18.0
 offset_right = 73.0
-offset_bottom = 71.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level25" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=173975539]
+[node name="Level25" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000218]
 layout_mode = 0
-offset_left = 298.0
-offset_top = 466.0
-offset_right = 375.0
-offset_bottom = 540.0
+offset_left = 355.2
+offset_top = 687.3
+offset_right = 432.2
+offset_bottom = 761.3
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -812,22 +810,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "25"
 
-[node name="LockIcon25" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level25" unique_id=1412492156]
+[node name="LockIcon25" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level25" unique_id=2000000219]
 layout_mode = 0
-offset_left = 25.0
-offset_top = 16.0
-offset_right = 74.0
-offset_bottom = 70.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level26" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=145513362]
+[node name="Level26" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000220]
 layout_mode = 0
-offset_left = 190.0
-offset_top = 566.0
-offset_right = 267.0
-offset_bottom = 640.0
+offset_left = 309.9
+offset_top = 784.8
+offset_right = 386.9
+offset_bottom = 858.8
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -836,22 +834,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "26"
 
-[node name="LockIcon26" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level26" unique_id=1388532157]
+[node name="LockIcon26" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level26" unique_id=2000000221]
 layout_mode = 0
-offset_left = 23.0
-offset_top = 14.0
-offset_right = 72.0
-offset_bottom = 68.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level27" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=1702381160]
+[node name="Level27" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000222]
 layout_mode = 0
-offset_left = 369.0
-offset_top = 657.0
-offset_right = 446.0
-offset_bottom = 731.0
+offset_left = 291.8
+offset_top = 889.2
+offset_right = 368.8
+offset_bottom = 963.2
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -860,22 +858,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "27"
 
-[node name="LockIcon27" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level27" unique_id=1715034168]
+[node name="LockIcon27" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level27" unique_id=2000000223]
 layout_mode = 0
-offset_left = 23.0
-offset_top = 17.0
-offset_right = 72.0
-offset_bottom = 71.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level28" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=1477573751]
+[node name="Level28" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000224]
 layout_mode = 0
-offset_left = 298.0
-offset_top = 810.0
-offset_right = 375.0
-offset_bottom = 884.0
+offset_left = 283.3
+offset_top = 996.3
+offset_right = 360.3
+offset_bottom = 1070.3
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -884,22 +882,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "28"
 
-[node name="LockIcon28" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level28" unique_id=371737780]
+[node name="LockIcon28" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level28" unique_id=2000000225]
 layout_mode = 0
-offset_left = 25.0
-offset_top = 17.0
-offset_right = 74.0
-offset_bottom = 71.0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level29" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=452455658]
+[node name="Level29" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000226]
 layout_mode = 0
-offset_left = 283.0
-offset_top = 1000.0
-offset_right = 360.0
-offset_bottom = 1074.0
+offset_left = 324.6
+offset_top = 1094.9
+offset_right = 401.6
+offset_bottom = 1168.9
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -908,22 +906,22 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "29"
 
-[node name="LockIcon29" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level29" unique_id=1934470892]
+[node name="LockIcon29" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level29" unique_id=2000000227]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 16.0
+offset_top = 18.0
 offset_right = 73.0
-offset_bottom = 70.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
-[node name="Level30" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=1205230429]
+[node name="Level30" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000228]
 layout_mode = 0
 offset_left = 368.0
-offset_top = 1193.0
+offset_top = 1193.5
 offset_right = 445.0
-offset_bottom = 1267.0
+offset_bottom = 1267.5
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -932,12 +930,12 @@ theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
 disabled = true
 text = "30"
 
-[node name="LockIcon30" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level30" unique_id=1383199335]
+[node name="LockIcon30" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level30" unique_id=2000000229]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 16.0
+offset_top = 18.0
 offset_right = 73.0
-offset_bottom = 70.0
+offset_bottom = 72.0
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
@@ -1019,13 +1017,15 @@ theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxTexture_drsw1")
 theme_override_styles/disabled = SubResource("StyleBoxFlat_hgfbm")
 alignment = 1
-item_count = 3
+item_count = 4
 popup/item_0/text = "YUNIT 1"
 popup/item_0/id = 0
 popup/item_1/text = "YUNIT 2"
 popup/item_1/id = 1
 popup/item_2/text = "YUNIT 3"
 popup/item_2/id = 2
+popup/item_3/text = "YUNIT 4"
+popup/item_3/id = 3
 
 [node name="SettingsButton" type="TextureButton" parent="." unique_id=375040293]
 layout_mode = 0
