@@ -10,9 +10,12 @@ var player_hearts: int:
 	get: return GameManager.player_hearts
 	set(val): GameManager.player_hearts = val
 
-# Timer para sa 15 minuto (15 * 60 = 900 seconds)
+# Timer para sa 10 minuto (10 * 60 = 600 seconds)
 var heart_regen_timer: Timer
-const REGEN_TIME: float = 900.0 
+const REGEN_TIME: float = 600.0
+
+var out_of_hearts_modal: Control = null
+var out_of_hearts_countdown_label: Label = null
 
 var current_word: String = ""
 var current_placed_letters: Array = []
@@ -66,6 +69,7 @@ func load_current_level():
 	update_stars_display()
 	update_hearts_display()
 	last_slots_full_state = false
+	_check_out_of_hearts()
 
 	var lvl_key = int(current_level)
 	if not LevelData.levels.has(lvl_key): return
@@ -256,8 +260,7 @@ func handle_wrong_answer():
 		if heart_regen_timer.is_stopped():
 			heart_regen_timer.start()
 
-		if player_hearts <= 0:
-			print("Naubos na ang lahat ng puso!")
+		_check_out_of_hearts()
 
 func update_stars_display():
 	if has_node("CanvasLayer/LevelDesign/StarWithFill"):
@@ -279,6 +282,8 @@ func update_timer_display():
 		var time_string = "%02d:%02d" % [minutes, seconds]
 		if has_node("%HeartTimerLabel"):
 			%HeartTimerLabel.text = time_string
+		if out_of_hearts_countdown_label and is_instance_valid(out_of_hearts_countdown_label):
+			out_of_hearts_countdown_label.text = time_string
 	else:
 		if has_node("%HeartTimerLabel"):
 			%HeartTimerLabel.text = ""
@@ -293,6 +298,98 @@ func _on_heart_regen_timeout():
 		heart_regen_timer.start()
 	else:
 		heart_regen_timer.stop()
+
+	_check_out_of_hearts()
+
+## Shows a blocking modal explaining why play is locked once hearts hit 0,
+## with a live countdown to the next heart - and hides it again the moment
+## a heart regenerates. Hearts are the only thing gating this: player_stars
+## resets to 3 on every level load, so it's never independently "empty"
+## outside of this same out-of-hearts state.
+func _check_out_of_hearts() -> void:
+	if player_hearts <= 0:
+		var modal := _ensure_out_of_hearts_modal()
+		modal.show()
+		modal.move_to_front()
+		update_timer_display()
+	elif out_of_hearts_modal and is_instance_valid(out_of_hearts_modal):
+		out_of_hearts_modal.hide()
+
+func _ensure_out_of_hearts_modal() -> Control:
+	if out_of_hearts_modal and is_instance_valid(out_of_hearts_modal):
+		return out_of_hearts_modal
+
+	var overlay := Control.new()
+	overlay.name = "OutOfHeartsModal"
+	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
+
+	var dim := ColorRect.new()
+	dim.color = Color(0, 0, 0, 0.6)
+	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.mouse_filter = Control.MOUSE_FILTER_STOP
+	overlay.add_child(dim)
+
+	var panel := Panel.new()
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.98, 0.96, 0.91, 1)
+	style.corner_radius_top_left = 24
+	style.corner_radius_top_right = 24
+	style.corner_radius_bottom_left = 24
+	style.corner_radius_bottom_right = 24
+	style.border_width_left = 4
+	style.border_width_top = 4
+	style.border_width_right = 4
+	style.border_width_bottom = 4
+	style.border_color = Color(0.65, 0.27, 0.0, 1)
+	panel.add_theme_stylebox_override("panel", style)
+	panel.anchor_left = 0.5
+	panel.anchor_top = 0.5
+	panel.anchor_right = 0.5
+	panel.anchor_bottom = 0.5
+	panel.position = Vector2(-210, -140)
+	panel.size = Vector2(420, 280)
+	overlay.add_child(panel)
+
+	var title := Label.new()
+	title.text = "Out of Hearts!"
+	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_color_override("font_color", Color(0.65, 0.1, 0.1, 1))
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.position = Vector2(20, 20)
+	title.size = Vector2(380, 40)
+	panel.add_child(title)
+
+	var message := Label.new()
+	message.text = "You've run out of hearts. Wait for them to refill before you can play again."
+	message.autowrap_mode = TextServer.AUTOWRAP_WORD
+	message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	message.add_theme_color_override("font_color", Color(0.2, 0.2, 0.2, 1))
+	message.position = Vector2(20, 70)
+	message.size = Vector2(380, 80)
+	panel.add_child(message)
+
+	out_of_hearts_countdown_label = Label.new()
+	out_of_hearts_countdown_label.add_theme_font_size_override("font_size", 40)
+	out_of_hearts_countdown_label.add_theme_color_override("font_color", Color(0.1, 0.3, 0.6, 1))
+	out_of_hearts_countdown_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	out_of_hearts_countdown_label.position = Vector2(20, 155)
+	out_of_hearts_countdown_label.size = Vector2(380, 50)
+	panel.add_child(out_of_hearts_countdown_label)
+
+	var back_btn := Button.new()
+	back_btn.text = "Back to Map"
+	back_btn.position = Vector2(110, 220)
+	back_btn.size = Vector2(200, 45)
+	back_btn.pressed.connect(func(): get_tree().change_scene_to_file("res://campaign_map_screen.tscn"))
+	panel.add_child(back_btn)
+
+	if has_node("CanvasLayer"):
+		$CanvasLayer.add_child(overlay)
+	else:
+		add_child(overlay)
+	out_of_hearts_modal = overlay
+	return overlay
 
 func show_victory_popup():
 	var lvl_key = int(current_level)
