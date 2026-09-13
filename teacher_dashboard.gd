@@ -209,12 +209,11 @@ func _render_students_list(students_data: Array) -> void:
 	for i in range(min(students_data.size(), max_visible_rows)):
 		var row: Dictionary = students_data[i]
 		var name_label := Label.new()
-		name_label.text = str(row.get("player_name", "Student"))
 		name_label.add_theme_font_override("font", _bold_font)
-		name_label.add_theme_font_size_override("font_size", 26)
 		name_label.add_theme_color_override("font_color", Color(0.16, 0.38, 0.56, 1))
 		name_label.position = Vector2(20, row_top + i * row_height)
 		name_label.size = Vector2(330, 40)
+		_fit_label_text(name_label, str(row.get("player_name", "Student")), 320.0, 26, 16)
 		students_panel.add_child(name_label)
 		_dynamic_student_nodes.append(name_label)
 
@@ -249,6 +248,22 @@ func _render_leaderboard(students_data: Array) -> void:
 	_render_podium(students_data)
 	_render_extra_rows(students_data)
 	_render_graph(students_data)
+
+## Sets a label's text and shrinks its font size (down to min_font_size)
+## until it fits within max_width, instead of silently truncating long
+## student names in the leaderboard's fixed-width name fields.
+func _fit_label_text(label: Label, text: String, max_width: float, base_font_size: int, min_font_size: int = 14) -> void:
+	label.text = text
+	var font: Font = label.get_theme_font("font")
+	if not font:
+		font = _bold_font
+	var size := base_font_size
+	while size > min_font_size:
+		var text_width: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
+		if text_width <= max_width:
+			break
+		size -= 1
+	label.add_theme_font_size_override("font_size", size)
 
 ## Sums the 0-3 star rating earned on every level a student has completed
 ## (best_score in GameManager.completed_levels is really a star count, set
@@ -316,7 +331,7 @@ func _render_podium(students_data: Array) -> void:
 		if i < students_data.size():
 			var row: Dictionary = students_data[i]
 			var player_name: String = str(row.get("player_name", "Student"))
-			if name_label: name_label.text = player_name
+			if name_label: _fit_label_text(name_label, player_name, 90.0, 25, 14)
 			# Kept short here ("Lvl") since this card is very narrow - full
 			# "Level X" wording overflows into the star/points icon next to
 			# it. The fuller wording is used in the roomier rank 4+ list.
@@ -356,7 +371,9 @@ func _render_podium(students_data: Array) -> void:
 				card.add_child(points_label)
 				_dynamic_leaderboard_nodes.append(points_label)
 		else:
-			if name_label: name_label.text = "—"
+			if name_label:
+				name_label.add_theme_font_size_override("font_size", 25)
+				name_label.text = "—"
 			if score_label: score_label.text = "—"
 
 func _render_extra_rows(students_data: Array) -> void:
@@ -393,12 +410,11 @@ func _render_extra_rows(students_data: Array) -> void:
 		_dynamic_leaderboard_nodes.append(avatar)
 
 		var name_label := Label.new()
-		name_label.text = player_name
 		name_label.add_theme_font_override("font", _bold_font)
-		name_label.add_theme_font_size_override("font_size", 24)
 		name_label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
 		name_label.position = Vector2(178, y)
 		name_label.size = Vector2(170, row_height)
+		_fit_label_text(name_label, player_name, 165.0, 24, 14)
 		leaderboard_content.add_child(name_label)
 		_dynamic_leaderboard_nodes.append(name_label)
 
@@ -456,12 +472,11 @@ func _render_graph(students_data: Array) -> void:
 		var bar_width: float = max(6.0, (float(level_value) / float(max_level)) * bar_max_width)
 
 		var name_label := Label.new()
-		name_label.text = str(row.get("player_name", "Student"))
 		name_label.add_theme_font_override("font", _bold_font)
-		name_label.add_theme_font_size_override("font_size", 20)
 		name_label.add_theme_color_override("font_color", Color(0.16, 0.16, 0.16, 1))
 		name_label.position = Vector2(30, y)
 		name_label.size = Vector2(110, 28)
+		_fit_label_text(name_label, str(row.get("player_name", "Student")), 108.0, 20, 12)
 		levels_graph_panel.add_child(name_label)
 		_dynamic_leaderboard_nodes.append(name_label)
 
