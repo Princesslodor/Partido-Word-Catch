@@ -66,14 +66,19 @@ func setup_heart_timer():
 
 func load_current_level():
 	if has_node("%VictoryPopup"): %VictoryPopup.visible = false
-		
-	player_stars = 3
+
+	var lvl_key = int(current_level)
+
+	# Resume with whatever stars were left the last time this level was
+	# left mid-attempt (leaving for the campaign map and coming back
+	# shouldn't hand a fresh 3 stars for free) - defaults to 3 if this
+	# level has no in-progress attempt saved.
+	player_stars = GameManager.in_progress_stars.get(str(lvl_key), 3)
 	update_stars_display()
 	update_hearts_display()
 	last_slots_full_state = false
 	_check_out_of_hearts()
 
-	var lvl_key = int(current_level)
 	if not LevelData.levels.has(lvl_key): return
 		
 	var level_info = LevelData.levels[lvl_key]
@@ -251,13 +256,19 @@ func handle_wrong_answer():
 	if player_stars < 0:
 		player_stars = 0
 	update_stars_display()
-	
+
+	# Persist immediately so leaving for the campaign map right after a
+	# mistake (without triggering the hearts-lost save below) doesn't
+	# lose the reduced star count.
+	GameManager.in_progress_stars[str(int(current_level))] = player_stars
+	GameManager.save_game()
+
 	if player_stars <= 0:
 		player_hearts -= 1
 		if player_hearts < 0:
 			player_hearts = 0
 		update_hearts_display()
-		GameManager.save_game()
+		GameManager.save_game()  # heart loss on top of the star save above
 
 		if heart_regen_timer.is_stopped():
 			heart_regen_timer.start()
@@ -433,6 +444,11 @@ func show_victory_popup():
 	var lvl_key = int(current_level)
 	var level_info = LevelData.levels[lvl_key]
 	GameManager.add_coins(10)
+	# Level's finished, so there's no "in-progress attempt" to resume
+	# anymore - replaying it later should start fresh with 3 stars again.
+	# Erased before complete_level() so its own save_game() call picks up
+	# this change too, instead of needing a separate save here.
+	GameManager.in_progress_stars.erase(str(lvl_key))
 	GameManager.complete_level(lvl_key, player_stars)
 	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
 	if has_node("%+coin"): get_node("%+coin").text = "+10 COINS"

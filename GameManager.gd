@@ -46,6 +46,13 @@ var player_hearts: int = 4            # Lives remaining in the current gameplay 
 ## Example: { 1: {"completed": true, "best_score": 100} }
 var completed_levels: Dictionary = {}
 
+## Stars remaining on a level the player left mid-attempt (before
+## finishing it), so leaving for the campaign map and coming back
+## doesn't hand them a fresh 3 stars for free. Cleared once that level
+## is completed - replaying a finished level starts fresh again.
+## Dictionary structure: { level_num: stars_remaining }
+var in_progress_stars: Dictionary = {}
+
 ## --- SETTINGS ---
 var is_sound_enabled: bool = true    # Sound effects (SFX bus)
 var is_music_enabled: bool = true    # Background music (Music bus)
@@ -118,6 +125,7 @@ func save_game() -> void:
 		"player_coins": player_coins,
 		"player_hearts": player_hearts,
 		"completed_levels": completed_levels,
+		"in_progress_stars": in_progress_stars,
 		"is_sound_enabled": is_sound_enabled,
 		"is_music_enabled": is_music_enabled
 	}
@@ -208,6 +216,7 @@ func load_game() -> void:
 	player_coins = save_data.get("player_coins", 0)
 	player_hearts = save_data.get("player_hearts", 4)
 	completed_levels = save_data.get("completed_levels", {})
+	in_progress_stars = save_data.get("in_progress_stars", {})
 	is_sound_enabled = save_data.get("is_sound_enabled", true)
 	is_music_enabled = save_data.get("is_music_enabled", true)
 
