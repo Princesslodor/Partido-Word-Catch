@@ -35,8 +35,8 @@ extends Control
 @onready var join_status_label: Label = $ClassCodeContainer/EnterCodeContainer/JoinStatusLabel if has_node("ClassCodeContainer/EnterCodeContainer/JoinStatusLabel") else null
 @onready var student_login_link_button: Button = $ClassCodeContainer/EnterCodeContainer/StudentLoginLinkButton if has_node("ClassCodeContainer/EnterCodeContainer/StudentLoginLinkButton") else null
 
-# Student Login Fields (cross-device account retrieval via class code + name + PIN)
-@onready var student_login_class_code_input: LineEdit = $StudentLoginContainer/LoginBoard/ClassCodeEdit if has_node("StudentLoginContainer/LoginBoard/ClassCodeEdit") else null
+# Student Login Fields (cross-device account retrieval via name + PIN -
+# a student only ever has one class, so no class code field is needed)
 @onready var student_login_name_input: LineEdit = $StudentLoginContainer/LoginBoard/NameEdit if has_node("StudentLoginContainer/LoginBoard/NameEdit") else null
 @onready var student_login_pin_input: LineEdit = $StudentLoginContainer/LoginBoard/PinEdit if has_node("StudentLoginContainer/LoginBoard/PinEdit") else null
 @onready var student_login_button: Button = $StudentLoginContainer/LoginBoard/LoginButton if has_node("StudentLoginContainer/LoginBoard/LoginButton") else null
@@ -337,16 +337,17 @@ func _show_join_status(message: String) -> void:
 	join_status_label.visible = message != ""
 
 ## Cross-device account retrieval: a student who already has an account
-## (registered on some other phone) looks it up here by class code + exact
-## name + PIN, instead of being stuck creating a new account every time
-## they play on a different device.
+## (registered on some other phone) looks it up here by exact name + PIN,
+## instead of being stuck creating a new account every time they play on a
+## different device. No class code needed - a student only ever belongs to
+## one class, so it's read from whichever account matches instead of asked
+## for again.
 func _on_student_login_pressed() -> void:
-	var typed_code: String = student_login_class_code_input.text.strip_edges() if student_login_class_code_input else ""
 	var typed_name: String = student_login_name_input.text.strip_edges() if student_login_name_input else ""
 	var typed_pin: String = student_login_pin_input.text.strip_edges() if student_login_pin_input else ""
 
-	if typed_code == "" or typed_name == "" or typed_pin == "":
-		_show_student_login_status("Enter your class code, name, and PIN.")
+	if typed_name == "" or typed_pin == "":
+		_show_student_login_status("Enter your name and PIN.")
 		return
 
 	var sync = get_node_or_null("/root/SyncManager")
@@ -357,7 +358,7 @@ func _on_student_login_pressed() -> void:
 	_show_student_login_status("Checking...")
 	if student_login_button: student_login_button.disabled = true
 
-	sync.find_student_account(typed_code, typed_name, typed_pin, func(student_row):
+	sync.find_student_account(typed_name, typed_pin, func(student_row):
 		if student_login_button: student_login_button.disabled = false
 
 		if student_row == null:
@@ -365,7 +366,7 @@ func _on_student_login_pressed() -> void:
 			_show_student_login_status("No internet connection. Try again." + (" (" + reason + ")" if reason != "" else ""))
 			return
 		if not (student_row is Dictionary):
-			_show_student_login_status("No account found with that class code, name, and PIN.")
+			_show_student_login_status("No account found with that name and PIN.")
 			return
 
 		_show_student_login_status("")
@@ -373,9 +374,11 @@ func _on_student_login_pressed() -> void:
 		if not gm:
 			return
 
+		var found_class_code: String = str(student_row.get("class_code", ""))
+
 		_save_role_to_gm("STUDENT")
 		gm.set("player_name", str(student_row.get("player_name", typed_name)))
-		gm.set("class_code", typed_code)
+		gm.set("class_code", found_class_code)
 		gm.set("student_pin", typed_pin)
 		gm.set("avatar_id", str(student_row.get("avatar_id", "")))
 		gm.set("unlocked_level", int(student_row.get("unlocked_level", 1)))
@@ -392,8 +395,8 @@ func _on_student_login_pressed() -> void:
 
 		# Also pull the class's teacher/section info for the "joined class"
 		# display fields, same as the normal join-by-code flow does.
-		if sync.has_method("find_class_by_code"):
-			sync.find_class_by_code(typed_code, func(class_row):
+		if found_class_code != "" and sync.has_method("find_class_by_code"):
+			sync.find_class_by_code(found_class_code, func(class_row):
 				if class_row is Dictionary:
 					gm.set("joined_teacher_name", str(class_row.get("teacher_name", "")))
 					gm.set("joined_class_name", str(class_row.get("teacher_class_name", "")))

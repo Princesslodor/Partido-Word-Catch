@@ -162,18 +162,18 @@ func sync_student_progress() -> void:
 	http.request_completed.connect(func(_result, _code, _h, _b): http.queue_free())
 
 ## --- CROSS-DEVICE STUDENT LOGIN ---
-## Looks up an existing student account by class code + exact name + PIN,
-## so a student can retrieve their account on a different device than the
-## one they first registered on. Calls back with the student row
-## (Dictionary) if a match exists, `false` if the lookup succeeded but
-## nothing matched, or `null` if the lookup itself couldn't complete.
-func find_student_account(class_code: String, player_name: String, pin: String, on_result: Callable) -> void:
-	if not is_configured() or class_code.strip_edges() == "" or player_name.strip_edges() == "" or pin.strip_edges() == "":
+## Looks up an existing student account by exact name + PIN (a student only
+## ever belongs to one class, so there's no need to also ask for the class
+## code - it comes back as part of the matched row instead). Calls back
+## with the student row (Dictionary) if a match exists, `false` if the
+## lookup succeeded but nothing matched, or `null` if the lookup itself
+## couldn't complete.
+func find_student_account(player_name: String, pin: String, on_result: Callable) -> void:
+	if not is_configured() or player_name.strip_edges() == "" or pin.strip_edges() == "":
 		on_result.call(null)
 		return
 
-	var path := "/rest/v1/students?class_code=eq.%s&player_name=eq.%s&student_pin=eq.%s&limit=1" % [
-		class_code.strip_edges().uri_encode(),
+	var path := "/rest/v1/students?player_name=eq.%s&student_pin=eq.%s&limit=1" % [
 		player_name.strip_edges().uri_encode(),
 		pin.strip_edges().uri_encode(),
 	]
