@@ -173,11 +173,16 @@ func _on_student_selected():
 	current_role = "STUDENT"
 
 	var gm = get_node_or_null("/root/GameManager")
+	# avatar_id is intentionally NOT required here - it's a cosmetic pick,
+	# not identity. Requiring it meant a student who registered but closed
+	# the app before reaching the avatar-selection screen (or any other
+	# reason avatar_id ended up blank) would be forced through full
+	# registration again on every launch, even though their name/class/
+	# progress were already saved fine.
 	var already_joined: bool = gm != null \
 		and gm.role == "STUDENT" \
 		and gm.class_code != "" \
-		and gm.player_name != "" \
-		and gm.avatar_id != ""
+		and gm.player_name != ""
 
 	if already_joined:
 		_show_student_welcome_back_screen()
@@ -193,6 +198,13 @@ func _on_student_selected():
 	_show_student_class_code_screen()
 
 func _on_welcome_back_continue_pressed():
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and "avatar_id" in gm and gm.avatar_id == "":
+		# already_joined no longer requires an avatar, so a student who
+		# never finished picking one lands here with none set - send them
+		# to pick one instead of continuing with a blank avatar.
+		_change_to_avatar_selection()
+		return
 	get_tree().change_scene_to_file(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
 
 func _on_welcome_back_not_you_pressed():
