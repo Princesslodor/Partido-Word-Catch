@@ -947,16 +947,50 @@ offset_right = 95.0
 offset_bottom = 100.0
 expand_mode = 1
 
-[node name="Label2" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=499143317]
+[node name="RankHeaderLabel" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=499143317]
 layout_mode = 0
 offset_left = 90.0
 offset_top = 708.0
-offset_right = 668.0
-offset_bottom = 766.0
+offset_right = 120.0
+offset_bottom = 758.0
 theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
-theme_override_font_sizes/font_size = 30
-text = "     #           Name           Level    Pts"
+theme_override_font_sizes/font_size = 26
+text = "#"
+
+[node name="NameHeaderLabel" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=499143318]
+layout_mode = 0
+offset_left = 178.0
+offset_top = 708.0
+offset_right = 348.0
+offset_bottom = 758.0
+theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 26
+text = "Name"
+
+[node name="LevelHeaderLabel" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=499143319]
+layout_mode = 0
+offset_left = 356.0
+offset_top = 708.0
+offset_right = 466.0
+offset_bottom = 758.0
+theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 26
+horizontal_alignment = 2
+text = "Level"
+
+[node name="PointsHeaderLabel" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=499143320]
+layout_mode = 0
+offset_left = 480.0
+offset_top = 708.0
+offset_right = 570.0
+offset_bottom = 758.0
+theme_override_colors/font_color = Color(0.096204735, 0.09620475, 0.096204735, 1)
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 26
+text = "Points"
 
 [node name="EmptyRosterMessage" type="Label" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=1000000401]
 layout_mode = 0
