@@ -319,14 +319,22 @@ func _ensure_out_of_hearts_modal() -> Control:
 	if out_of_hearts_modal and is_instance_valid(out_of_hearts_modal):
 		return out_of_hearts_modal
 
+	# Fixed pixel positions against the project's 720x1280 design canvas -
+	# matching how every other UI element here is placed (layout_mode=0,
+	# explicit offsets) - NOT percentage anchors. Anchors resolve against
+	# the actual viewport rect, which "expand" stretch mode can make wider
+	# than 720 on a desktop/debug window, throwing off any 0.5-anchored
+	# centering relative to the design canvas.
 	var overlay := Control.new()
 	overlay.name = "OutOfHeartsModal"
-	overlay.set_anchors_preset(Control.PRESET_FULL_RECT)
+	overlay.position = Vector2.ZERO
+	overlay.size = Vector2(720, 1280)
 	overlay.mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var dim := ColorRect.new()
 	dim.color = Color(0, 0, 0, 0.6)
-	dim.set_anchors_preset(Control.PRESET_FULL_RECT)
+	dim.position = Vector2.ZERO
+	dim.size = Vector2(720, 1280)
 	dim.mouse_filter = Control.MOUSE_FILTER_STOP
 	overlay.add_child(dim)
 
@@ -343,11 +351,7 @@ func _ensure_out_of_hearts_modal() -> Control:
 	style.border_width_bottom = 4
 	style.border_color = Color(0.65, 0.27, 0.0, 1)
 	panel.add_theme_stylebox_override("panel", style)
-	panel.anchor_left = 0.5
-	panel.anchor_top = 0.5
-	panel.anchor_right = 0.5
-	panel.anchor_bottom = 0.5
-	panel.position = Vector2(-210, -140)
+	panel.position = Vector2(150, 500)
 	panel.size = Vector2(420, 280)
 	overlay.add_child(panel)
 
