@@ -233,6 +233,32 @@ theme_override_font_sizes/font_size = 25
 text = "Account Information"
 horizontal_alignment = 1
 
+[node name="EditAccountButton" type="Button" parent="BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer" unique_id=1000003000]
+visible = false
+layout_mode = 0
+offset_left = 430.0
+offset_top = 25.0
+offset_right = 495.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(0.16470589, 0.5137255, 0.88235295, 1)
+theme_override_fonts/font = ExtResource("7_8pph3")
+theme_override_font_sizes/font_size = 20
+flat = true
+text = "Edit"
+
+[node name="SaveAccountButton" type="Button" parent="BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer" unique_id=1000003001]
+visible = false
+layout_mode = 0
+offset_left = 415.0
+offset_top = 25.0
+offset_right = 495.0
+offset_bottom = 60.0
+theme_override_colors/font_color = Color(0.16862746, 0.34509805, 0.007843138, 1)
+theme_override_fonts/font = ExtResource("7_8pph3")
+theme_override_font_sizes/font_size = 20
+flat = true
+text = "Save"
+
 [node name="NameLabel" type="Label" parent="BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer" unique_id=814979016]
 layout_mode = 0
 offset_left = 40.0

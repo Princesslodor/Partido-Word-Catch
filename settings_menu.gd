@@ -24,6 +24,14 @@ extends Control
 @onready var name_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/NameLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/NameLabel") else null
 @onready var grade_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/GradeLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/GradeLabel") else null
 @onready var section_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/SectionLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/SectionLabel") else null
+@onready var edit_account_button: BaseButton = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/EditAccountButton if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/EditAccountButton") else null
+@onready var save_account_button: BaseButton = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/SaveAccountButton if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/SaveAccountButton") else null
+
+# Only a teacher can edit Grade Level/Section here - a student's are set by
+# whichever class they joined, not free text they type themselves.
+var _is_teacher_account: bool = false
+var _grade_edit: LineEdit = null
+var _section_edit: LineEdit = null
 
 func _ready():
 	hide()
@@ -48,10 +56,10 @@ func _load_account_info():
 	# A teacher's own grade/section live in different fields than a
 	# student's - joined_grade_subject/joined_class_name only describe the
 	# class a STUDENT joined, which are empty for a teacher account.
-	var is_teacher: bool = "role" in gm and gm.role == "TEACHER"
+	_is_teacher_account = "role" in gm and gm.role == "TEACHER"
 	var grade_subject: String
 	var section: String
-	if is_teacher:
+	if _is_teacher_account:
 		grade_subject = gm.grade_subject if "grade_subject" in gm and gm.grade_subject != "" else "-"
 		section = gm.teacher_class_name if "teacher_class_name" in gm and gm.teacher_class_name != "" else "-"
 	else:
@@ -62,6 +70,66 @@ func _load_account_info():
 		grade_label.text = "Grade Level: " + grade_subject
 	if section_label:
 		section_label.text = "Section: " + section
+	if edit_account_button:
+		edit_account_button.visible = _is_teacher_account
+
+## Swaps Grade Level/Section from plain Labels to editable LineEdits
+## in-place (same position/size), so a teacher can fix values that were
+## left blank at registration or lost some other way - without a whole
+## separate screen.
+func _on_edit_account_pressed():
+	var gm = get_node_or_null("/root/GameManager")
+	if not gm or not _is_teacher_account:
+		return
+
+	if grade_label:
+		_grade_edit = LineEdit.new()
+		_grade_edit.text = gm.grade_subject if "grade_subject" in gm else ""
+		_grade_edit.placeholder_text = "e.g. Grade 3"
+		_grade_edit.position = grade_label.position
+		_grade_edit.size = grade_label.size
+		_grade_edit.add_theme_font_override("font", grade_label.get_theme_font("font"))
+		_grade_edit.add_theme_font_size_override("font_size", 22)
+		grade_label.get_parent().add_child(_grade_edit)
+		grade_label.hide()
+
+	if section_label:
+		_section_edit = LineEdit.new()
+		_section_edit.text = gm.teacher_class_name if "teacher_class_name" in gm else ""
+		_section_edit.placeholder_text = "e.g. Masagana"
+		_section_edit.position = section_label.position
+		_section_edit.size = section_label.size
+		_section_edit.add_theme_font_override("font", section_label.get_theme_font("font"))
+		_section_edit.add_theme_font_size_override("font_size", 22)
+		section_label.get_parent().add_child(_section_edit)
+		section_label.hide()
+
+	if edit_account_button: edit_account_button.hide()
+	if save_account_button: save_account_button.show()
+
+func _on_save_account_pressed():
+	var gm = get_node_or_null("/root/GameManager")
+	if gm:
+		if _grade_edit:
+			gm.set("grade_subject", _grade_edit.text.strip_edges())
+		if _section_edit:
+			gm.set("teacher_class_name", _section_edit.text.strip_edges())
+		if gm.has_method("save_game"):
+			gm.save_game()
+
+	if _grade_edit:
+		_grade_edit.queue_free()
+		_grade_edit = null
+	if _section_edit:
+		_section_edit.queue_free()
+		_section_edit = null
+
+	if grade_label: grade_label.show()
+	if section_label: section_label.show()
+	if save_account_button: save_account_button.hide()
+	if edit_account_button: edit_account_button.show()
+
+	_load_account_info()
 
 func _fix_mouse_filters():
 	if has_node("BackgroundOverlay"):
@@ -79,6 +147,12 @@ func _connect_signals():
 
 	if logout_button and not logout_button.pressed.is_connected(_on_logout_pressed):
 		logout_button.pressed.connect(_on_logout_pressed)
+
+	if edit_account_button and not edit_account_button.pressed.is_connected(_on_edit_account_pressed):
+		edit_account_button.pressed.connect(_on_edit_account_pressed)
+
+	if save_account_button and not save_account_button.pressed.is_connected(_on_save_account_pressed):
+		save_account_button.pressed.connect(_on_save_account_pressed)
 
 	# Audio Toggle Signals
 	if sound_toggle and not sound_toggle.toggle_changed.is_connected(_on_sound_toggled):
