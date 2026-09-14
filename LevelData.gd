@@ -304,16 +304,34 @@ var levels = {
 ## original device or log back in on a different one via the class code +
 ## name + PIN flow - their "Level 5" always means the same word to them,
 ## every session, on every device.
-var _shuffle_applied: bool = false
+##
+## LevelData is an autoload, so it stays alive for the whole app process,
+## not just one student's session - if Student A logs in, then logs out and
+## Student B logs in without the app fully restarting, apply_student_shuffle()
+## runs again for B. A plain "already shuffled" flag would wrongly skip that
+## second call and leave B stuck looking at A's shuffle, so instead we track
+## WHICH seed produced the current arrangement and only skip when the new
+## seed matches it. Every actual (re)shuffle is derived from a pristine,
+## never-mutated snapshot of the original content - taken once, the first
+## time this runs - rather than from whatever the previous student's shuffle
+## left behind, so each student's result depends only on their own seed.
+var _original_levels: Dictionary = {}
+var _original_sentence_pools: Dictionary = {}
+var _shuffled_seed_key: String = ""
 
 const _SHUFFLE_GROUPS := [
 	[1, 5], [6, 10], [11, 15], [16, 20], [21, 30]
 ]
 
 func apply_student_shuffle(seed_key: String) -> void:
-	if _shuffle_applied or seed_key == "":
+	if seed_key == "" or seed_key == _shuffled_seed_key:
 		return
-	_shuffle_applied = true
+	if _original_levels.is_empty():
+		for k in levels.keys():
+			_original_levels[k] = levels[k].duplicate()
+		for k in sentence_pools.keys():
+			_original_sentence_pools[k] = sentence_pools[k].duplicate()
+	_shuffled_seed_key = seed_key
 	for group in _SHUFFLE_GROUPS:
 		_shuffle_group(seed_key + "|" + str(group[0]) + "-" + str(group[1]), group[0], group[1])
 
@@ -332,15 +350,17 @@ func _shuffle_group(seed_str: String, lo: int, hi: int) -> void:
 	for offset in range(order.size()):
 		var new_key: int = lo + offset
 		var source_key: int = order[offset]
-		var moved: Dictionary = levels[source_key].duplicate()
+		# Reshuffled from the pristine snapshot every time, never from the
+		# live `levels` dict - see the note above on why that matters.
+		var moved: Dictionary = _original_levels[source_key].duplicate()
 		# The hint image files (Picture_HintLevel/level_N.*) are matched to
 		# whichever level number the content was ORIGINALLY authored under -
 		# stamping that here lets update_level_image() keep showing the
 		# right picture for a word after it's moved to a new level number.
 		moved["image_level"] = source_key
 		new_levels[new_key] = moved
-		if sentence_pools.has(source_key):
-			new_pools[new_key] = sentence_pools[source_key]
+		if _original_sentence_pools.has(source_key):
+			new_pools[new_key] = _original_sentence_pools[source_key]
 
 	for k in new_levels.keys():
 		levels[k] = new_levels[k]
