@@ -112,7 +112,10 @@ func load_current_level():
 	var grid = _get_scrambled_grid()
 	if grid and grid is GridContainer: grid.columns = 7
 
-	update_level_image(current_level)
+	# The hint image files are named after whichever level number a word was
+	# ORIGINALLY authored under, not its current (possibly shuffled) level
+	# number - image_level tracks that so the right picture keeps showing.
+	update_level_image(level_info.get("image_level", current_level))
 	update_background(current_level)
 	setup_answer_slots(current_word)
 	setup_scrambled_letters(current_word)
@@ -139,7 +142,7 @@ func update_level_image(lvl: int):
 		
 		while file_name != "":
 			if not dir.current_is_dir():
-				var target_str = "level_" + str(lvl)
+				var target_str = "level_" + str(lvl) + "."
 				if target_str in file_name.to_lower():
 					found_file = file_name
 					break

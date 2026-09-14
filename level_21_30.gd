@@ -23,49 +23,6 @@ var current_sentence_words: Array = []
 var selected_word_blocks: Array = []  
 var active_tile_mapping = {}
 
-var level_custom_pools = {
-	21: {
-		"words": ["MAGANA", "NGUNYAN", "MAGKAKAN", "SI", "PAULO"],
-		"distractors": ["MAY", "SA", "DUMAN", "ANNA", "LANGOY", "ARIN", "HILING", "INI", "RAYO", "BAHAY"]
-	},
-	22: {
-		"words": ["DAKUL", "AN", "DAKOP", "NI", "TIYO", "SAMMY"],
-		"distractors": ["NAGDALAN", "URO-UTRO", "MAGANA", "IGWA", "MAHAMIS", "BANWAAN", "KAN", "SIYA", "ARIN"]
-	},
-	23: {
-		"words": ["BUROBANGGI", "SIYANG", "NAGSUSULO", "NIN", "KIRAY"],
-		"distractors": ["KADAKUL", "DAKUL", "URO-ATYAN", "IGWA", "KAMI", "KAYA", "TAWO", "NAGDALAN", "MAGANA", "SA", "MAY"]
-	},
-	24: {
-		"words": ["KADAKUL", "AN", "NAGDADALAN", "SA", "PALABAS", "NA", "INI"],
-		"distractors": ["MAGANA", "NGUNYAN", "SI", "PAULO", "MAY", "DUMAN", "ASIN", "ARIN"]
-	},
-	25: {
-		"words": ["IGWA", "SA", "LUGAR", "NINDANG", "MAY", "HALABANG", "KAMOT"],
-		"distractors": ["DAKOL", "DAKOP", "NI", "TIYO", "IGWA", "MAHAMIS", "LANGOY"]
-	},
-	26: {
-		"words": ["URO-ATYAN", "MADUMAN", "KAMI", "SA", "MUNISIPYO"],
-		"distractors": ["NAGBIBISITA", "MARIA", "HARONG", "KADAKUL", "TAWO", "FIESTA", "ASIN", "RAYO", "INI", "ANNA"]
-	},
-	27: {
-		"words": ["NAGDADALAN", "SI", "MARCO", "NIN", "TELENOVELA", "SA", "TELEBISYON"],
-		"distractors": ["MAGAYON", "KAPALIGIRAN", "BANWAAN", "TIYO", "IGWA", "KAMI", "HILING"]
-	},
-	28: {
-		"words": ["URO-UTRO", "NIYANG", "TIGSABI", "AN", "SAKUYANG", "PANGARAN"],
-		"distractors": ["NAGLALAKAD", "DALAN", "MAHAMIS", "TINAPAY", "ANNA", "ASIN", "ARIN", "INI", "SA"]
-	},
-	29: {
-		"words": ["MAHAMIS", "AN", "DILA", "NI", "LITA", "KAYA", "DAKUL", "AN", "NAIPABAKAL", "NIYA"],
-		"distractors": ["PANINDOG", "LOLA", "SILONG", "KADAKUL", "TAWO", "KAMI", "LANGOY", "SA", "MAY"]
-	},
-	30: {
-		"words": ["NAGBIBISITA", "AN", "SAMUYANG", "PAMILYA", "SA", "BANWAAN", "KAN", "PILI", "KADA", "TAON"],
-		"distractors": ["MGA", "KABATAAN", "PARK", "MAHAMIS", "TINAPAY", "ASIN", "ARIN", "INI", "SI", "MAY"]
-	}
-}
-
 func _ready():
 	if Global.requested_level >= 21 and Global.requested_level <= 30:
 		current_level = Global.requested_level
@@ -127,10 +84,10 @@ func load_current_level():
 	update_hearts_display()
 	_check_out_of_hearts()
 
-	if not level_custom_pools.has(lvl_key):
+	if not LevelData.sentence_pools.has(lvl_key):
 		return
 
-	current_sentence_words = level_custom_pools[lvl_key]["words"]
+	current_sentence_words = LevelData.sentence_pools[lvl_key]["words"]
 		
 	selected_word_blocks.clear()
 	active_tile_mapping.clear()
@@ -150,7 +107,13 @@ func load_current_level():
 	if has_node("%CoinsLabel"):
 		%CoinsLabel.text = "🪙 " + str(player_coins)
 	
-	update_level_image(current_level)
+	# The hint image files are named after whichever level number a word was
+	# ORIGINALLY authored under, not its current (possibly shuffled) level
+	# number - image_level tracks that so the right picture keeps showing.
+	var image_lvl: int = lvl_key
+	if LevelData.levels.has(lvl_key):
+		image_lvl = LevelData.levels[lvl_key].get("image_level", lvl_key)
+	update_level_image(image_lvl)
 	setup_answer_slots()
 	setup_scrambled_word_blocks()
 
@@ -165,7 +128,7 @@ func update_level_image(lvl: int):
 		
 		while file_name != "":
 			if not dir.current_is_dir():
-				var target_str = "level_" + str(lvl)
+				var target_str = "level_" + str(lvl) + "."
 				if target_str in file_name.to_lower():
 					found_file = file_name
 					break
@@ -247,8 +210,8 @@ func setup_scrambled_word_blocks():
 		words_pool.append(w.to_upper())
 		
 	var level_distractors = []
-	if level_custom_pools.has(current_level):
-		level_distractors = level_custom_pools[current_level]["distractors"].duplicate()
+	if LevelData.sentence_pools.has(current_level):
+		level_distractors = LevelData.sentence_pools[current_level]["distractors"].duplicate()
 		
 	level_distractors.shuffle()
 	

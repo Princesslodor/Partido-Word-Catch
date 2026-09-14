@@ -1,5 +1,52 @@
 extends Node
 
+## Word-tile pools for the sentence-construction levels (21-30), keyed the
+## same as `levels` - moved here (rather than living inside level_21_30.gd)
+## so apply_student_shuffle() can move a level's words/distractors together
+## with its clue/meaning/cultural_note as one unit, keeping them paired.
+var sentence_pools = {
+	21: {
+		"words": ["MAGANA", "NGUNYAN", "MAGKAKAN", "SI", "PAULO"],
+		"distractors": ["MAY", "SA", "DUMAN", "ANNA", "LANGOY", "ARIN", "HILING", "INI", "RAYO", "BAHAY"]
+	},
+	22: {
+		"words": ["DAKUL", "AN", "DAKOP", "NI", "TIYO", "SAMMY"],
+		"distractors": ["NAGDALAN", "URO-UTRO", "MAGANA", "IGWA", "MAHAMIS", "BANWAAN", "KAN", "SIYA", "ARIN"]
+	},
+	23: {
+		"words": ["BUROBANGGI", "SIYANG", "NAGSUSULO", "NIN", "KIRAY"],
+		"distractors": ["KADAKUL", "DAKUL", "URO-ATYAN", "IGWA", "KAMI", "KAYA", "TAWO", "NAGDALAN", "MAGANA", "SA", "MAY"]
+	},
+	24: {
+		"words": ["KADAKUL", "AN", "NAGDADALAN", "SA", "PALABAS", "NA", "INI"],
+		"distractors": ["MAGANA", "NGUNYAN", "SI", "PAULO", "MAY", "DUMAN", "ASIN", "ARIN"]
+	},
+	25: {
+		"words": ["IGWA", "SA", "LUGAR", "NINDANG", "MAY", "HALABANG", "KAMOT"],
+		"distractors": ["DAKOL", "DAKOP", "NI", "TIYO", "IGWA", "MAHAMIS", "LANGOY"]
+	},
+	26: {
+		"words": ["URO-ATYAN", "MADUMAN", "KAMI", "SA", "MUNISIPYO"],
+		"distractors": ["NAGBIBISITA", "MARIA", "HARONG", "KADAKUL", "TAWO", "FIESTA", "ASIN", "RAYO", "INI", "ANNA"]
+	},
+	27: {
+		"words": ["NAGDADALAN", "SI", "MARCO", "NIN", "TELENOVELA", "SA", "TELEBISYON"],
+		"distractors": ["MAGAYON", "KAPALIGIRAN", "BANWAAN", "TIYO", "IGWA", "KAMI", "HILING"]
+	},
+	28: {
+		"words": ["URO-UTRO", "NIYANG", "TIGSABI", "AN", "SAKUYANG", "PANGARAN"],
+		"distractors": ["NAGLALAKAD", "DALAN", "MAHAMIS", "TINAPAY", "ANNA", "ASIN", "ARIN", "INI", "SA"]
+	},
+	29: {
+		"words": ["MAHAMIS", "AN", "DILA", "NI", "LITA", "KAYA", "DAKUL", "AN", "NAIPABAKAL", "NIYA"],
+		"distractors": ["PANINDOG", "LOLA", "SILONG", "KADAKUL", "TAWO", "KAMI", "LANGOY", "SA", "MAY"]
+	},
+	30: {
+		"words": ["NAGBIBISITA", "AN", "SAMUYANG", "PAMILYA", "SA", "BANWAAN", "KAN", "PILI", "KADA", "TAON"],
+		"distractors": ["MGA", "KABATAAN", "PARK", "MAHAMIS", "TINAPAY", "ASIN", "ARIN", "INI", "SI", "MAY"]
+	}
+}
+
 var levels = {
 	1: {
 		"unit": "Yunit 1: Sarili at Pamilya",
@@ -242,3 +289,60 @@ var levels = {
 		"audio": "30.mp3"
 	}
 }
+
+## Per-student word/level shuffling.
+##
+## Why: without this, "Level 5" is always the exact same word for every
+## student, so a student can just ask a classmate what the answer to a level
+## is and skip the puzzle entirely. Reshuffling which word/sentence sits at
+## which level number - separately per student - closes that loophole while
+## keeping the curriculum's difficulty ramp intact, since the shuffle stays
+## within each thematic unit's own level range rather than across all 30.
+##
+## Seeded by the student's own class code + name + PIN (not device_id), so
+## the same student sees the same shuffled order whether they play on their
+## original device or log back in on a different one via the class code +
+## name + PIN flow - their "Level 5" always means the same word to them,
+## every session, on every device.
+var _shuffle_applied: bool = false
+
+const _SHUFFLE_GROUPS := [
+	[1, 5], [6, 10], [11, 15], [16, 20], [21, 30]
+]
+
+func apply_student_shuffle(seed_key: String) -> void:
+	if _shuffle_applied or seed_key == "":
+		return
+	_shuffle_applied = true
+	for group in _SHUFFLE_GROUPS:
+		_shuffle_group(seed_key + "|" + str(group[0]) + "-" + str(group[1]), group[0], group[1])
+
+func _shuffle_group(seed_str: String, lo: int, hi: int) -> void:
+	var order: Array = range(lo, hi + 1)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(seed_str)
+	for i in range(order.size() - 1, 0, -1):
+		var j: int = rng.randi_range(0, i)
+		var tmp = order[i]
+		order[i] = order[j]
+		order[j] = tmp
+
+	var new_levels := {}
+	var new_pools := {}
+	for offset in range(order.size()):
+		var new_key: int = lo + offset
+		var source_key: int = order[offset]
+		var moved: Dictionary = levels[source_key].duplicate()
+		# The hint image files (Picture_HintLevel/level_N.*) are matched to
+		# whichever level number the content was ORIGINALLY authored under -
+		# stamping that here lets update_level_image() keep showing the
+		# right picture for a word after it's moved to a new level number.
+		moved["image_level"] = source_key
+		new_levels[new_key] = moved
+		if sentence_pools.has(source_key):
+			new_pools[new_key] = sentence_pools[source_key]
+
+	for k in new_levels.keys():
+		levels[k] = new_levels[k]
+	for k in new_pools.keys():
+		sentence_pools[k] = new_pools[k]

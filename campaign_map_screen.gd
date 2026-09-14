@@ -32,6 +32,14 @@ var lagonoy_bg: Texture2D = preload("res://Lagonoy Valley.png")
 var isarog_bg: Texture2D = preload("res://Isarog Foothills.png")
 
 func _ready() -> void:
+	# Give each Student their own per-account shuffled word/level order
+	# (see LevelData.apply_student_shuffle for why) before any level content
+	# is shown. Seeded by class code + name + PIN, not device_id, so it
+	# stays the same for this student even if they log in on another device.
+	if GameManager.role == "STUDENT" and GameManager.class_code != "" and GameManager.player_name != "" and GameManager.student_pin != "":
+		var seed_key := GameManager.class_code + "|" + GameManager.player_name + "|" + GameManager.student_pin
+		LevelData.apply_student_shuffle(seed_key)
+
 	if settings_menu:
 		settings_menu.hide()
 
