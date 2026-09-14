@@ -55,6 +55,8 @@ corner_radius_top_right = 30
 corner_radius_bottom_right = 30
 corner_radius_bottom_left = 30
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_helpbtn"]
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_logout"]
 bg_color = Color(0.16470589, 0.5137255, 0.88235295, 1)
 border_width_left = 3
@@ -352,6 +354,17 @@ scale = Vector2(0.5, 0.5)
 texture = ExtResource("9_ttjgw")
 expand_mode = 1
 
+[node name="AboutHelpButton" type="Button" parent="BackgroundOverlay/PopupBoard/CustomToggle/HelpCard/HBoxContainer"]
+layout_mode = 0
+offset_left = -7.0
+offset_top = 0.0
+offset_right = 500.0
+offset_bottom = 83.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBoxEmpty_helpbtn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_helpbtn")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_helpbtn")
+
 [node name="QuitGameButton" type="Button" parent="." unique_id=1980556815]
 layout_mode = 0
 offset_left = 168.0
@@ -378,3 +391,79 @@ theme_override_fonts/font = ExtResource("7_8pph3")
 theme_override_font_sizes/font_size = 32
 theme_override_styles/normal = SubResource("StyleBoxFlat_logout")
 text = "LOGOUT"
+
+[node name="AboutHelpPopup" type="Control" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="Dim" type="ColorRect" parent="AboutHelpPopup"]
+layout_mode = 0
+offset_right = 720.0
+offset_bottom = 1280.0
+color = Color(0.043137256, 0.043137256, 0.043137256, 0.5686275)
+
+[node name="Card" type="Panel" parent="AboutHelpPopup"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 138.0
+offset_right = 690.0
+offset_bottom = 1102.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_hrfpl")
+
+[node name="TitleLabel" type="Label" parent="AboutHelpPopup/Card"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 570.0
+offset_bottom = 78.0
+theme_override_colors/font_color = Color(0.14117648, 0.28627452, 0, 1)
+theme_override_fonts/font = ExtResource("2_2tlyv")
+theme_override_font_sizes/font_size = 34
+text = "Partido Word-Catch"
+
+[node name="BodyLabel" type="Label" parent="AboutHelpPopup/Card"]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 90.0
+offset_right = 630.0
+offset_bottom = 860.0
+theme_override_colors/font_color = Color(0.14117648, 0.28627452, 0, 1)
+theme_override_fonts/font = ExtResource("7_8pph3")
+theme_override_font_sizes/font_size = 24
+text = "A word puzzle game that helps Grade 3 pupils of Tinawagan Elementary School learn and preserve Bikol-Partido vocabulary through fun, story-based puzzles.
+
+How to Play:
+- Drag letter or word tiles to build the correct Bikol-Partido word or sentence.
+- Stuck? Use Hint (10 coins) or Alisin, remove a wrong tile (5 coins).
+- Finish a level to earn coins and learn its Kahulugan (meaning) and Cultural Note.
+- Complete all 30 levels across 4 Yunit to finish the Campaign Map!
+
+Developed by Magnosay, Lodor, and San Esteban as a capstone project for Partido State University."
+autowrap_mode = 3
+
+[node name="CloseAboutButton" type="Button" parent="AboutHelpPopup/Card"]
+layout_mode = 0
+offset_left = 600.0
+offset_top = 20.0
+offset_right = 650.0
+offset_bottom = 70.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBoxEmpty_helpbtn")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_helpbtn")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_helpbtn")
+
+[node name="CloseIcon" type="TextureRect" parent="AboutHelpPopup/Card/CloseAboutButton"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 45.0
+offset_bottom = 45.0
+texture = ExtResource("3_2d6lb")
+expand_mode = 1
+mouse_filter = 2

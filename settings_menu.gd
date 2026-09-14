@@ -15,6 +15,9 @@ extends Control
 @onready var close_button: BaseButton = $BackgroundOverlay/PopupBoard/CloseButton if has_node("BackgroundOverlay/PopupBoard/CloseButton") else null
 @onready var quit_game_button: BaseButton = $QuitGameButton if has_node("QuitGameButton") else null
 @onready var logout_button: BaseButton = $LogoutButton if has_node("LogoutButton") else null
+@onready var about_help_button: BaseButton = $BackgroundOverlay/PopupBoard/CustomToggle/HelpCard/HBoxContainer/AboutHelpButton if has_node("BackgroundOverlay/PopupBoard/CustomToggle/HelpCard/HBoxContainer/AboutHelpButton") else null
+@onready var about_help_popup: Control = $AboutHelpPopup if has_node("AboutHelpPopup") else null
+@onready var close_about_button: BaseButton = $AboutHelpPopup/Card/CloseAboutButton if has_node("AboutHelpPopup/Card/CloseAboutButton") else null
 
 # Custom Toggles
 @onready var sound_toggle: Button = $BackgroundOverlay/PopupBoard/CustomToggle/Panel/SoundRow/SoundToggle if has_node("BackgroundOverlay/PopupBoard/CustomToggle/Panel/SoundRow/SoundToggle") else null
@@ -154,6 +157,12 @@ func _connect_signals():
 	if save_account_button and not save_account_button.pressed.is_connected(_on_save_account_pressed):
 		save_account_button.pressed.connect(_on_save_account_pressed)
 
+	if about_help_button and not about_help_button.pressed.is_connected(_on_about_help_pressed):
+		about_help_button.pressed.connect(_on_about_help_pressed)
+
+	if close_about_button and not close_about_button.pressed.is_connected(_on_close_about_pressed):
+		close_about_button.pressed.connect(_on_close_about_pressed)
+
 	# Audio Toggle Signals
 	if sound_toggle and not sound_toggle.toggle_changed.is_connected(_on_sound_toggled):
 		sound_toggle.toggle_changed.connect(_on_sound_toggled)
@@ -164,6 +173,15 @@ func _connect_signals():
 # --- NAVIGATION LOGIC ---
 func _on_close_pressed():
 	hide()
+
+func _on_about_help_pressed():
+	if about_help_popup:
+		about_help_popup.show()
+		about_help_popup.move_to_front()
+
+func _on_close_about_pressed():
+	if about_help_popup:
+		about_help_popup.hide()
 
 func _on_quit_pressed():
 	# Dynamic search para sa ExitConfirmationPopup
