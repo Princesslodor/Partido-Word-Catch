@@ -94,7 +94,7 @@ func load_current_level():
 	
 	if has_node("%TagalogHintText"): %TagalogHintText.text = '"' + level_info["clue"] + '"'
 	if has_node("%LevelLabel"): %LevelLabel.text = "LEVEL " + str(current_level)
-	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 	
 	var slot_container = _get_answer_slot_container()
 	if slot_container and slot_container is GridContainer: slot_container.columns = 7
@@ -339,7 +339,7 @@ func _check_out_of_hearts() -> void:
 func _update_restore_heart_button() -> void:
 	if not out_of_hearts_restore_button:
 		return
-	out_of_hearts_restore_button.text = "Restore 1 Heart (🪙 %d)" % RESTORE_HEART_COST
+	out_of_hearts_restore_button.text = "Restore 1 Heart (%d Coins)" % RESTORE_HEART_COST
 	out_of_hearts_restore_button.disabled = player_coins < RESTORE_HEART_COST
 	out_of_hearts_restore_button.modulate = Color(1, 1, 1, 1) if player_coins >= RESTORE_HEART_COST else Color(1, 1, 1, 0.5)
 
@@ -349,7 +349,7 @@ func _on_restore_heart_pressed() -> void:
 	player_coins -= RESTORE_HEART_COST
 	player_hearts = min(player_hearts + 1, 4)
 	update_hearts_display()
-	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 	GameManager.save_game()
 	_check_out_of_hearts()
 
@@ -463,7 +463,7 @@ func show_victory_popup():
 	# this change too, instead of needing a separate save here.
 	GameManager.in_progress_stars.erase(str(lvl_key))
 	GameManager.complete_level(lvl_key, player_stars)
-	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 	if has_node("%+coin"): get_node("%+coin").text = "+10 COINS"
 	if has_node("%WordLabel"): %WordLabel.text = level_info.get("word", "")
 	if has_node("%MeaningLabel"): %MeaningLabel.text = level_info.get("meaning", "")
@@ -498,7 +498,7 @@ func _on_reveal_hint_pressed():
 		
 		if slot_text != target_char:
 			player_coins -= 10
-			if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+			if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 			GameManager.save_game()
 			_set_tile_text(slot, target_char)
 			current_placed_letters[i] = target_char
@@ -531,7 +531,7 @@ func _on_remove_letter_pressed():
 	
 	_clear_tile_text(selected_tile)
 	player_coins -= 5
-	if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 	GameManager.save_game()
 
 func _on_shuffle_pressed():
@@ -573,7 +573,7 @@ func _on_next_level_button_pressed():
 
 	if current_level <= LevelData.levels.size():
 		load_current_level()
-		if has_node("%CoinsLabel"): %CoinsLabel.text = "🪙 " + str(player_coins)
+		if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 
 func _get_answer_slot_container() -> Node:
 	if has_node("%AnswerSlotsContainer"): return %AnswerSlotsContainer
