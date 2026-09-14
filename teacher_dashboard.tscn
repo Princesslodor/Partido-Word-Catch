@@ -307,12 +307,14 @@ text = "Good Morning,"
 layout_mode = 0
 offset_left = 127.0
 offset_top = 41.0
-offset_right = 328.0
+offset_right = 610.0
 offset_bottom = 80.0
 theme_override_colors/font_color = Color(0.105882354, 0.49803922, 0.11372549, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
-theme_override_font_sizes/font_size = 39
+theme_override_font_sizes/font_size = 32
 text = ""
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="SubtittleLabel" type="Label" parent="Dashboard/GreetingPanel" unique_id=323211529]
 layout_mode = 0
@@ -550,12 +552,14 @@ text = ""
 layout_mode = 0
 offset_left = 137.0
 offset_top = 97.0
-offset_right = 363.0
+offset_right = 500.0
 offset_bottom = 139.0
 theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
-theme_override_font_sizes/font_size = 23
+theme_override_font_sizes/font_size = 20
 text = "Teacher: "
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="TextureRect2" type="TextureRect" parent="CreateClasscode/Panel" unique_id=1470983759]
 layout_mode = 0

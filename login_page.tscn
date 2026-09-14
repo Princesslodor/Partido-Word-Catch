@@ -1265,15 +1265,17 @@ text = "Welcome to"
 
 [node name="ClassNameLabel" type="Label" parent="ClassJoinedPopup" unique_id=907724635]
 layout_mode = 0
-offset_left = 235.0
+offset_left = 90.0
 offset_top = 507.0
-offset_right = 483.0
+offset_right = 628.0
 offset_bottom = 563.0
 theme_override_colors/font_color = Color(0.10980392, 0.2509804, 0.05882353, 1)
 theme_override_fonts/font = ExtResource("7_51wku")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 28
 text = ""
 horizontal_alignment = 1
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="TeacherRow" type="Panel" parent="ClassJoinedPopup" unique_id=405702843]
 layout_mode = 0
@@ -1296,12 +1298,14 @@ expand_mode = 1
 layout_mode = 0
 offset_left = 150.0
 offset_top = 50.0
-offset_right = 438.0
+offset_right = 505.0
 offset_bottom = 92.0
 theme_override_colors/font_color = Color(0.10980392, 0.2509804, 0.05882353, 1)
 theme_override_fonts/font = ExtResource("7_51wku")
-theme_override_font_sizes/font_size = 30
+theme_override_font_sizes/font_size = 24
 text = "Teacher: "
+clip_text = true
+text_overrun_behavior = 3
 
 [node name="ContinueButton" type="Button" parent="ClassJoinedPopup" unique_id=1759373980]
 layout_mode = 0
