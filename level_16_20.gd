@@ -136,36 +136,21 @@ func update_background(lvl: int):
 			$CanvasLayer/CoastalShore.visible = true
 
 func update_level_image(lvl: int):
-	var folder_path = "res://Picture_HintLevel/"
-	var dir = DirAccess.open(folder_path)
-	
-	if dir:
-		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		var found_file = ""
-		
-		while file_name != "":
-			if not dir.current_is_dir():
-				var target_str = "level_" + str(lvl) + "."
-				if target_str in file_name.to_lower():
-					found_file = file_name
-					break
-			file_name = dir.get_next()
-		
-		dir.list_dir_end()
-		
-		if found_file != "":
-			var full_path = folder_path + found_file
-			var tex = load(full_path)
-			if tex:
-				if has_node("%HintPicture"):
-					%HintPicture.texture = tex
-					%HintPicture.visible = true
-					%HintPicture.show()
-				elif has_node("HintPicture"):
-					$HintPicture.texture = tex
-					$HintPicture.visible = true
-					$HintPicture.show()
+	# lvl here must be the ORIGINAL (pre-shuffle) level number - see
+	# LevelData.get_hint_image_path()'s comment for why this can't scan the folder.
+	var image_path: String = LevelData.get_hint_image_path(lvl)
+	if image_path == "":
+		return
+	var tex = load(image_path)
+	if tex:
+		if has_node("%HintPicture"):
+			%HintPicture.texture = tex
+			%HintPicture.visible = true
+			%HintPicture.show()
+		elif has_node("HintPicture"):
+			$HintPicture.texture = tex
+			$HintPicture.visible = true
+			$HintPicture.show()
 
 func setup_answer_slots(word: String):
 	var slot_container = _get_answer_slot_container()

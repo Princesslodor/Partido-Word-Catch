@@ -1,5 +1,37 @@
 extends Node
 
+## Maps each level's ORIGINAL (pre-shuffle) number to its hint image's exact
+## file extension in res://Picture_HintLevel/. Used by get_hint_image_path()
+## below instead of scanning the folder at runtime - see that function for why.
+const _HINT_IMAGE_EXT := {
+	1: "jpg", 2: "png", 3: "jpg", 4: "jpg", 5: "jpg",
+	6: "jpg", 7: "jpg", 8: "jpg", 9: "jpg", 10: "jpg",
+	11: "png", 12: "jpg", 13: "jpg", 14: "jpg", 15: "png",
+	16: "jpg", 17: "jpg", 18: "jpg", 19: "jpg", 20: "jpg",
+	21: "jpeg", 22: "png", 23: "png", 24: "png", 25: "jpg",
+	26: "png", 27: "jpeg", 28: "jpeg", 29: "jpeg", 30: "jpeg",
+}
+
+## Returns the exact res:// path to a level's hint image, given the level's
+## ORIGINAL (pre-shuffle) number - i.e. level_info["image_level"], not
+## whatever level number the shuffle currently displays it under.
+##
+## Why this exists instead of scanning the Picture_HintLevel folder for a
+## filename containing "level_N.": DirAccess folder scans read files in
+## whatever order the underlying filesystem returns them, and an exported
+## Android build packs all of res:// into one .pck archive - a different
+## storage format than the plain folder the editor reads from, with no
+## guaranteed match to the editor's listing order. That is exactly why hint
+## images could look right when testing in the editor but come out wrong
+## once installed on a phone: the first "close enough" filename picked by
+## the scan was never guaranteed to be the right one on every platform.
+## Building the exact path directly sidesteps folder order entirely.
+func get_hint_image_path(original_level_num: int) -> String:
+	var ext: String = _HINT_IMAGE_EXT.get(original_level_num, "")
+	if ext == "":
+		return ""
+	return "res://Picture_HintLevel/level_%d.%s" % [original_level_num, ext]
+
 ## Word-tile pools for the sentence-construction levels (21-30), keyed the
 ## same as `levels` - moved here (rather than living inside level_21_30.gd)
 ## so apply_student_shuffle() can move a level's words/distractors together
