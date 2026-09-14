@@ -40,7 +40,11 @@ func _ready():
 	_connect_button("%ShuffleButton", "ShuffleButto", "_on_shuffle_pressed")
 	_connect_button("%SettingsButton2", "SettingsButton2", "_on_settings_button_pressed")
 	_connect_button("%BackButton", "BackButton", "_on_back_button_pressed")
-			
+	if has_node("CanvasLayer/VictoryPopup/ColorRect/CloseVictoryButton"):
+		var close_btn = $CanvasLayer/VictoryPopup/ColorRect/CloseVictoryButton
+		if not close_btn.is_connected("pressed", Callable(self, "_on_close_victory_pressed")):
+			close_btn.pressed.connect(_on_close_victory_pressed)
+
 	setup_heart_timer()
 	load_current_level()
 	_connect_sound_to_all_buttons(self)
@@ -446,6 +450,9 @@ func _ensure_out_of_hearts_modal() -> Control:
 		add_child(overlay)
 	out_of_hearts_modal = overlay
 	return overlay
+
+func _on_close_victory_pressed() -> void:
+	get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
 
 func show_victory_popup():
 	var lvl_key = int(current_level)
