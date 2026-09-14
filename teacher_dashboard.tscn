@@ -529,13 +529,13 @@ layout_mode = 0
 offset_left = 135.0
 offset_top = 11.0
 offset_right = 355.0
-offset_bottom = 53.0
+offset_bottom = 96.0
 theme_override_colors/font_color = Color(0.05490196, 0.4509804, 0.14117648, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 18
 text = ""
-clip_text = true
-text_overrun_behavior = 3
+autowrap_mode = 3
+vertical_alignment = 1
 
 [node name="SubjectLabel" type="Label" parent="CreateClasscode/Panel" unique_id=513025693]
 layout_mode = 0
