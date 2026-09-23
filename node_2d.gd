@@ -122,11 +122,11 @@ func update_background(lvl: int):
 		$CanvasLayer/VioletWood.visible = false
 		
 	if lvl >= 1 and lvl <= 10:
-		if has_node("CanvasLayer/LagonoyValleyBg"):
-			$CanvasLayer/LagonoyValleyBg.visible = true
-	elif lvl >= 11:
 		if has_node("CanvasLayer/CoastalShore"):
 			$CanvasLayer/CoastalShore.visible = true
+	elif lvl >= 11:
+		if has_node("CanvasLayer/LagonoyValleyBg"):
+			$CanvasLayer/LagonoyValleyBg.visible = true
 
 func update_level_image(lvl: int):
 	# lvl here must be the ORIGINAL (pre-shuffle) level number - see

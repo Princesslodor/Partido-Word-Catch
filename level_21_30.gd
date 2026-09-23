@@ -168,9 +168,11 @@ func setup_answer_slots():
 				for subchild in child.get_children():
 					subchild.visible = false
 					_set_block_text(subchild, "")
+					if "is_locked" in subchild: subchild.is_locked = false
 			else:
 				child.visible = false
 				_set_block_text(child, "")
+				if "is_locked" in child: child.is_locked = false
 
 	var slots = _get_all_answer_slots()
 	var total_words = current_sentence_words.size()
@@ -229,9 +231,11 @@ func setup_scrambled_word_blocks():
 func _on_answer_slot_pressed(slot_index: int):
 	# Dito na lang nakakonekta kapag gusto nilang i-clear o tanggalin ang laman ng slot kung kinakailangan
 	if slot_index < selected_word_blocks.size():
+		var slots = _get_all_answer_slots()
+		if slot_index < slots.size() and "is_locked" in slots[slot_index] and slots[slot_index].is_locked:
+			return
 		var word_in_slot = selected_word_blocks[slot_index]
 		if word_in_slot != "":
-			var slots = _get_all_answer_slots()
 			if slot_index < slots.size():
 				_set_block_text(slots[slot_index], "")
 			selected_word_blocks[slot_index] = ""
@@ -479,14 +483,26 @@ func _on_reveal_hint_pressed():
 		if i < slots.size():
 			var slot = slots[i]
 			if _get_block_text(slot) != current_sentence_words[i].to_upper():
+				var target_word = current_sentence_words[i].to_upper()
 				player_coins -= 10
 				if has_node("%CoinsLabel"):
 					%CoinsLabel.text = str(player_coins)
 				GameManager.save_game()
-				_set_block_text(slot, current_sentence_words[i].to_upper())
-				selected_word_blocks[i] = current_sentence_words[i].to_upper()
+				_set_block_text(slot, target_word)
+				selected_word_blocks[i] = target_word
+				if "is_locked" in slot: slot.is_locked = true
+				_disable_tray_tile_for_word(target_word)
 				check_answer(true)
 				break
+
+func _disable_tray_tile_for_word(word: String):
+	var grid = _get_scrambled_grid()
+	if not grid: return
+	for tile in grid.get_children():
+		if tile.visible and _get_block_text(tile) == word:
+			tile.visible = false
+			if tile is BaseButton: tile.disabled = true
+			break
 
 func _on_remove_letter_pressed():
 	pass
