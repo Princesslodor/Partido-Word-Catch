@@ -1128,13 +1128,27 @@ expand_mode = 1
 [node name="TitleLabel" type="Label" parent="StudentRegistration" unique_id=261842628]
 layout_mode = 0
 offset_left = 139.0
-offset_top = 345.0
+offset_top = 357.0
 offset_right = 596.0
-offset_bottom = 407.0
+offset_bottom = 419.0
 theme_override_colors/font_color = Color(0.10980392, 0.2509804, 0.05882353, 1)
 theme_override_fonts/font = ExtResource("7_51wku")
 theme_override_font_sizes/font_size = 45
 text = "Student Registration"
+horizontal_alignment = 1
+
+[node name="StatusLabel" type="Label" parent="StudentRegistration" unique_id=999888777]
+layout_mode = 0
+offset_left = 63.0
+offset_top = 706.0
+offset_right = 663.0
+offset_bottom = 740.0
+theme_override_colors/font_color = Color(0.7, 0.1, 0.1, 1)
+theme_override_fonts/font = ExtResource("6_wkk7v")
+theme_override_font_sizes/font_size = 20
+text = ""
+horizontal_alignment = 1
+autowrap_mode = 2
 
 [node name="ContinueButton" type="Button" parent="StudentRegistration" unique_id=1886256378]
 layout_mode = 0
@@ -1156,9 +1170,9 @@ offset_bottom = 289.0
 
 [node name="Label" type="Label" parent="StudentRegistration/FieldContainer" unique_id=77784172]
 layout_mode = 0
-offset_left = 91.0
+offset_left = 109.0
 offset_top = 178.0
-offset_right = 308.0
+offset_right = 326.0
 offset_bottom = 233.0
 theme_override_colors/font_color = Color(0.5803922, 0.24313726, 0.007843138, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
@@ -1187,9 +1201,9 @@ offset_bottom = 289.0
 
 [node name="PasswordLabel" type="Label" parent="StudentRegistration/FieldContainer2" unique_id=242735353]
 layout_mode = 0
-offset_left = 95.0
+offset_left = 113.0
 offset_top = 294.0
-offset_right = 368.0
+offset_right = 386.0
 offset_bottom = 349.0
 theme_override_colors/font_color = Color(0.5921569, 0.26666668, 0.03137255, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")

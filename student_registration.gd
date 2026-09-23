@@ -10,6 +10,7 @@ signal back_pressed
 
 @onready var continue_button: BaseButton = find_child("ContinueButton", true, false) as BaseButton
 @onready var back_button: BaseButton = find_child("BackButton", true, false) as BaseButton
+@onready var status_label: Label = $StatusLabel if has_node("StatusLabel") else null
 
 func _ready() -> void:
 	if pin_input:
@@ -41,12 +42,19 @@ func _on_continue_pressed() -> void:
 	var student_name: String = name_input.text.strip_edges() if name_input else ""
 	var student_pin: String = pin_input.text.strip_edges() if pin_input else ""
 
-	print(">>> DEBUG REGISTRATION | Name: '", student_name, "' | PIN: '", student_pin, "'")
+	if status_label: status_label.text = ""
 
-	# VALIDATION CHECK (Pansamantalang nagse-set ng default value para hindi mag-block kung testing)
 	if student_name == "":
-		print("WARNING: Walang pangalan. Gagamit ng default na 'Student'")
-		student_name = "Student"
+		if status_label: status_label.text = "Please enter your name."
+		return
+	var pin_is_all_digits := true
+	for c in student_pin:
+		if c < "0" or c > "9":
+			pin_is_all_digits = false
+			break
+	if student_pin.length() != 4 or not pin_is_all_digits:
+		if status_label: status_label.text = "PIN must be exactly 4 digits."
+		return
 
 	var gm = get_node_or_null("/root/GameManager")
 	var sync = get_node_or_null("/root/SyncManager")
