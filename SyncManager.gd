@@ -84,7 +84,7 @@ func _request(path: String, method: int, body: String = "", extra_headers: Array
 
 ## --- CLASS SYNC (teacher side) ---
 ## Upserts the class row for this teacher's permanent class code.
-func upsert_class(class_code: String, teacher_name: String, teacher_email: String, school_name: String, grade_subject: String, teacher_class_name: String) -> void:
+func upsert_class(class_code: String, teacher_name: String, teacher_email: String, school_name: String, grade_subject: String, teacher_class_name: String, avatar_id: String = "") -> void:
 	if not is_configured() or class_code == "":
 		return
 
@@ -95,6 +95,7 @@ func upsert_class(class_code: String, teacher_name: String, teacher_email: Strin
 		"school_name": school_name,
 		"grade_subject": grade_subject,
 		"teacher_class_name": teacher_class_name,
+		"avatar_id": avatar_id,
 	})
 
 	var http := _request("/rest/v1/classes?on_conflict=class_code", HTTPClient.METHOD_POST, body, [
@@ -136,6 +137,20 @@ func find_class_by_code(class_code: String, on_result: Callable) -> void:
 	_find_class_by("class_code", class_code, on_result)
 
 ## --- STUDENT PROGRESS SYNC ---
+## True while a students-table upsert is in flight. Guards against a subtle
+## race: save_game() can call sync_student_progress() twice in quick
+## succession (e.g. a wrong answer costs a star then a heart, each its own
+## save), and each call is its own independent HTTP request with no
+## sequencing. Under real network jitter, the EARLIER (now-stale) request's
+## response can land after the LATER one, so its upsert runs last and
+## overwrites the newer data - the teacher's leaderboard would then show
+## outdated coins/progress until the next sync. Coalescing concurrent calls
+## into a single in-flight request, plus one guaranteed trailing resync,
+## means only one upsert for this student is ever in flight at a time, so
+## there's nothing left to arrive out of order.
+var _progress_sync_in_flight: bool = false
+var _progress_resync_pending: bool = false
+
 ## Pushes this device's current GameManager progress up for the teacher to see.
 func sync_student_progress() -> void:
 	if not is_configured():
@@ -144,6 +159,11 @@ func sync_student_progress() -> void:
 	var gm = get_node_or_null("/root/GameManager")
 	if not gm or gm.role != "STUDENT" or gm.class_code == "" or gm.device_id == "":
 		return
+
+	if _progress_sync_in_flight:
+		_progress_resync_pending = true
+		return
+	_progress_sync_in_flight = true
 
 	var body := JSON.stringify({
 		"device_id": gm.device_id,
@@ -159,7 +179,13 @@ func sync_student_progress() -> void:
 	var http := _request("/rest/v1/students?on_conflict=device_id", HTTPClient.METHOD_POST, body, [
 		"Prefer: resolution=merge-duplicates"
 	])
-	http.request_completed.connect(func(_result, _code, _h, _b): http.queue_free())
+	http.request_completed.connect(func(_result, _code, _h, _b):
+		http.queue_free()
+		_progress_sync_in_flight = false
+		if _progress_resync_pending:
+			_progress_resync_pending = false
+			sync_student_progress()
+	)
 
 ## --- CROSS-DEVICE STUDENT LOGIN ---
 ## Looks up an existing student account by exact name + PIN (a student only
@@ -173,7 +199,10 @@ func find_student_account(player_name: String, pin: String, on_result: Callable)
 		on_result.call(null)
 		return
 
-	var path := "/rest/v1/students?player_name=eq.%s&student_pin=eq.%s&limit=1" % [
+	# No limit=1 here on purpose: name+PIN alone isn't guaranteed unique
+	# across different classes, so we need to see if more than one row
+	# matched before picking one - see the "ambiguous" handling below.
+	var path := "/rest/v1/students?player_name=eq.%s&student_pin=eq.%s&limit=5" % [
 		player_name.strip_edges().uri_encode(),
 		pin.strip_edges().uri_encode(),
 	]
@@ -184,7 +213,13 @@ func find_student_account(player_name: String, pin: String, on_result: Callable)
 			on_result.call(null)
 			return
 		var parsed = JSON.parse_string(body.get_string_from_utf8())
-		if parsed is Array and parsed.size() > 0:
+		if parsed is Array and parsed.size() > 1:
+			# Same name + PIN matches more than one account (likely in
+			# different classes) - too ambiguous to safely log into one of
+			# them automatically. Caller should ask the student to join by
+			# class code instead, which scopes the lookup unambiguously.
+			on_result.call("ambiguous")
+		elif parsed is Array and parsed.size() > 0:
 			on_result.call(parsed[0])
 		else:
 			on_result.call(false)

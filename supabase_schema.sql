@@ -8,11 +8,17 @@ create table if not exists classes (
   school_name text,
   grade_subject text,
   teacher_class_name text,
+  avatar_id text,
   created_at timestamptz default now()
 );
 
 -- Safe to re-run: adds the column if this table already existed without it.
 alter table classes add column if not exists teacher_email text;
+
+-- Safe to re-run: adds the column if this table already existed without it -
+-- lets the "Class Joined!" popup show the teacher's own chosen avatar
+-- instead of a hardcoded placeholder.
+alter table classes add column if not exists avatar_id text;
 
 -- Supabase's REST API (PostgREST) caches the table schema and doesn't
 -- always notice a plain ALTER TABLE right away - this tells it to reload,

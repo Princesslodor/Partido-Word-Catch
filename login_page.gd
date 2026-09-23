@@ -181,7 +181,20 @@ func show_class_joined_popup(joined_class: String = "", teacher: String = ""):
 		class_joined_popup.show()
 		class_joined_popup.move_to_front()
 		if class_joined_popup.has_method("setup_and_show"):
-			class_joined_popup.setup_and_show(joined_class, teacher)
+			var gm = get_node_or_null("/root/GameManager")
+			var sync = get_node_or_null("/root/SyncManager")
+			var class_code: String = gm.class_code if gm and "class_code" in gm else ""
+			if gm and sync and class_code != "" and sync.has_method("find_class_by_code"):
+				sync.find_class_by_code(class_code, func(class_row):
+					var avatar_texture: Texture2D = null
+					if class_row is Dictionary and gm.has_method("get_avatar_texture_path"):
+						var avatar_path: String = gm.get_avatar_texture_path(str(class_row.get("avatar_id", "")))
+						if avatar_path != "" and ResourceLoader.exists(avatar_path):
+							avatar_texture = load(avatar_path)
+					class_joined_popup.setup_and_show(joined_class, teacher, avatar_texture)
+				)
+			else:
+				class_joined_popup.setup_and_show(joined_class, teacher)
 func _show_teacher_login_screen():
 	_hide_all_screens()
 	if game_logo: game_logo.hide()
@@ -370,6 +383,9 @@ func _on_student_login_pressed() -> void:
 		if student_row == null:
 			var reason: String = sync.last_error if "last_error" in sync and sync.last_error != "" else ""
 			_show_student_login_status("No internet connection. Try again." + (" (" + reason + ")" if reason != "" else ""))
+			return
+		if student_row is String and student_row == "ambiguous":
+			_show_student_login_status("More than one account matches that name and PIN. Please use your class code to join instead.")
 			return
 		if not (student_row is Dictionary):
 			_show_student_login_status("No account found with that name and PIN.")

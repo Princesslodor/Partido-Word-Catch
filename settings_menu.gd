@@ -24,6 +24,7 @@ extends Control
 @onready var music_toggle: Button = $BackgroundOverlay/PopupBoard/CustomToggle/Panel/MusicRow/MusicToggle if has_node("BackgroundOverlay/PopupBoard/CustomToggle/Panel/MusicRow/MusicToggle") else null
 
 # Account Information
+@onready var person_icon: TextureRect = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/PersonIcon if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/PersonIcon") else null
 @onready var name_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/NameLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/NameLabel") else null
 @onready var grade_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/GradeLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/GradeLabel") else null
 @onready var section_label: Label = $BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/SectionLabel if has_node("BackgroundOverlay/PopupBoard/CustomToggle/AccountCard/HBoxContainer/SectionLabel") else null
@@ -55,6 +56,14 @@ func _load_account_info():
 	var display_name: String = gm.player_name if "player_name" in gm and gm.player_name != "" else "-"
 	if name_label:
 		name_label.text = "Name: " + display_name
+
+	if person_icon:
+		var avatar_id: String = gm.avatar_id if "avatar_id" in gm else ""
+		var avatar_path: String = gm.get_avatar_texture_path(avatar_id) if avatar_id != "" and gm.has_method("get_avatar_texture_path") else ""
+		if avatar_path != "" and ResourceLoader.exists(avatar_path):
+			person_icon.texture = load(avatar_path)
+		else:
+			person_icon.texture = load("res://Person Icon.png")
 
 	# A teacher's own grade/section live in different fields than a
 	# student's - joined_grade_subject/joined_class_name only describe the

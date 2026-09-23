@@ -169,7 +169,7 @@ func save_game() -> void:
 		if role == "STUDENT" and sync.has_method("sync_student_progress"):
 			sync.sync_student_progress()
 		elif role == "TEACHER" and class_code != "" and sync.has_method("upsert_class"):
-			sync.upsert_class(class_code, player_name, teacher_email, school_name, grade_subject, teacher_class_name)
+			sync.upsert_class(class_code, player_name, teacher_email, school_name, grade_subject, teacher_class_name, avatar_id)
 
 
 ## --- LOAD ---
@@ -239,6 +239,24 @@ func _generate_device_id() -> String:
 func set_role(new_role: String) -> void:
 	role = new_role
 	save_game()
+
+# Matches the card->id mapping in avatar_selection.gd's avatar_data table.
+const AVATAR_TEXTURE_PATHS: Dictionary = {
+	"student_female_1": "res://StudentF1.png",
+	"student_female_2": "res://StudentF2.png",
+	"student_male_1": "res://StudentM1.png",
+	"student_male_2": "res://StudentM2.png",
+	"teacher_female_1": "res://TeacherF1.png",
+	"teacher_female_2": "res://TeacherFemale2.png",
+	"teacher_male_1": "res://TeacherMale1.png",
+	"teacher_male_2": "res://TeacherMale2.png",
+}
+
+## Looks up the image file for a given avatar_id (e.g. "student_female_1").
+## Returns "" if the id is blank or unrecognized, so callers can fall back
+## to a placeholder icon instead of crashing on a bad load().
+func get_avatar_texture_path(for_avatar_id: String) -> String:
+	return AVATAR_TEXTURE_PATHS.get(for_avatar_id, "")
 
 ## Returns this teacher's permanent class code, generating one the first
 ## time it's needed. A class only ever gets one code for its whole life.
