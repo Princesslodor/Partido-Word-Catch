@@ -96,26 +96,29 @@ layout_mode = 0
 offset_left = 164.0
 offset_top = 600.0
 offset_right = 551.0
-offset_bottom = 669.0
+offset_bottom = 710.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_3owqy")
 
 [node name="LessonLabel" type="Label" parent="Panel" unique_id=462319208]
 layout_mode = 0
-offset_left = 50.0
-offset_top = 16.0
-offset_right = 340.0
-offset_bottom = 51.0
+offset_left = 20.0
+offset_top = 8.0
+offset_right = 367.0
+offset_bottom = 102.0
 theme_override_colors/font_color = Color(0.17254902, 0.36862746, 0.101960786, 1)
 theme_override_fonts/font = ExtResource("2_e4sn5")
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 22
 text = "Yunit 1: Sarili at Pamilya"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 2
 
 [node name="Panel2" type="Button" parent="." unique_id=296356474]
 layout_mode = 0
 offset_left = 210.0
-offset_top = 717.0
+offset_top = 758.0
 offset_right = 522.0
-offset_bottom = 786.0
+offset_bottom = 827.0
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_dpga7")
 

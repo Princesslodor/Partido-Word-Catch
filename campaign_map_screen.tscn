@@ -81,10 +81,10 @@ expand_mode = 1
 
 [node name="Level1" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1936957677]
 layout_mode = 0
-offset_left = 115.0
-offset_top = 272.0
-offset_right = 192.0
-offset_bottom = 346.0
+offset_left = 103.500000
+offset_top = 261.000000
+offset_right = 203.500000
+offset_bottom = 357.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -93,10 +93,10 @@ text = "1"
 
 [node name="Level2" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1626744664]
 layout_mode = 0
-offset_left = 525.0
-offset_top = 396.0
-offset_right = 602.0
-offset_bottom = 470.0
+offset_left = 513.500000
+offset_top = 385.000000
+offset_right = 613.500000
+offset_bottom = 481.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -107,20 +107,20 @@ text = "2"
 
 [node name="LockIcon2" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level2" unique_id=609528266]
 layout_mode = 0
-offset_left = 26.0
-offset_top = 19.0
-offset_right = 75.0
-offset_bottom = 73.0
+offset_left = 37.500000
+offset_top = 30.000000
+offset_right = 86.500000
+offset_bottom = 84.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level3" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1600917362]
 layout_mode = 0
-offset_left = 288.0
-offset_top = 535.0
-offset_right = 365.0
-offset_bottom = 609.0
+offset_left = 276.500000
+offset_top = 524.000000
+offset_right = 376.500000
+offset_bottom = 620.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -131,20 +131,20 @@ text = "3"
 
 [node name="LockIcon3" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level3" unique_id=763614610]
 layout_mode = 0
-offset_left = 22.999939
-offset_top = 18.0
-offset_right = 71.99994
-offset_bottom = 72.0
+offset_left = 34.499939
+offset_top = 29.000000
+offset_right = 83.499940
+offset_bottom = 83.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level4" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=487990614]
 layout_mode = 0
-offset_left = 285.0
-offset_top = 774.0
-offset_right = 362.0
-offset_bottom = 848.0
+offset_left = 273.500000
+offset_top = 763.000000
+offset_right = 373.500000
+offset_bottom = 859.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -155,20 +155,20 @@ text = "4"
 
 [node name="LockIcon4" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level4" unique_id=1014920826]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 20.0
-offset_right = 73.0
-offset_bottom = 74.0
+offset_left = 35.500000
+offset_top = 31.000000
+offset_right = 84.500000
+offset_bottom = 85.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level5" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=661401560]
 layout_mode = 0
-offset_left = 285.0
-offset_top = 1055.0
-offset_right = 362.0
-offset_bottom = 1129.0
+offset_left = 273.500000
+offset_top = 1044.000000
+offset_right = 373.500000
+offset_bottom = 1140.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -179,20 +179,20 @@ text = "5"
 
 [node name="LockIcon5" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level5" unique_id=976033702]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 24.0
-offset_right = 73.0
-offset_bottom = 78.0
+offset_left = 35.500000
+offset_top = 35.000000
+offset_right = 84.500000
+offset_bottom = 89.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level6" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1052175239]
 layout_mode = 0
-offset_left = 115.0
-offset_top = 273.0
-offset_right = 192.0
-offset_bottom = 347.0
+offset_left = 103.500000
+offset_top = 262.000000
+offset_right = 203.500000
+offset_bottom = 358.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -203,20 +203,20 @@ text = "6"
 
 [node name="LockIcon6" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level6" unique_id=1418303662]
 layout_mode = 0
-offset_left = 25.0
-offset_top = 18.0
-offset_right = 74.0
-offset_bottom = 72.0
+offset_left = 36.500000
+offset_top = 29.000000
+offset_right = 85.500000
+offset_bottom = 83.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level7" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=425151326]
 layout_mode = 0
-offset_left = 526.0
-offset_top = 395.0
-offset_right = 603.0
-offset_bottom = 469.0
+offset_left = 514.500000
+offset_top = 384.000000
+offset_right = 614.500000
+offset_bottom = 480.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -227,20 +227,20 @@ text = "7"
 
 [node name="LockIcon7" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level7" unique_id=1791531791]
 layout_mode = 0
-offset_left = 28.0
-offset_top = 18.0
-offset_right = 77.0
-offset_bottom = 72.0
+offset_left = 39.500000
+offset_top = 29.000000
+offset_right = 88.500000
+offset_bottom = 83.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level8" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=42975180]
 layout_mode = 0
-offset_left = 287.0
-offset_top = 535.0
-offset_right = 364.0
-offset_bottom = 609.0
+offset_left = 275.500000
+offset_top = 524.000000
+offset_right = 375.500000
+offset_bottom = 620.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -251,20 +251,20 @@ text = "8"
 
 [node name="LockIcon8" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level8" unique_id=252492745]
 layout_mode = 0
-offset_left = 23.0
-offset_top = 17.000061
-offset_right = 72.0
-offset_bottom = 71.00006
+offset_left = 34.500000
+offset_top = 28.000061
+offset_right = 83.500000
+offset_bottom = 82.000060
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level9" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1939337393]
 layout_mode = 0
-offset_left = 285.0
-offset_top = 774.0
-offset_right = 362.0
-offset_bottom = 848.0
+offset_left = 273.500000
+offset_top = 763.000000
+offset_right = 373.500000
+offset_bottom = 859.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -275,20 +275,20 @@ text = "9"
 
 [node name="LockIcon9" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level9" unique_id=1852808620]
 layout_mode = 0
-offset_left = 27.0
-offset_top = 18.0
-offset_right = 76.0
-offset_bottom = 72.0
+offset_left = 38.500000
+offset_top = 29.000000
+offset_right = 87.500000
+offset_bottom = 83.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level10" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1210123238]
 layout_mode = 0
-offset_left = 286.0
-offset_top = 1054.0
-offset_right = 363.0
-offset_bottom = 1128.0
+offset_left = 274.500000
+offset_top = 1043.000000
+offset_right = 374.500000
+offset_bottom = 1139.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -299,10 +299,10 @@ text = "10"
 
 [node name="LockIcon10" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level10" unique_id=485709276]
 layout_mode = 0
-offset_left = 25.0
-offset_top = 19.0
-offset_right = 74.0
-offset_bottom = 73.0
+offset_left = 36.500000
+offset_top = 30.000000
+offset_right = 85.500000
+offset_bottom = 84.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
@@ -385,10 +385,10 @@ expand_mode = 1
 
 [node name="Level11" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=28468588]
 layout_mode = 0
-offset_left = 394.0
-offset_top = 241.0
-offset_right = 471.0
-offset_bottom = 315.0
+offset_left = 382.500000
+offset_top = 230.000000
+offset_right = 482.500000
+offset_bottom = 326.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -399,20 +399,20 @@ text = "11"
 
 [node name="LockIcon11" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level11" unique_id=330232460]
 layout_mode = 0
-offset_left = 22.0
-offset_top = 22.0
-offset_right = 71.0
-offset_bottom = 76.0
+offset_left = 33.500000
+offset_top = 33.000000
+offset_right = 82.500000
+offset_bottom = 87.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level12" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1466246561]
 layout_mode = 0
-offset_left = 140.0
-offset_top = 337.0
-offset_right = 217.0
-offset_bottom = 411.0
+offset_left = 128.500000
+offset_top = 326.000000
+offset_right = 228.500000
+offset_bottom = 422.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -423,20 +423,20 @@ text = "12"
 
 [node name="LockIcon12" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level12" unique_id=170255882]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 18.0
-offset_right = 73.0
-offset_bottom = 72.0
+offset_left = 35.500000
+offset_top = 29.000000
+offset_right = 84.500000
+offset_bottom = 83.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level13" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=823381791]
 layout_mode = 0
-offset_left = 279.0
-offset_top = 520.0
-offset_right = 356.0
-offset_bottom = 594.0
+offset_left = 267.500000
+offset_top = 509.000000
+offset_right = 367.500000
+offset_bottom = 605.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -447,20 +447,20 @@ text = "13"
 
 [node name="LockIcon13" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level13" unique_id=579608020]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 18.0
-offset_right = 73.0
-offset_bottom = 72.0
+offset_left = 35.500000
+offset_top = 29.000000
+offset_right = 84.500000
+offset_bottom = 83.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level14" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1907239977]
 layout_mode = 0
-offset_left = 394.0
-offset_top = 776.0
-offset_right = 471.0
-offset_bottom = 850.0
+offset_left = 382.500000
+offset_top = 765.000000
+offset_right = 482.500000
+offset_bottom = 861.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -471,20 +471,20 @@ text = "14"
 
 [node name="LockIcon14" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level14" unique_id=1324407431]
 layout_mode = 0
-offset_left = 24.0
-offset_top = 14.0
-offset_right = 73.0
-offset_bottom = 68.0
+offset_left = 35.500000
+offset_top = 25.000000
+offset_right = 84.500000
+offset_bottom = 79.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1
 
 [node name="Level15" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1802662116]
 layout_mode = 0
-offset_left = 330.0
-offset_top = 1074.0
-offset_right = 407.0
-offset_bottom = 1148.0
+offset_left = 318.500000
+offset_top = 1063.000000
+offset_right = 418.500000
+offset_bottom = 1159.000000
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
 theme_override_fonts/font = ExtResource("2_012ip")
 theme_override_font_sizes/font_size = 25
@@ -495,10 +495,10 @@ text = "15"
 
 [node name="LockIcon15" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level15" unique_id=225731782]
 layout_mode = 0
-offset_left = 24.99997
-offset_top = 19.0
-offset_right = 73.99997
-offset_bottom = 73.0
+offset_left = 36.499970
+offset_top = 30.000000
+offset_right = 85.499970
+offset_bottom = 84.000000
 scale = Vector2(0.6, 0.6)
 texture = ExtResource("4_fv1ni")
 expand_mode = 1

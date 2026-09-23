@@ -50,6 +50,19 @@ func _ready() -> void:
 	_setup_option_button()
 	_load_region(0)
 	_update_coin_display()
+	_connect_sound_to_all_buttons(self)
+
+# --- AUDIO CLICK SYSTEM ---
+func _connect_sound_to_all_buttons(node: Node):
+	for child in node.get_children():
+		if child is BaseButton:
+			if not child.is_connected("pressed", Callable(self, "_on_global_button_pressed")):
+				child.pressed.connect(Callable(self, "_on_global_button_pressed"))
+		if child.get_child_count() > 0:
+			_connect_sound_to_all_buttons(child)
+
+func _on_global_button_pressed():
+	Global.play_click_sound()
 
 func _update_coin_display() -> void:
 	for label in coin_labels:
@@ -239,10 +252,10 @@ func _on_settings_button_pressed() -> void:
 
 func _unit_label_for_level(level_num: int) -> String:
 	if level_num <= 5:
-		return "Yunit 1"
+		return "Yunit 1: Pagbisto kan Sakuyang Sadiri saka Pamilya"
 	elif level_num <= 10:
-		return "Yunit 2"
+		return "Yunit 2: Pag-aram kan Sakuyang Komunidad"
 	elif level_num <= COASTAL_TOTAL_LEVELS + LAGONOY_TOTAL_LEVELS:
-		return "Yunit 3"
+		return "Yunit 3: Sa Luwas kan Sakuyang Komunidad"
 	else:
-		return "Yunit 4"
+		return "Yunit 4: Pangangataman kan Satuyang Kapalibotan"
