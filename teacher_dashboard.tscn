@@ -301,7 +301,7 @@ offset_bottom = 41.0
 theme_override_colors/font_color = Color(0.105882354, 0.49803922, 0.11372549, 1)
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 28
-text = "Good Morning,"
+text = "Marhay na aga,"
 
 [node name="GreetingLabel2" type="Label" parent="Dashboard/GreetingPanel" unique_id=905912863]
 layout_mode = 0
@@ -518,9 +518,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_6k0s3")
 [node name="TextureRect" type="TextureRect" parent="CreateClasscode/Panel" unique_id=217132952]
 layout_mode = 0
 offset_left = 24.0
-offset_top = 16.0
-offset_right = 122.0
-offset_bottom = 112.0
+offset_top = 26.0
+offset_right = 104.0
+offset_bottom = 106.0
 texture = ExtResource("11_otlon")
 expand_mode = 1
 
@@ -564,9 +564,9 @@ text_overrun_behavior = 3
 [node name="TextureRect2" type="TextureRect" parent="CreateClasscode/Panel" unique_id=1470983759]
 layout_mode = 0
 offset_left = 362.0
-offset_top = 20.0
-offset_right = 452.0
-offset_bottom = 95.0
+offset_top = 26.0
+offset_right = 442.0
+offset_bottom = 106.0
 texture = ExtResource("6_48pe7")
 expand_mode = 1
 

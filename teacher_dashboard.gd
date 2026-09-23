@@ -18,10 +18,12 @@ extends Control
 @onready var generate_new_code_button: Button = $CreateClasscode/CodeGeneratorPanel/GenerateNewCodeButton
 
 @onready var profile_name_label: Label = $TeacherProfilePanel/Label
+@onready var greeting_time_label: Label = $Dashboard/GreetingPanel/GreetingLabel
 @onready var greeting_name_label: Label = $Dashboard/GreetingPanel/GreetingLabel2
 @onready var grade_label: Label = $CreateClasscode/Panel/GradeLabel
 @onready var teacher_label: Label = $CreateClasscode/Panel/TeacherLabel
 @onready var total_students_label: Label = $Dashboard/Control2/TotalStudentsPanel/TotalNumberLabel
+@onready var manage_class_students_label: Label = $CreateClasscode/Panel/TextureRect2/Label
 
 # --- Students page (populated live from Supabase) ---
 @onready var students_panel: Panel = $Students/Panel
@@ -57,6 +59,9 @@ func _load_teacher_info() -> void:
 	if not gm:
 		return
 
+	if greeting_time_label:
+		greeting_time_label.text = _get_time_of_day_greeting()
+
 	var display_name: String = gm.get("player_name") if "player_name" in gm else ""
 	if display_name != "":
 		if profile_name_label: profile_name_label.text = display_name
@@ -77,6 +82,19 @@ func _load_teacher_info() -> void:
 		gm.save_game()
 
 	_refresh_total_students_count()
+
+## Reads the device's own local system clock (no internet or GPS needed,
+## works fully offline) and picks a Bikol-Partido time-of-day greeting.
+## Boundaries follow the usual umaga/hapon/gabi split: before 12 NN is
+## morning, 12 NN to before 6 PM is afternoon, 6 PM onward is evening.
+func _get_time_of_day_greeting() -> String:
+	var hour: int = Time.get_datetime_dict_from_system()["hour"]
+	if hour < 12:
+		return "Marhay na aga,"
+	elif hour < 18:
+		return "Marhay na hapon,"
+	else:
+		return "Marhay na banggi,"
 
 func _connect_signals() -> void:
 	if create_class_code_button and not create_class_code_button.pressed.is_connected(_on_create_class_code_pressed):
@@ -132,6 +150,7 @@ func _on_create_class_code_pressed() -> void:
 	_hide_all_pages()
 	if create_classcode: create_classcode.show()
 	if back_button: back_button.show()
+	_refresh_total_students_count()
 
 func _on_student_button_pressed() -> void:
 	_hide_all_pages()
@@ -159,10 +178,13 @@ func _refresh_total_students_count() -> void:
 	var sync = get_node_or_null("/root/SyncManager")
 	if not gm or not sync or gm.class_code == "":
 		if total_students_label: total_students_label.text = "0"
+		if manage_class_students_label: manage_class_students_label.text = "0"
 		return
 	sync.fetch_leaderboard(gm.class_code, func(students_data: Array):
 		if total_students_label:
 			total_students_label.text = str(students_data.size())
+		if manage_class_students_label:
+			manage_class_students_label.text = str(students_data.size())
 	)
 
 func _refresh_students_list() -> void:
@@ -184,6 +206,8 @@ func _render_students_list(students_data: Array) -> void:
 
 	if total_students_label:
 		total_students_label.text = str(students_data.size())
+	if manage_class_students_label:
+		manage_class_students_label.text = str(students_data.size())
 
 	if students_data.is_empty():
 		var empty_label := Label.new()
