@@ -279,6 +279,9 @@ func get_or_create_class_code() -> String:
 func add_coins(amount: int) -> void:
 	player_coins += amount
 	print("Coins added: +", amount, " | New total: ", player_coins)
+	var global_node = get_node_or_null("/root/Global")
+	if global_node and global_node.has_method("play_coin_sound"):
+		global_node.play_coin_sound()
 	save_game()
 
 

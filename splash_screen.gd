@@ -29,6 +29,19 @@ func _ready():
 	_start_character_animation()
 	_start_logo_pulse()
 	_start_loading_process()
+	_connect_sound_to_all_buttons(self)
+
+# --- AUDIO CLICK SYSTEM ---
+func _connect_sound_to_all_buttons(node: Node):
+	for child in node.get_children():
+		if child is BaseButton:
+			if not child.is_connected("pressed", Callable(self, "_on_global_button_pressed")):
+				child.pressed.connect(Callable(self, "_on_global_button_pressed"))
+		if child.get_child_count() > 0:
+			_connect_sound_to_all_buttons(child)
+
+func _on_global_button_pressed():
+	Global.play_click_sound()
 
 # Automatic Styling para sa Loading Label (Puti na may Dark Outline)
 func _apply_loading_label_styles():

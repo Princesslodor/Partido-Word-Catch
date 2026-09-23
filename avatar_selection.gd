@@ -32,6 +32,19 @@ func _ready() -> void:
 	_setup_initial_ui()
 	_connect_signals()
 	_filter_avatars_by_role()
+	_connect_sound_to_all_buttons(self)
+
+# --- AUDIO CLICK SYSTEM ---
+func _connect_sound_to_all_buttons(node: Node):
+	for child in node.get_children():
+		if child is BaseButton:
+			if not child.is_connected("pressed", Callable(self, "_on_global_button_pressed")):
+				child.pressed.connect(Callable(self, "_on_global_button_pressed"))
+		if child.get_child_count() > 0:
+			_connect_sound_to_all_buttons(child)
+
+func _on_global_button_pressed():
+	Global.play_click_sound()
 
 func _all_cards() -> Array:
 	var cards: Array = []

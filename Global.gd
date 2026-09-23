@@ -9,6 +9,13 @@ var requested_level: int = 0
 var audio_player: AudioStreamPlayer
 var sfx_player: AudioStreamPlayer
 var bgm_player: AudioStreamPlayer
+# Separate players for coin/correct/wrong so they can't cut each other off -
+# level completion fires play_correct_sound(), play_coin_sound(), and
+# play_horray() all in the same instant (see show_victory_popup()), and
+# they'd otherwise all fight over one shared player, leaving only the last
+# one triggered audible.
+var coin_player: AudioStreamPlayer
+var answer_player: AudioStreamPlayer
 
 var horray_audio = preload("res://audio/horray.mp3")
 
@@ -20,6 +27,14 @@ func _ready():
 	sfx_player = AudioStreamPlayer.new()
 	sfx_player.bus = "SFX"
 	add_child(sfx_player)
+
+	coin_player = AudioStreamPlayer.new()
+	coin_player.bus = "SFX"
+	add_child(coin_player)
+
+	answer_player = AudioStreamPlayer.new()
+	answer_player.bus = "SFX"
+	add_child(answer_player)
 
 	bgm_player = AudioStreamPlayer.new()
 	bgm_player.bus = "Music"
@@ -55,6 +70,44 @@ func play_horray():
 	if horray_audio:
 		sfx_player.stream = horray_audio
 		sfx_player.play()
+
+## Bigger celebration sound for finishing the whole game (level 30), used
+## in place of the regular per-level horray.
+func play_game_complete_sound():
+	var sound_path = "res://audio/game_complete.mp3"
+	if ResourceLoader.exists(sound_path):
+		sfx_player.stream = load(sound_path)
+		sfx_player.play()
+
+## Per-instance sound feedback (coins earned, correct/wrong answer) - each
+## uses its own dedicated player (see the vars above) so triggering more
+## than one of these at once, like on level completion, doesn't silently
+## cut any of them off.
+func play_coin_sound():
+	var sound_path = "res://audio/coin_award.mp3"
+	if ResourceLoader.exists(sound_path):
+		coin_player.stream = load(sound_path)
+		coin_player.play()
+
+func play_correct_sound():
+	var sound_path = "res://audio/correct_answer.mp3"
+	if ResourceLoader.exists(sound_path):
+		answer_player.stream = load(sound_path)
+		answer_player.play()
+
+func play_wrong_sound():
+	var sound_path = "res://audio/wrong_answer.mp3"
+	if ResourceLoader.exists(sound_path):
+		answer_player.stream = load(sound_path)
+		answer_player.play()
+
+## Coins being spent (Restore Heart, Hint, Alisin) - the reverse of
+## play_coin_sound(), uses the same dedicated coin_player.
+func play_coin_spend_sound():
+	var sound_path = "res://audio/coin_spend.mp3"
+	if ResourceLoader.exists(sound_path):
+		coin_player.stream = load(sound_path)
+		coin_player.play()
 
 func play_word_audio(audio_filename: String):
 	play_word_audio_with_volume(audio_filename, 0.0)
