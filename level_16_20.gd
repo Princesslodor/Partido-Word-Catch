@@ -281,11 +281,13 @@ func check_answer(from_hint: bool = false):
 
 	if is_full and constructed_word.length() == current_word.length():
 		if constructed_word == current_word:
+			Global.play_correct_sound()
 			show_victory_popup()
 		elif not from_hint:
 			# Skip the penalty when this check was triggered by Reveal Hint
 			# fixing one wrong letter - other still-wrong slots would
 			# otherwise make an already-paid-for hint also cost a star.
+			Global.play_wrong_sound()
 			handle_wrong_answer()
 
 func handle_wrong_answer():
@@ -367,6 +369,7 @@ func _on_restore_heart_pressed() -> void:
 	if player_coins < RESTORE_HEART_COST or player_hearts > 0:
 		return
 	player_coins -= RESTORE_HEART_COST
+	Global.play_coin_spend_sound()
 	player_hearts = min(player_hearts + 1, 4)
 	update_hearts_display()
 	if has_node("%CoinsLabel"):
@@ -524,6 +527,7 @@ func _on_reveal_hint_pressed():
 			slot_text = slot.get_node("Label").text.strip_edges().to_upper()
 		if slot_text != target_char:
 			player_coins -= 10
+			Global.play_coin_spend_sound()
 			if has_node("%CoinsLabel"):
 				%CoinsLabel.text = str(player_coins)
 			GameManager.save_game()
@@ -565,8 +569,9 @@ func _on_remove_letter_pressed():
 	var selected_tile = tiles[selected_index]
 	
 	_clear_tile_text(selected_tile)
-	
+
 	player_coins -= 5
+	Global.play_coin_spend_sound()
 	if has_node("%CoinsLabel"):
 		%CoinsLabel.text = str(player_coins)
 	GameManager.save_game()
@@ -643,9 +648,6 @@ func _set_tile_text(tile_node: Node, val: String):
 		tile_node.text = val
 	elif tile_node.has_node("Label"):
 		tile_node.get_node("Label").text = val
-
-func _on_next_level_pressed() -> void:
-	_on_next_level_button_pressed()
 
 func _connect_sound_to_all_buttons(node: Node):
 	for child in node.get_children():

@@ -256,11 +256,13 @@ func check_answer(from_hint: bool = false):
 		var target = " ".join(current_sentence_words).strip_edges().to_upper()
 		
 		if constructed == target:
+			Global.play_correct_sound()
 			show_victory_popup()
 		elif not from_hint:
 			# Skip the penalty when this check was triggered by Reveal Hint
 			# fixing one wrong word - other still-wrong slots would
 			# otherwise make an already-paid-for hint also cost a star.
+			Global.play_wrong_sound()
 			handle_wrong_answer()
 
 func handle_wrong_answer():
@@ -342,6 +344,7 @@ func _on_restore_heart_pressed() -> void:
 	if player_coins < RESTORE_HEART_COST or player_hearts > 0:
 		return
 	player_coins -= RESTORE_HEART_COST
+	Global.play_coin_spend_sound()
 	player_hearts = min(player_hearts + 1, 4)
 	update_hearts_display()
 	if has_node("%CoinsLabel"):
@@ -469,9 +472,21 @@ func show_victory_popup():
 		particles.emitting = false
 		particles.restart()
 		particles.emitting = true
-	
-	Global.play_horray()
-			
+
+	# Level 30 is the last level in the whole game - the regular "next
+	# level" flow has nowhere to go from here, so show a distinct
+	# completion message/sound and send the player back to the map instead.
+	var title_label = get_node_or_null("CanvasLayer/VictoryPopup/MAHUSAY!")
+	var next_level_label = get_node_or_null("CanvasLayer/VictoryPopup/NextLevel/Label")
+	if lvl_key >= 30:
+		if title_label: title_label.text = "TAPOS MO NA!"
+		if next_level_label: next_level_label.text = "Bumalik sa Mapa"
+		Global.play_game_complete_sound()
+	else:
+		if title_label: title_label.text = "MAHUSAY!"
+		if next_level_label: next_level_label.text = "Sunod na Level  >>"
+		Global.play_horray()
+
 	if has_node("%VictoryPopup"):
 		%VictoryPopup.visible = true
 
@@ -485,6 +500,7 @@ func _on_reveal_hint_pressed():
 			if _get_block_text(slot) != current_sentence_words[i].to_upper():
 				var target_word = current_sentence_words[i].to_upper()
 				player_coins -= 10
+				Global.play_coin_spend_sound()
 				if has_node("%CoinsLabel"):
 					%CoinsLabel.text = str(player_coins)
 				GameManager.save_game()
@@ -539,13 +555,17 @@ func _on_back_button_pressed():
 		%ExitConfirmationPopup.open_popup()
 
 func _on_next_level_button_pressed():
+	if current_level >= 30:
+		# No level 31 to load - the button reads "Bumalik sa Mapa" at this
+		# point (see show_victory_popup()), so send the player back to the
+		# Campaign Map instead of silently doing nothing.
+		get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
+		return
 	current_level += 1
 	if current_level <= 30:
 		load_current_level()
 		if has_node("%CoinsLabel"):
 			%CoinsLabel.text = str(player_coins)
-	else:
-		print("Natapos na ang lahat ng levels mula 21 hanggang 30!")
 
 func _get_answer_slot_container() -> Node:
 	if has_node("%AnswerSlotsContainer"):
@@ -571,9 +591,6 @@ func _set_block_text(node: Node, val: String):
 		node.text = val
 	elif node.has_node("Label"):
 		node.get_node("Label").text = val
-
-func _on_next_level_pressed() -> void:
-	_on_next_level_button_pressed()
 
 func _connect_sound_to_all_buttons(node: Node):
 	for child in node.get_children():

@@ -240,8 +240,10 @@ func check_slots_automatically():
 	if is_full and not last_slots_full_state:
 		last_slots_full_state = true
 		if constructed_word == current_word:
+			Global.play_correct_sound()
 			show_victory_popup()
 		else:
+			Global.play_wrong_sound()
 			handle_wrong_answer()
 	elif not is_full:
 		last_slots_full_state = false
@@ -338,6 +340,7 @@ func _on_restore_heart_pressed() -> void:
 	if player_coins < RESTORE_HEART_COST or player_hearts > 0:
 		return
 	player_coins -= RESTORE_HEART_COST
+	Global.play_coin_spend_sound()
 	player_hearts = min(player_hearts + 1, 4)
 	update_hearts_display()
 	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
@@ -489,6 +492,7 @@ func _on_reveal_hint_pressed():
 		
 		if slot_text != target_char:
 			player_coins -= 10
+			Global.play_coin_spend_sound()
 			if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 			GameManager.save_game()
 			_set_tile_text(slot, target_char)
@@ -522,6 +526,7 @@ func _on_remove_letter_pressed():
 	
 	_clear_tile_text(selected_tile)
 	player_coins -= 5
+	Global.play_coin_spend_sound()
 	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 	GameManager.save_game()
 
@@ -593,11 +598,8 @@ func _set_tile_text(tile_node: Node, val: String):
 		tile_node.set_letter(val)
 	elif "text" in tile_node: 
 		tile_node.text = val
-	elif tile_node.has_node("Label"): 
+	elif tile_node.has_node("Label"):
 		tile_node.get_node("Label").text = val
-
-func _on_next_level_pressed() -> void: 
-	_on_next_level_button_pressed()
 
 # --- AUDIO CLICK SYSTEM ---
 func _connect_sound_to_all_buttons(node: Node):
