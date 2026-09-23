@@ -53,6 +53,7 @@ extends Control
 @onready var teacher_school_input: LineEdit = $TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer4/SchoolNameInput if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer4/SchoolNameInput") else null
 @onready var teacher_grade_subject_input: LineEdit = get_node_or_null("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer5/Grade_Subject TaughtInput")
 @onready var teacher_class_name_input: LineEdit = $TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer6/ClassNameInput if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer6/ClassNameInput") else null
+@onready var teacher_create_status_label: Label = $TeacherCreateAccount/MarginContainer/VBoxContainer/Spacer/StatusLabel if has_node("TeacherCreateAccount/MarginContainer/VBoxContainer/Spacer/StatusLabel") else null
 
 var current_role: String = "STUDENT"
 
@@ -494,19 +495,26 @@ func _show_login_status(message: String) -> void:
 	login_status_label.visible = message != ""
 
 func _on_teacher_create_account_pressed():
+	if teacher_create_status_label: teacher_create_status_label.text = ""
+
+	var name_text: String = teacher_name_input.text.strip_edges() if teacher_name_input else ""
+	var email_text: String = teacher_email_input.text.strip_edges() if teacher_email_input else ""
+	var school_text: String = teacher_school_input.text.strip_edges() if teacher_school_input else ""
+	var grade_subject_text: String = teacher_grade_subject_input.text.strip_edges() if teacher_grade_subject_input else ""
+	var class_name_text: String = teacher_class_name_input.text.strip_edges() if teacher_class_name_input else ""
+
+	if name_text == "" or email_text == "" or school_text == "" or grade_subject_text == "" or class_name_text == "":
+		if teacher_create_status_label: teacher_create_status_label.text = "Please fill in all fields before continuing."
+		return
+
 	_save_role_to_gm("TEACHER")
 	var gm = get_node_or_null("/root/GameManager")
 	if gm:
-		if teacher_name_input and teacher_name_input.text.strip_edges() != "":
-			gm.set("player_name", teacher_name_input.text.strip_edges())
-		if teacher_email_input:
-			gm.set("teacher_email", teacher_email_input.text.strip_edges())
-		if teacher_school_input:
-			gm.set("school_name", teacher_school_input.text.strip_edges())
-		if teacher_grade_subject_input:
-			gm.set("grade_subject", teacher_grade_subject_input.text.strip_edges())
-		if teacher_class_name_input:
-			gm.set("teacher_class_name", teacher_class_name_input.text.strip_edges())
+		gm.set("player_name", name_text)
+		gm.set("teacher_email", email_text)
+		gm.set("school_name", school_text)
+		gm.set("grade_subject", grade_subject_text)
+		gm.set("teacher_class_name", class_name_text)
 		# get_or_create_class_code() reuses whatever class_code is already
 		# saved locally - which could belong to a totally different account
 		# (e.g. a class a STUDENT previously joined on this same device).
@@ -516,8 +524,9 @@ func _on_teacher_create_account_pressed():
 			gm.get_or_create_class_code()
 		if gm.has_method("save_game"):
 			gm.save_game()
-	if teacher_dashboard_scene != "":
-		get_tree().change_scene_to_file(teacher_dashboard_scene)
+	# Same as the student flow: pick an avatar right after the account is
+	# created, rather than landing on the dashboard with no avatar chosen.
+	_change_to_avatar_selection()
 
 func _on_back_button_pressed():
 	if student_registration and student_registration.is_visible_in_tree():

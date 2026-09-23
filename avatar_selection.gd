@@ -92,7 +92,10 @@ func _on_confirm_pressed() -> void:
 		if gm.has_method("save_game"):
 			gm.save_game()
 
-	get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
+	if gm and "role" in gm and gm.role == "TEACHER":
+		get_tree().change_scene_to_file("res://teacher_dashboard.tscn")
+	else:
+		get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
 
 func _on_back_pressed() -> void:
 	# Bumalik sa Login o Role Selection
