@@ -24,6 +24,12 @@ var student_pin: String = ""          # 4-digit PIN a student registers with
 var avatar_id: String = ""            # Which avatar card the player picked
 var device_id: String = ""            # Stable per-install id used to identify this player when syncing online
 
+# Not saved to disk on purpose - resets every fresh app launch, so the
+# Word of the Day popup shows again next time the app opens, but not
+# repeatedly every time a Student returns to the Campaign Map mid-session
+# (e.g. after finishing a level).
+var has_shown_word_of_the_day: bool = false
+
 ## --- TEACHER ACCOUNT INFO ---
 var teacher_email: String = ""
 var school_name: String = ""

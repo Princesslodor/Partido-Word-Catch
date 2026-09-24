@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://brbxr71qdww6a" path="res://settings_menu.tscn" id="13_o4pao"]
 [ext_resource type="PackedScene" uid="uid://dc3itlbsj88f7" path="res://exit_confirmation_popup.tscn" id="14_exitpop"]
 [ext_resource type="PackedScene" uid="uid://c55t8c0om86gy" path="res://level_info_popup.tscn" id="15_lvlinfo"]
+[ext_resource type="PackedScene" path="res://word_of_the_day_popup.tscn" id="16_wotd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
 bg_color = Color(0.90588236, 0.84705883, 0.6784314, 1)
@@ -1053,5 +1054,9 @@ layout_mode = 1
 confirm_message = "Log out and return to the role selection screen?"
 
 [node name="LevelInfoPopup" parent="." unique_id=588900884 instance=ExtResource("15_lvlinfo")]
+visible = false
+layout_mode = 1
+
+[node name="WordOfTheDayPopup" parent="." unique_id=588900885 instance=ExtResource("16_wotd")]
 visible = false
 layout_mode = 1

@@ -1,0 +1,164 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://word_of_the_day_popup.gd" id="1_wotd"]
+[ext_resource type="Texture2D" uid="uid://dmn0isee2270m" path="res://Play Background.png" id="2_wotd"]
+[ext_resource type="FontFile" uid="uid://binoho5ooy4hp" path="res://Nunito-Black.ttf" id="3_wotd"]
+[ext_resource type="FontFile" uid="uid://c5ljwdm2jx37j" path="res://LuckiestGuy-Regular.ttf" id="4_wotd"]
+[ext_resource type="Texture2D" uid="uid://d3e7k8aj301xq" path="res://Red X Icon.png" id="5_wotd"]
+[ext_resource type="Texture2D" uid="uid://b4546hkibf83h" path="res://images/book.png" id="6_wotd"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_speaker"]
+
+[node name="WordOfTheDayPopup" type="Control" unique_id=3001000001]
+z_index = 25
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wotd")
+
+[node name="Overlay" type="ColorRect" parent="." unique_id=3001000002]
+layout_mode = 0
+offset_right = 720.0
+offset_bottom = 1282.0
+color = Color(0, 0, 0, 0.43137255)
+
+[node name="FrameBoard" type="TextureRect" parent="." unique_id=3001000003]
+layout_mode = 0
+offset_left = 59.0
+offset_top = 335.0
+offset_right = 665.0
+offset_bottom = 907.0
+texture = ExtResource("2_wotd")
+expand_mode = 1
+
+[node name="TitleLabel" type="Label" parent="FrameBoard" unique_id=3001000004]
+layout_mode = 0
+offset_left = 30.0
+offset_top = 30.0
+offset_right = 576.0
+offset_bottom = 80.0
+theme_override_fonts/font = ExtResource("3_wotd")
+theme_override_font_sizes/font_size = 28
+text = "Salita Ngayong Araw"
+horizontal_alignment = 1
+
+[node name="CloseButton" type="TextureButton" parent="FrameBoard" unique_id=3001000005]
+layout_mode = 0
+offset_left = 489.0
+offset_top = 15.0
+offset_right = 579.0
+offset_bottom = 100.0
+texture_normal = ExtResource("5_wotd")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="SalitaTitleLabel" type="Label" parent="." unique_id=3001000006]
+layout_mode = 0
+offset_left = 123.0
+offset_top = 460.0
+offset_right = 300.0
+offset_bottom = 488.0
+theme_override_colors/font_color = Color(0.1764706, 0.39215687, 0.09411765, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_wotd")
+theme_override_font_sizes/font_size = 25
+text = "Salita:"
+
+[node name="WordLabel" type="Label" parent="." unique_id=3001000007]
+layout_mode = 0
+offset_left = 73.0
+offset_top = 490.0
+offset_right = 645.0
+offset_bottom = 545.0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("4_wotd")
+theme_override_font_sizes/font_size = 44
+text = "IDO"
+horizontal_alignment = 1
+autowrap_mode = 2
+
+[node name="SpeakerButton" type="Button" parent="." unique_id=3001000008]
+layout_mode = 0
+offset_left = 110.0
+offset_top = 558.0
+offset_right = 170.0
+offset_bottom = 600.0
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxEmpty_speaker")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_speaker")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_speaker")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_speaker")
+text = "🔊"
+
+[node name="PakingganLabel" type="Label" parent="." unique_id=3001000009]
+layout_mode = 0
+offset_left = 191.0
+offset_top = 565.0
+offset_right = 614.0
+offset_bottom = 600.0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_wotd")
+theme_override_font_sizes/font_size = 20
+text = "Pakinggan ang tamang pagbigkas"
+autowrap_mode = 2
+
+[node name="KahuluganTitleLabel" type="Label" parent="." unique_id=3001000010]
+layout_mode = 0
+offset_left = 123.0
+offset_top = 612.0
+offset_right = 320.0
+offset_bottom = 640.0
+theme_override_colors/font_color = Color(0.1764706, 0.39215687, 0.09411765, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_wotd")
+theme_override_font_sizes/font_size = 25
+text = "Kahulugan:"
+
+[node name="BookIcon" type="TextureRect" parent="." unique_id=3001000014]
+layout_mode = 0
+offset_left = 113.0
+offset_top = 644.0
+offset_right = 163.0
+offset_bottom = 685.0
+texture = ExtResource("6_wotd")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="MeaningLabel" type="Label" parent="." unique_id=3001000011]
+layout_mode = 0
+offset_left = 175.0
+offset_top = 644.0
+offset_right = 614.0
+offset_bottom = 685.0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_wotd")
+theme_override_font_sizes/font_size = 22
+text = "Aso sa wikang Bikol."
+autowrap_mode = 2
+
+[node name="CulturalNoteTitleLabel" type="Label" parent="." unique_id=3001000012]
+layout_mode = 0
+offset_left = 123.0
+offset_top = 697.0
+offset_right = 380.0
+offset_bottom = 725.0
+theme_override_colors/font_color = Color(0.1764706, 0.39215687, 0.09411765, 1)
+theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_wotd")
+theme_override_font_sizes/font_size = 25
+text = "Cultural Note:"
+
+[node name="CulturalNoteLabel" type="Label" parent="." unique_id=3001000013]
+layout_mode = 0
+offset_left = 123.0
+offset_top = 728.0
+offset_right = 614.0
+offset_bottom = 895.0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_wotd")
+theme_override_font_sizes/font_size = 20
+text = "Ang 'ido' ay itinuturing na matalik na kaibigan at tagapag-bantay ng tahanan sa pamilyang Bikolano."
+autowrap_mode = 2

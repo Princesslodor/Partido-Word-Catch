@@ -16,6 +16,13 @@ const UNIT_LEVEL_COUNTS: Array = [5, 5, 5, 15]
 @onready var settings_button: TextureButton = $SettingsButton 
 @onready var settings_menu: Control = $SettingsMenu
 @onready var level_info_popup: Control = $LevelInfoPopup
+@onready var word_of_the_day_popup: Control = $WordOfTheDayPopup if has_node("WordOfTheDayPopup") else null
+
+@onready var word_of_the_day_buttons: Array = [
+	$"Level Container/CoastalShoreLevels/Header/WordoftheDaybutton" if has_node("Level Container/CoastalShoreLevels/Header/WordoftheDaybutton") else null,
+	$"Level Container/LagonoyValleyLevels/Header/WordoftheDaybutton" if has_node("Level Container/LagonoyValleyLevels/Header/WordoftheDaybutton") else null,
+	$"Level Container/IsarogFoothillsLevels/Header/WordOftheDaybutton" if has_node("Level Container/IsarogFoothillsLevels/Header/WordOftheDaybutton") else null,
+]
 
 @onready var coastal_levels: Control = $"Level Container/CoastalShoreLevels"
 @onready var lagonoy_levels: Control = $"Level Container/LagonoyValleyLevels"
@@ -51,6 +58,30 @@ func _ready() -> void:
 	_load_region(0)
 	_update_coin_display()
 	_connect_sound_to_all_buttons(self)
+	_connect_word_of_the_day_buttons()
+	_maybe_show_word_of_the_day()
+
+func _connect_word_of_the_day_buttons() -> void:
+	for btn in word_of_the_day_buttons:
+		if btn and btn is BaseButton and not btn.is_connected("pressed", Callable(self, "_on_word_of_the_day_pressed")):
+			btn.pressed.connect(_on_word_of_the_day_pressed)
+
+func _on_word_of_the_day_pressed() -> void:
+	if word_of_the_day_popup and word_of_the_day_popup.has_method("display_word"):
+		word_of_the_day_popup.display_word(LevelData.get_word_of_the_day())
+
+## Auto-shows once per app session (tracked on GameManager, which survives
+## scene changes but not a fresh app launch) the first time a Student
+## reaches the Campaign Map - not on every return trip mid-session (e.g.
+## coming back here after finishing a level), and never for the Teacher role.
+func _maybe_show_word_of_the_day() -> void:
+	if GameManager.role != "STUDENT":
+		return
+	if "has_shown_word_of_the_day" in GameManager and GameManager.has_shown_word_of_the_day:
+		return
+	if "has_shown_word_of_the_day" in GameManager:
+		GameManager.has_shown_word_of_the_day = true
+	_on_word_of_the_day_pressed()
 
 # --- AUDIO CLICK SYSTEM ---
 func _connect_sound_to_all_buttons(node: Node):

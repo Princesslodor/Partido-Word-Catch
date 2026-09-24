@@ -16,6 +16,12 @@ var bgm_player: AudioStreamPlayer
 # one triggered audible.
 var coin_player: AudioStreamPlayer
 var answer_player: AudioStreamPlayer
+# Word pronunciation used to share audio_player with the generic button
+# click sound - pressing a speaker button also counts as a button press,
+# so the click (connected after the pronunciation on most screens) would
+# immediately overwrite the pronunciation audio before it was audible.
+# Dedicated player, same fix as coin/answer/game-complete above.
+var word_audio_player: AudioStreamPlayer
 
 var horray_audio = preload("res://audio/horray.mp3")
 
@@ -35,6 +41,10 @@ func _ready():
 	answer_player = AudioStreamPlayer.new()
 	answer_player.bus = "SFX"
 	add_child(answer_player)
+
+	word_audio_player = AudioStreamPlayer.new()
+	word_audio_player.bus = "SFX"
+	add_child(word_audio_player)
 
 	bgm_player = AudioStreamPlayer.new()
 	bgm_player.bus = "Music"
@@ -124,13 +134,13 @@ func play_word_audio_with_volume(audio_filename: String, boost_db: float = 0.0):
 
 	_duck_background_music()
 
-	audio_player.volume_db = clamp(boost_db, 0.0, 12.0)
-	audio_player.stream = load(sound_path)
-	audio_player.play()
+	word_audio_player.volume_db = clamp(boost_db, 0.0, 12.0)
+	word_audio_player.stream = load(sound_path)
+	word_audio_player.play()
 
-	if audio_player.finished.is_connected(_on_word_audio_finished):
-		audio_player.finished.disconnect(_on_word_audio_finished)
-	audio_player.finished.connect(_on_word_audio_finished, CONNECT_ONE_SHOT)
+	if word_audio_player.finished.is_connected(_on_word_audio_finished):
+		word_audio_player.finished.disconnect(_on_word_audio_finished)
+	word_audio_player.finished.connect(_on_word_audio_finished, CONNECT_ONE_SHOT)
 
 func _duck_background_music():
 	if not bgm_player:

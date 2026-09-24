@@ -398,3 +398,16 @@ func _shuffle_group(seed_str: String, lo: int, hi: int) -> void:
 		levels[k] = new_levels[k]
 	for k in new_pools.keys():
 		sentence_pools[k] = new_pools[k]
+
+## Deterministic "Word of the Day" pick from the 20 single-word levels
+## (21-30 are full sentences, not a fit for this snack-sized format).
+## Same word for every student on a given calendar day, changes at
+## midnight. Reads from the pristine, never-shuffled word list (falling
+## back to the live one before any shuffle has run yet) so today's word
+## doesn't depend on which student/device is asking.
+func get_word_of_the_day() -> Dictionary:
+	var source: Dictionary = _original_levels if not _original_levels.is_empty() else levels
+	var date := Time.get_date_dict_from_system()
+	var day_index: int = date["year"] * 372 + date["month"] * 31 + date["day"]
+	var level_key: int = 1 + (day_index % 20)
+	return source.get(level_key, {})
