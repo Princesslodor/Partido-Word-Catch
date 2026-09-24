@@ -62,6 +62,7 @@ var in_progress_stars: Dictionary = {}
 ## --- SETTINGS ---
 var is_sound_enabled: bool = true    # Sound effects (SFX bus)
 var is_music_enabled: bool = true    # Background music (Music bus)
+var remember_teacher_login: bool = true    # "Remember Me" on the Teacher Login screen
 
 
 ## --- SAVE FILE LOCATION ---
@@ -133,7 +134,8 @@ func save_game() -> void:
 		"completed_levels": completed_levels,
 		"in_progress_stars": in_progress_stars,
 		"is_sound_enabled": is_sound_enabled,
-		"is_music_enabled": is_music_enabled
+		"is_music_enabled": is_music_enabled,
+		"remember_teacher_login": remember_teacher_login
 	}
 
 	# Step 2: Write to a TEMP file first, then swap it into place. If the
@@ -225,6 +227,7 @@ func load_game() -> void:
 	in_progress_stars = save_data.get("in_progress_stars", {})
 	is_sound_enabled = save_data.get("is_sound_enabled", true)
 	is_music_enabled = save_data.get("is_music_enabled", true)
+	remember_teacher_login = save_data.get("remember_teacher_login", true)
 
 	print("Game loaded successfully. Player: ", player_name, " | Unlocked level: ", unlocked_level)
 	

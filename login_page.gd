@@ -28,6 +28,7 @@ extends Control
 @onready var login_email_input: LineEdit = $LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer/LineEdit if has_node("LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer/LineEdit") else null
 @onready var login_status_label: Label = $LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginStatusLabel if has_node("LoginFormContainer/MarginContainer/VBoxContainer/Spacer/LoginStatusLabel") else null
 @onready var forgot_password_button: Button = $LoginFormContainer/MarginContainer/VBoxContainer/OptionRow/Button if has_node("LoginFormContainer/MarginContainer/VBoxContainer/OptionRow/Button") else null
+@onready var remember_me_checkbox: CheckBox = $LoginFormContainer/MarginContainer/VBoxContainer/OptionRow/CheckBox if has_node("LoginFormContainer/MarginContainer/VBoxContainer/OptionRow/CheckBox") else null
 
 # Student Class Code Field
 @onready var class_code_input: LineEdit = $ClassCodeContainer/EnterCodeContainer/ClassCodeEdit if has_node("ClassCodeContainer/EnterCodeContainer/ClassCodeEdit") else null
@@ -94,6 +95,12 @@ func _connect_signals():
 
 	if forgot_password_button and not forgot_password_button.pressed.is_connected(_on_forgot_password_pressed):
 		forgot_password_button.pressed.connect(_on_forgot_password_pressed)
+
+	if remember_me_checkbox:
+		var gm = get_node_or_null("/root/GameManager")
+		remember_me_checkbox.button_pressed = gm.remember_teacher_login if gm and "remember_teacher_login" in gm else true
+		if not remember_me_checkbox.toggled.is_connected(_on_remember_me_toggled):
+			remember_me_checkbox.toggled.connect(_on_remember_me_toggled)
 
 	if welcome_back_continue_button and not welcome_back_continue_button.pressed.is_connected(_on_welcome_back_continue_pressed):
 		welcome_back_continue_button.pressed.connect(_on_welcome_back_continue_pressed)
@@ -292,7 +299,8 @@ func _on_teacher_selected():
 	var already_registered_here: bool = gm != null \
 		and gm.role == "TEACHER" \
 		and gm.player_name != "" \
-		and gm.class_code != ""
+		and gm.class_code != "" \
+		and ("remember_teacher_login" not in gm or gm.remember_teacher_login)
 
 	if already_registered_here:
 		# This device already has a completed teacher account on it - no
@@ -323,6 +331,15 @@ func _on_forgot_password_pressed():
 	# There's no real password check yet - Login only verifies the email
 	# against the teacher's account, so there's nothing to "reset" yet.
 	_show_login_status("No password needed - just use your email.")
+
+## Persists immediately (not just on next save_game() elsewhere) so it takes
+## effect even if the teacher closes the app right after toggling it.
+func _on_remember_me_toggled(toggled_on: bool) -> void:
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and "remember_teacher_login" in gm:
+		gm.set("remember_teacher_login", toggled_on)
+		if gm.has_method("save_game"):
+			gm.save_game()
 
 # Pagkatapos mag-enter ng Class Code, dadaan muna sa Registration Panel
 func _on_join_class_pressed():
