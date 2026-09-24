@@ -24,6 +24,7 @@ extends Control
 @onready var teacher_label: Label = $CreateClasscode/Panel/TeacherLabel
 @onready var total_students_label: Label = $Dashboard/Control2/TotalStudentsPanel/TotalNumberLabel
 @onready var manage_class_students_label: Label = $CreateClasscode/Panel/TextureRect2/Label
+@onready var active_player_label: Label = $Dashboard/Control2/ActivePlayerPanel/Label2
 
 # --- Students page (populated live from Supabase) ---
 @onready var students_panel: Panel = $Students/Panel
@@ -53,6 +54,19 @@ func _ready() -> void:
 	# The class code is permanent once generated - there's nothing to regenerate.
 	if generate_new_code_button:
 		generate_new_code_button.hide()
+	_connect_sound_to_all_buttons(self)
+
+# --- AUDIO CLICK SYSTEM ---
+func _connect_sound_to_all_buttons(node: Node):
+	for child in node.get_children():
+		if child is BaseButton:
+			if not child.is_connected("pressed", Callable(self, "_on_global_button_pressed")):
+				child.pressed.connect(Callable(self, "_on_global_button_pressed"))
+		if child.get_child_count() > 0:
+			_connect_sound_to_all_buttons(child)
+
+func _on_global_button_pressed():
+	Global.play_click_sound()
 
 func _load_teacher_info() -> void:
 	var gm = get_node_or_null("/root/GameManager")
@@ -179,13 +193,48 @@ func _refresh_total_students_count() -> void:
 	if not gm or not sync or gm.class_code == "":
 		if total_students_label: total_students_label.text = "0"
 		if manage_class_students_label: manage_class_students_label.text = "0"
+		if active_player_label: active_player_label.text = "0"
 		return
 	sync.fetch_leaderboard(gm.class_code, func(students_data: Array):
 		if total_students_label:
 			total_students_label.text = str(students_data.size())
 		if manage_class_students_label:
 			manage_class_students_label.text = str(students_data.size())
+		if active_player_label:
+			active_player_label.text = str(_count_active_students(students_data))
 	)
+
+# "Active" = synced (played, with internet) within the last 24 hours - the
+# app is offline-first, so a student only shows up as active when their
+# progress has actually reached Supabase, not merely by having the app open.
+const ACTIVE_WINDOW_SECONDS: int = 86400
+
+func _count_active_students(students_data: Array) -> int:
+	var now: int = Time.get_unix_time_from_system()
+	var count := 0
+	for student in students_data:
+		if not (student is Dictionary):
+			continue
+		var updated_unix := _parse_utc_unix_time(str(student.get("updated_at", "")))
+		if updated_unix > 0 and now - updated_unix <= ACTIVE_WINDOW_SECONDS:
+			count += 1
+	return count
+
+## Supabase returns timestamptz values like "2026-09-24T10:30:00.123456+00:00" -
+## Time.get_unix_time_from_datetime_string() wants a plain "YYYY-MM-DD HH:MM:SS"
+## string, and Postgres timestamptz values are always UTC, so stripping the
+## fractional seconds/timezone suffix is enough (nothing left to convert).
+func _parse_utc_unix_time(datetime_str: String) -> int:
+	if datetime_str == "":
+		return -1
+	var cleaned := datetime_str.replace("T", " ")
+	var cutoff := cleaned.find("+")
+	if cutoff == -1: cutoff = cleaned.find(".")
+	if cutoff != -1: cleaned = cleaned.substr(0, cutoff)
+	cleaned = cleaned.trim_suffix("Z").strip_edges()
+	if cleaned == "":
+		return -1
+	return Time.get_unix_time_from_datetime_string(cleaned)
 
 func _refresh_students_list() -> void:
 	var gm = get_node_or_null("/root/GameManager")
@@ -208,6 +257,8 @@ func _render_students_list(students_data: Array) -> void:
 		total_students_label.text = str(students_data.size())
 	if manage_class_students_label:
 		manage_class_students_label.text = str(students_data.size())
+	if active_player_label:
+		active_player_label.text = str(_count_active_students(students_data))
 
 	if students_data.is_empty():
 		var empty_label := Label.new()

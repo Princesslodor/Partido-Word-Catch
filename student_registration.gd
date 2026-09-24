@@ -107,6 +107,11 @@ func _finish_registration(gm, sync, student_name: String, student_pin: String, e
 			gm.set("player_hearts", 4)
 			gm.set("completed_levels", {})
 			gm.set("player_coins", 20)   # Starting bonus for a newly-registered student
+			# Fresh device_id too, so this new account gets its own row
+			# online instead of overwriting whichever account previously
+			# used this device (see start_new_local_identity()'s comment).
+			if gm.has_method("start_new_local_identity"):
+				gm.start_new_local_identity()
 
 		if gm.has_method("save_game"):
 			gm.save_game()

@@ -423,10 +423,19 @@ func _on_student_login_pressed() -> void:
 		gm.set("completed_levels", completed if completed is Dictionary else {})
 		gm.set("player_hearts", 4)
 
-		# Re-point this account's Supabase row at THIS device, so future
-		# syncs update the same row instead of creating a duplicate one.
+		# This device may currently hold a DIFFERENT account's device_id
+		# (e.g. a different student was just registered/tested here) -
+		# re-pointing this row at that id would fail device_id's unique
+		# constraint and could later collide with that other account's
+		# own saves. Adopting this row's own established device_id
+		# instead avoids that entirely; only claim/re-point when the
+		# row doesn't have one yet (e.g. an older account from before
+		# device_id was required).
 		var student_id: String = str(student_row.get("student_id", ""))
-		if student_id != "" and sync.has_method("claim_student_account"):
+		var existing_device_id: String = str(student_row.get("device_id", ""))
+		if existing_device_id != "":
+			gm.set("device_id", existing_device_id)
+		elif student_id != "" and sync.has_method("claim_student_account"):
 			sync.claim_student_account(student_id, gm.device_id, func(_ok): pass)
 
 		# Also pull the class's teacher/section info for the "joined class"

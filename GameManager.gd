@@ -235,6 +235,15 @@ func _generate_device_id() -> String:
 		id += chars[randi() % chars.length()]
 	return id
 
+## Students sync via an upsert keyed on device_id (see SyncManager.
+## sync_student_progress), so registering a genuinely NEW student account
+## on a device that already has a different account's device_id saved
+## would silently overwrite that other account's row online instead of
+## creating a separate one. Call this right before a brand-new
+## registration is saved, so it gets its own fresh id and its own row.
+func start_new_local_identity() -> void:
+	device_id = _generate_device_id()
+
 ## Sets the current player's role and saves immediately.
 func set_role(new_role: String) -> void:
 	role = new_role
