@@ -31,6 +31,35 @@ func _ready() -> void:
 	_connect_signals()
 	_filter_avatars_by_role()
 	_connect_sound_to_all_buttons(self)
+	await get_tree().process_frame
+	_center_avatar_rows()
+
+## Positions the Female/Male card row so it sits vertically centered in the
+## leftover space between the subtitle text and the Confirm button, instead
+## of a fixed offset guessed ahead of time - computed here, after layout,
+## from each node's REAL on-screen size, so it stays centered regardless of
+## resolution or any future change to the panel/subtitle/button sizes.
+func _center_avatar_rows() -> void:
+	_center_one_row(student_container, student_grid)
+	_center_one_row(teacher_container, teacher_grid)
+
+func _center_one_row(container: Control, grid: Control) -> void:
+	if not container or not grid:
+		return
+	var subtitle: Control = container.find_child("SubtitleLabel", true, false) as Control
+	if not subtitle or not confirm_button:
+		return
+	# Everything below is compared in GLOBAL (screen) space first, since
+	# grid's parent (TopBar) and confirm_button (a direct child of the
+	# scene root) don't share the same local coordinate space.
+	var subtitle_bottom: float = subtitle.global_position.y + subtitle.size.y
+	var confirm_top: float = confirm_button.global_position.y
+	var available: float = confirm_top - subtitle_bottom
+	if available <= 0:
+		return
+	var target_top: float = subtitle_bottom + (available - grid.size.y) / 2.0
+	# Convert back into the grid's own parent's local space before assigning.
+	grid.position.y = target_top - grid.get_parent().global_position.y
 
 # --- AUDIO CLICK SYSTEM ---
 func _connect_sound_to_all_buttons(node: Node):
