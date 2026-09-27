@@ -17,6 +17,7 @@ const UNIT_LEVEL_COUNTS: Array = [5, 5, 5, 15]
 @onready var settings_menu: Control = $SettingsMenu
 @onready var level_info_popup: Control = $LevelInfoPopup
 @onready var word_of_the_day_popup: Control = $WordOfTheDayPopup if has_node("WordOfTheDayPopup") else null
+@onready var player_avatar_display: TextureRect = $PlayerAvatarDisplay if has_node("PlayerAvatarDisplay") else null
 
 @onready var word_of_the_day_buttons: Array = [
 	$"Level Container/CoastalShoreLevels/Header/WordoftheDaybutton" if has_node("Level Container/CoastalShoreLevels/Header/WordoftheDaybutton") else null,
@@ -55,6 +56,7 @@ func _ready() -> void:
 			settings_button.pressed.connect(_on_settings_button_pressed)
 
 	_setup_option_button()
+	_update_player_avatar_display()
 	_load_region(0)
 	_update_coin_display()
 	_connect_sound_to_all_buttons(self)
@@ -103,6 +105,22 @@ func _connect_sound_to_all_buttons(node: Node):
 
 func _on_global_button_pressed():
 	Global.play_click_sound()
+
+## Shows the Student's own chosen avatar above the YUNIT dropdown, using the
+## same texture-path lookup the "Class Joined!" popup and Settings use.
+func _update_player_avatar_display() -> void:
+	if not player_avatar_display:
+		return
+	var avatar_id: String = GameManager.avatar_id if "avatar_id" in GameManager else ""
+	if avatar_id == "" or not GameManager.has_method("get_avatar_texture_path"):
+		player_avatar_display.hide()
+		return
+	var avatar_path: String = GameManager.get_avatar_texture_path(avatar_id)
+	if avatar_path != "" and ResourceLoader.exists(avatar_path):
+		player_avatar_display.texture = load(avatar_path)
+		player_avatar_display.show()
+	else:
+		player_avatar_display.hide()
 
 func _update_coin_display() -> void:
 	for label in coin_labels:

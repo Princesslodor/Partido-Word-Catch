@@ -1027,6 +1027,16 @@ popup/item_2/id = 2
 popup/item_3/text = "YUNIT 4"
 popup/item_3/id = 3
 
+[node name="PlayerAvatarDisplay" type="TextureRect" parent="." unique_id=2100000001]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 590.0
+offset_top = 1140.0
+offset_right = 700.0
+offset_bottom = 1250.0
+expand_mode = 1
+stretch_mode = 5
+
 [node name="SettingsButton" type="TextureButton" parent="." unique_id=375040293]
 layout_mode = 0
 offset_left = 634.0
