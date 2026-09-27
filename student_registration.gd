@@ -68,14 +68,36 @@ func _on_continue_pressed() -> void:
 	if sync and sync.has_method("find_student_in_class") and class_code != "" and student_pin != "":
 		if continue_button: continue_button.disabled = true
 		sync.find_student_in_class(class_code, student_name, student_pin, func(existing_row):
-			if continue_button: continue_button.disabled = false
 			if existing_row is Dictionary:
-				_finish_registration(gm, sync, student_name, student_pin, existing_row)
+				_confirm_existing_account(gm, sync, student_name, student_pin, existing_row)
 			else:
+				if continue_button: continue_button.disabled = false
 				_finish_registration(gm, sync, student_name, student_pin, null)
 		)
 	else:
 		_finish_registration(gm, sync, student_name, student_pin, null)
+
+## A name+PIN match was found in this class - but with simple 4-digit PINs
+## (very common among Grade 3 pupils, e.g. "1234"), two DIFFERENT students
+## picking the same name and the same easy PIN is a real possibility, not
+## just the same student returning. Restoring progress silently in that case
+## would hand one pupil's level/coins/avatar to a different pupil. So we ask
+## first, and only restore if they confirm it's really their own account.
+func _confirm_existing_account(gm, sync, student_name: String, student_pin: String, existing_row: Dictionary) -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.dialog_text = "May account na sa klaseng ito na gamit ang pangalang \"%s\" at PIN na ito.\n\nIkaw ba ito? Kung oo, ibabalik namin ang dati mong progress." % student_name
+	dialog.get_ok_button().text = "Oo, ako ito"
+	dialog.get_cancel_button().text = "Hindi, ako'y bago"
+	add_child(dialog)
+
+	var _resolve := func(use_existing: bool):
+		if continue_button: continue_button.disabled = false
+		_finish_registration(gm, sync, student_name, student_pin, existing_row if use_existing else null)
+		dialog.queue_free()
+
+	dialog.confirmed.connect(func(): _resolve.call(true))
+	dialog.canceled.connect(func(): _resolve.call(false))
+	dialog.popup_centered()
 
 func _finish_registration(gm, sync, student_name: String, student_pin: String, existing_row) -> void:
 	if gm:
