@@ -18,14 +18,10 @@ extends RefCounted
 ## printed, not translated to Tagalog, since that is how the source book
 ## itself defines each word.
 ##
-## VERIFIED (2026-09-27) against the printed book for: IHIRAS's part of
-## speech and meaning, KABAING, GIAN, DAPOG (its two senses are joined by
-## "o", i.e. one word with two meanings, not a transcription error),
-## MASARIGAN, MATAGOK, and UKA.
-##
-## STILL UNCONFIRMED - please double-check against the book:
-##   - IHIRAS: the last word of its example sentence was hard to read in the
-##     photo ("dahil sa kasulo" or something close to it).
+## VERIFIED (2026-09-27) against the printed book for: IHIRAS (including
+## "kasulo" = sunog/fire in its example sentence), KABAING, GIAN, DAPOG
+## (its two senses are joined by "o", i.e. one word with two meanings, not
+## a transcription error), MASARIGAN, MATAGOK, and UKA.
 ##
 ## Three words (BADANG, BALUKAG, BUTBOTKUWAW) already have a recorded
 ## pronunciation because they are also used in the Campaign Map levels, so
