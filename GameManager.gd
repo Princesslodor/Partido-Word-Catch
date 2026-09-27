@@ -274,13 +274,13 @@ const AVATAR_TEXTURE_PATHS: Dictionary = {
 	# the picker) - their old mappings are kept below so a pupil or teacher
 	# who already saved one of those ids keeps showing SOME icon rather than
 	# a blank one, instead of being forced to re-pick.
-	"student_female_1": "res://StudentGirl.png",
+	"student_female_1": "res://StudentF1.png",
 	"student_female_2": "res://StudentF2.png",
-	"student_male_1": "res://StudentBoy.png",
+	"student_male_1": "res://StudentM1.png",
 	"student_male_2": "res://StudentM2.png",
-	"teacher_female_1": "res://TeacherGirl.png",
+	"teacher_female_1": "res://TeacherF1.png",
 	"teacher_female_2": "res://TeacherFemale2.png",
-	"teacher_male_1": "res://TeacherBoy.png",
+	"teacher_male_1": "res://TeacherMale1.png",
 	"teacher_male_2": "res://TeacherMale2.png",
 }
 

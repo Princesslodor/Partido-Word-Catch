@@ -44,13 +44,26 @@ func _connect_sound_to_all_buttons(node: Node):
 func _on_global_button_pressed():
 	Global.play_click_sound()
 
+## Each card Button now sits inside its own VBoxContainer (paired with its
+## "Female"/"Male" caption Label) so the grid's direct children are the
+## VBoxContainers, not the Buttons themselves - this walks one level
+## further to find the actual Button cards regardless of that wrapping.
 func _all_cards() -> Array:
 	var cards: Array = []
 	if student_grid:
-		cards.append_array(student_grid.get_children())
+		cards.append_array(_find_buttons(student_grid))
 	if teacher_grid:
-		cards.append_array(teacher_grid.get_children())
+		cards.append_array(_find_buttons(teacher_grid))
 	return cards
+
+func _find_buttons(node: Node) -> Array:
+	var found: Array = []
+	for child in node.get_children():
+		if child is Button:
+			found.append(child)
+		else:
+			found.append_array(_find_buttons(child))
+	return found
 
 func _setup_initial_ui() -> void:
 	# Wala munang naka-select sa simula, kaya dimmed lahat ng cards
