@@ -18,25 +18,14 @@ extends RefCounted
 ## printed, not translated to Tagalog, since that is how the source book
 ## itself defines each word.
 ##
-## NOT YET VERIFIED - please have the four Grade 3 Mother Tongue teachers
-## check this list against the book before using it with pupils, the same
-## way they validate every other word in the game:
+## VERIFIED (2026-09-27) against the printed book for: IHIRAS's part of
+## speech and meaning, KABAING, GIAN, DAPOG (its two senses are joined by
+## "o", i.e. one word with two meanings, not a transcription error),
+## MASARIGAN, MATAGOK, and UKA.
+##
+## STILL UNCONFIRMED - please double-check against the book:
 ##   - IHIRAS: the last word of its example sentence was hard to read in the
-##     photo ("dahil sa kasulo" or something close to it) - double-check
-##     against the book.
-##   - GIAN, KABAING: "gi-an" describes a kind of weight ("Magian an balukag
-##     kaysa sa sarong kilong bagas" - balukag/feathers are lighter than a
-##     kilo of rice), and "kabaing" had no part-of-speech printed in the
-##     photo - please confirm both are transcribed correctly.
-##   - DAPOG: the photo shows two definition lines under one entry (young
-##     rice plants; medicinal leaves used as a poultice) - please confirm
-##     whether these are really one word with two meanings.
-##   - UKA vs. the existing in-game word UKAG (different word, already used
-##     in Level 5) - please confirm UKA's meaning, "gatak kan daga", is
-##     transcribed correctly.
-##   - MASARIGAN, MATAGOK: printed faintly: "ra-sa-ri-gan" (read here as
-##     "ma-sa-ri-gan", matching SARIG below) and "m-ta-gok" (read here as
-##     "ma-ta-gok", matching TAGOK below) - please confirm.
+##     photo ("dahil sa kasulo" or something close to it).
 ##
 ## Three words (BADANG, BALUKAG, BUTBOTKUWAW) already have a recorded
 ## pronunciation because they are also used in the Campaign Map levels, so
@@ -48,7 +37,7 @@ const ENTRIES: Array = [
 	{"word": "BALUKAG", "meaning": "Barahibo; feathers.", "cultural_note": "Halimbawa: balukag nin manok, balukag nin gamgam.", "audio": "BALUKAG.mp3"},
 	{"word": "BUTBOTKUWAW", "meaning": "Sarong klase nin gamgam; owl.", "cultural_note": "", "audio": "BUTBOTKUWAW.mp3"},
 	{"word": "DANAW", "meaning": "Sarong klase nin anyong tubig.", "cultural_note": "", "audio": ""},
-	{"word": "DAPOG", "meaning": "Mga pananom na paroy; mga dahon na pambulong na pigtapal sa apektadong lugar kan hawak.", "cultural_note": "", "audio": ""},
+	{"word": "DAPOG", "meaning": "Mga pananom na paroy o mga dahon na pambulong na pigtapal sa apektadong lugar kan hawak.", "cultural_note": "", "audio": ""},
 	{"word": "GIAN", "meaning": "Klase nin gabat.", "cultural_note": "Halimbawa: Magian an balukag kaysa sa sarong kilong bagas.", "audio": ""},
 	{"word": "IHIRAS", "meaning": "Share.", "cultural_note": "Halimbawa: Ihiras mo an sobra mong balon na tinapay sa mga mayong balon para makakakan man sinda. Dapat tang ihiras an mga dai ta ginagamit na bado sa mga taong nawaraan nin gamit dahil sa kasulo.", "audio": ""},
 	{"word": "KABAING", "meaning": "Kapareho.", "cultural_note": "", "audio": ""},
