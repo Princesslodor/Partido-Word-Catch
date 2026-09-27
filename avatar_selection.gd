@@ -13,15 +13,13 @@ var current_role: String = "STUDENT"
 var selected_avatar_id: String = ""
 
 # Data Mapping para sa bawat Card (batay sa aktwal na pangalan ng node sa Scene Tree)
+# Isang babae, isang lalaki lang bawat role (2026-09-27) - inalis ang mga
+# "_2" variant card mula sa Scene Tree, kaya wala na ring entry dito.
 var avatar_data: Dictionary = {
 	"StudentCard": {"id": "student_female_1", "role": "STUDENT"},
-	"StudentCard2": {"id": "student_female_2", "role": "STUDENT"},
 	"StudentCard3": {"id": "student_male_1", "role": "STUDENT"},
-	"StudentCard4": {"id": "student_male_2", "role": "STUDENT"},
 	"TeacherCard": {"id": "teacher_female_1", "role": "TEACHER"},
-	"TeacherCard2": {"id": "teacher_female_2", "role": "TEACHER"},
-	"TeacherCard3": {"id": "teacher_male_1", "role": "TEACHER"},
-	"TeacherCard4": {"id": "teacher_male_2", "role": "TEACHER"}
+	"TeacherCard3": {"id": "teacher_male_1", "role": "TEACHER"}
 }
 
 func _ready() -> void:

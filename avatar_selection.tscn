@@ -5,13 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://Back.png" id="2_qibic"]
 [ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://Nunito-Black.ttf" id="3_cd3w6"]
 [ext_resource type="FontFile" uid="uid://b0yhtkwh7o06h" path="res://Nunito-Bold.ttf" id="4_a7mb3"]
-[ext_resource type="Texture2D" uid="uid://bbelj0s3vv8eu" path="res://StudentF1.png" id="5_ummre"]
-[ext_resource type="Texture2D" uid="uid://bux0kihq48mby" path="res://StudentF2.png" id="6_6kwkn"]
-[ext_resource type="Texture2D" uid="uid://br0c1keh784yw" path="res://StudentM1.png" id="7_0er8t"]
-[ext_resource type="Texture2D" uid="uid://clqcadcfm1gdh" path="res://StudentM2.png" id="8_cq3so"]
-[ext_resource type="Texture2D" uid="uid://dqbysb3q4usve" path="res://TeacherFemale2.png" id="10_6kwkn"]
-[ext_resource type="Texture2D" uid="uid://baqmrv1073fn4" path="res://TeacherMale1.png" id="11_0er8t"]
-[ext_resource type="Texture2D" uid="uid://bg3geim823f1a" path="res://TeacherMale2.png" id="12_cq3so"]
+[ext_resource type="Texture2D" path="res://StudentGirl.png" id="5_ummre"]
+[ext_resource type="Texture2D" path="res://StudentBoy.png" id="7_0er8t"]
+[ext_resource type="Texture2D" path="res://TeacherGirl.png" id="9_tchgirl"]
+[ext_resource type="Texture2D" path="res://TeacherBoy.png" id="11_0er8t"]
 
 [sub_resource type="ButtonGroup" id="ButtonGroup_student"]
 
@@ -52,9 +49,6 @@ corner_radius_top_left = 20
 corner_radius_top_right = 20
 corner_radius_bottom_right = 20
 corner_radius_bottom_left = 20
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_a3jpw"]
-load_path = "res://.godot/imported/TeacherF1.png-a03faa453f3cc46702535fda1a37a5e0.ctex"
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpga7"]
 bg_color = Color(0.3019608, 0.4862745, 0.21960784, 1)
@@ -138,9 +132,9 @@ vertical_alignment = 1
 [node name="StudentAvatarGrid" type="GridContainer" parent="MarginContainer/StudentAvatarContainer/TopBar" unique_id=2078059083]
 layout_mode = 0
 offset_left = 71.0
-offset_top = 349.0
+offset_top = 470.0
 offset_right = 812.0
-offset_bottom = 1155.0
+offset_bottom = 1034.0
 scale = Vector2(0.8, 0.8)
 theme_override_constants/h_separation = 40
 theme_override_constants/v_separation = 120
@@ -154,13 +148,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = ExtResource("5_ummre")
 clip_text = true
 
-[node name="StudentCard2" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=256163633]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_student")
-theme_override_styles/normal = SubResource("StyleBoxFlat_8upip")
-icon = ExtResource("6_6kwkn")
-
 [node name="StudentCard3" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=2041846605]
 layout_mode = 2
 toggle_mode = true
@@ -168,34 +155,29 @@ button_group = SubResource("ButtonGroup_student")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = ExtResource("7_0er8t")
 
-[node name="StudentCard4" type="Button" parent="MarginContainer/StudentAvatarContainer/TopBar/StudentAvatarGrid" unique_id=1970074481]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_student")
-theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
-icon = ExtResource("8_cq3so")
-
 [node name="Label" type="Label" parent="MarginContainer/StudentAvatarContainer" unique_id=840364394]
 layout_mode = 0
-offset_left = 81.0
-offset_top = 294.0
-offset_right = 308.0
-offset_bottom = 336.0
+offset_left = 90.0
+offset_top = 420.0
+offset_right = 320.0
+offset_bottom = 462.0
 theme_override_colors/font_color = Color(0.029506557, 0.029506557, 0.029506557, 1)
 theme_override_fonts/font = ExtResource("4_a7mb3")
 theme_override_font_sizes/font_size = 30
-text = "Female Student"
+horizontal_alignment = 1
+text = "Female"
 
 [node name="Label2" type="Label" parent="MarginContainer/StudentAvatarContainer" unique_id=1901481304]
 layout_mode = 0
-offset_left = 77.0
-offset_top = 662.0
-offset_right = 304.0
-offset_bottom = 704.0
+offset_left = 390.0
+offset_top = 420.0
+offset_right = 620.0
+offset_bottom = 462.0
 theme_override_colors/font_color = Color(0.029506557, 0.029506557, 0.029506557, 1)
 theme_override_fonts/font = ExtResource("4_a7mb3")
 theme_override_font_sizes/font_size = 30
-text = "Male Student"
+horizontal_alignment = 1
+text = "Male"
 
 [node name="TeacherAvatarContainer" type="Control" parent="MarginContainer" unique_id=680637680]
 layout_mode = 2
@@ -241,9 +223,9 @@ vertical_alignment = 1
 [node name="TeacherAvatarGrid" type="GridContainer" parent="MarginContainer/TeacherAvatarContainer/TopBar" unique_id=646013052]
 layout_mode = 0
 offset_left = 71.0
-offset_top = 349.0
+offset_top = 470.0
 offset_right = 812.0
-offset_bottom = 1155.0
+offset_bottom = 1034.0
 scale = Vector2(0.8, 0.8)
 theme_override_constants/h_separation = 40
 theme_override_constants/v_separation = 120
@@ -254,15 +236,8 @@ layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_teacher")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
-icon = SubResource("CompressedTexture2D_a3jpw")
+icon = ExtResource("9_tchgirl")
 clip_text = true
-
-[node name="TeacherCard2" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=1629558243]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_teacher")
-theme_override_styles/normal = SubResource("StyleBoxFlat_8upip")
-icon = ExtResource("10_6kwkn")
 
 [node name="TeacherCard3" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=1203253639]
 layout_mode = 2
@@ -271,34 +246,29 @@ button_group = SubResource("ButtonGroup_teacher")
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 icon = ExtResource("11_0er8t")
 
-[node name="TeacherCard4" type="Button" parent="MarginContainer/TeacherAvatarContainer/TopBar/TeacherAvatarGrid" unique_id=706172558]
-layout_mode = 2
-toggle_mode = true
-button_group = SubResource("ButtonGroup_teacher")
-theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
-icon = ExtResource("12_cq3so")
-
 [node name="Label" type="Label" parent="MarginContainer/TeacherAvatarContainer" unique_id=1179093791]
 layout_mode = 0
-offset_left = 81.0
-offset_top = 294.0
-offset_right = 308.0
-offset_bottom = 336.0
+offset_left = 90.0
+offset_top = 420.0
+offset_right = 320.0
+offset_bottom = 462.0
 theme_override_colors/font_color = Color(0.029506557, 0.029506557, 0.029506557, 1)
 theme_override_fonts/font = ExtResource("4_a7mb3")
 theme_override_font_sizes/font_size = 30
-text = "Female Teacher"
+horizontal_alignment = 1
+text = "Female"
 
 [node name="Label2" type="Label" parent="MarginContainer/TeacherAvatarContainer" unique_id=522432775]
 layout_mode = 0
-offset_left = 77.0
-offset_top = 662.0
-offset_right = 304.0
-offset_bottom = 704.0
+offset_left = 390.0
+offset_top = 420.0
+offset_right = 620.0
+offset_bottom = 462.0
 theme_override_colors/font_color = Color(0.029506557, 0.029506557, 0.029506557, 1)
 theme_override_fonts/font = ExtResource("4_a7mb3")
 theme_override_font_sizes/font_size = 30
-text = "Male Teacher"
+horizontal_alignment = 1
+text = "Male"
 
 [node name="ConfirmButton" type="Button" parent="." unique_id=1038398089]
 custom_minimum_size = Vector2(100, 40)
