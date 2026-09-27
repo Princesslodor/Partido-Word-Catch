@@ -149,7 +149,7 @@ begin
   values (
     btrim(p_device_id), p_class_code,
     coalesce(nullif(p_player_name, ''), 'Student'),
-    case when p_pin is null or btrim(p_pin) = '' then null else crypt(btrim(p_pin), gen_salt('bf')) end,
+    case when p_pin is null or btrim(p_pin) = '' then null else extensions.crypt(btrim(p_pin), extensions.gen_salt('bf')) end,
     p_avatar_id, p_unlocked_level, p_player_coins, p_completed_levels, now()
   )
   on conflict (device_id) do update set
@@ -191,7 +191,7 @@ as $$
     and p_pin is not null and btrim(p_pin) <> ''
     and s.player_name = btrim(p_player_name)
     and s.student_pin is not null
-    and s.student_pin = crypt(btrim(p_pin), s.student_pin)
+    and s.student_pin = extensions.crypt(btrim(p_pin), s.student_pin)
   limit 5;
 $$;
 grant execute on function public.find_student_account(text, text) to anon;
@@ -222,7 +222,7 @@ as $$
     and s.class_code = btrim(p_class_code)
     and s.player_name = btrim(p_player_name)
     and s.student_pin is not null
-    and s.student_pin = crypt(btrim(p_pin), s.student_pin)
+    and s.student_pin = extensions.crypt(btrim(p_pin), s.student_pin)
   limit 1;
 $$;
 grant execute on function public.find_student_in_class(text, text, text) to anon;
@@ -280,7 +280,7 @@ grant execute on function public.fetch_leaderboard(text) to anon;
 -- hashes always start with $2a$/$2b$/$2y$, so this only touches rows that
 -- genuinely still have a raw 4-digit PIN - safe to re-run).
 update students
-set student_pin = crypt(student_pin, gen_salt('bf'))
+set student_pin = extensions.crypt(student_pin, extensions.gen_salt('bf'))
 where student_pin is not null
   and student_pin <> ''
   and student_pin !~ '^\$2[aby]\$';
