@@ -132,9 +132,9 @@ vertical_alignment = 1
 [node name="StudentAvatarGrid" type="GridContainer" parent="MarginContainer/StudentAvatarContainer/TopBar" unique_id=2078059083]
 layout_mode = 0
 offset_left = 71.0
-offset_top = 620.0
+offset_top = 508.0
 offset_right = 812.0
-offset_bottom = 950.0
+offset_bottom = 838.0
 theme_override_constants/h_separation = 60
 theme_override_constants/v_separation = 40
 columns = 2
@@ -230,9 +230,9 @@ vertical_alignment = 1
 [node name="TeacherAvatarGrid" type="GridContainer" parent="MarginContainer/TeacherAvatarContainer/TopBar" unique_id=646013052]
 layout_mode = 0
 offset_left = 71.0
-offset_top = 620.0
+offset_top = 508.0
 offset_right = 812.0
-offset_bottom = 950.0
+offset_bottom = 838.0
 theme_override_constants/h_separation = 60
 theme_override_constants/v_separation = 40
 columns = 2
