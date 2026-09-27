@@ -284,3 +284,30 @@ set student_pin = extensions.crypt(student_pin, extensions.gen_salt('bf'))
 where student_pin is not null
   and student_pin <> ''
   and student_pin !~ '^\$2[aby]\$';
+
+-- 5) Cleanup helper: removes one bad/stray student row (e.g. one created
+-- by a name+PIN collision before the registration-confirmation fix, or by
+-- a stray sync with a blank name). Requires the class_code as well as the
+-- student_id, purely as a safety check against a wrong/mistyped id wiping
+-- an unrelated row - not a real auth boundary (same anon-key trust model
+-- as every other function here).
+create or replace function public.delete_student_account(p_student_id uuid, p_class_code text)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, pg_temp
+as $$
+declare
+  affected int;
+begin
+  if p_student_id is null or p_class_code is null or btrim(p_class_code) = '' then
+    return false;
+  end if;
+  delete from students
+  where student_id = p_student_id
+    and class_code = btrim(p_class_code);
+  get diagnostics affected = row_count;
+  return affected > 0;
+end;
+$$;
+grant execute on function public.delete_student_account(uuid, text) to anon;
