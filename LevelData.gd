@@ -399,15 +399,40 @@ func _shuffle_group(seed_str: String, lo: int, hi: int) -> void:
 	for k in new_pools.keys():
 		sentence_pools[k] = new_pools[k]
 
-## Deterministic "Word of the Day" pick from the 20 single-word levels
-## (21-30 are full sentences, not a fit for this snack-sized format).
-## Same word for every student on a given calendar day, changes at
-## midnight. Reads from the pristine, never-shuffled word list (falling
-## back to the live one before any shuffle has run yet) so today's word
-## doesn't depend on which student/device is asking.
+const GlosaryoData = preload("res://glosaryo_data.gd")
+
+## Whole days since 1970-01-01 on the phone's LOCAL calendar, so the "day"
+## rolls over at local midnight (using UTC would flip it at 8 AM in the
+## Philippines). Needs no internet - it only reads the device clock.
+func _local_day_number() -> int:
+	var d: Dictionary = Time.get_datetime_dict_from_system(false)
+	var midnight: int = Time.get_unix_time_from_datetime_dict({
+		"year": d["year"], "month": d["month"], "day": d["day"],
+		"hour": 0, "minute": 0, "second": 0
+	})
+	return int(floor(midnight / 86400.0))
+
+## Today's local date as "YYYY-MM-DD" - used to remember which day a pupil
+## has already been shown the Word of the Day popup.
+func get_today_key() -> String:
+	var d: Dictionary = Time.get_datetime_dict_from_system(false)
+	return "%04d-%02d-%02d" % [d["year"], d["month"], d["day"]]
+
+## Deterministic "Word of the Day": one glossary word per calendar day, the
+## next one tomorrow, cycling back to the first once every word has been
+## used. Same word for every pupil on the same day, and it works offline
+## because the glossary (glosaryo_data.gd) is bundled with the app.
+## While the glossary is still empty it falls back to the 20 single-word
+## levels (21-30 are full sentences, not a fit for this snack-sized format),
+## read from the pristine never-shuffled list so the pick doesn't depend on
+## which student/device is asking.
 func get_word_of_the_day() -> Dictionary:
+	var day: int = _local_day_number()
+	var pool: Array = GlosaryoData.ENTRIES
+	if not pool.is_empty():
+		var entry = pool[day % pool.size()]
+		if entry is Dictionary:
+			return entry
+		return {}
 	var source: Dictionary = _original_levels if not _original_levels.is_empty() else levels
-	var date := Time.get_date_dict_from_system()
-	var day_index: int = date["year"] * 372 + date["month"] * 31 + date["day"]
-	var level_key: int = 1 + (day_index % 20)
-	return source.get(level_key, {})
+	return source.get(1 + (day % 20), {})

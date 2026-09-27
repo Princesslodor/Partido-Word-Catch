@@ -70,10 +70,13 @@ func _on_word_of_the_day_pressed() -> void:
 	if word_of_the_day_popup and word_of_the_day_popup.has_method("display_word"):
 		word_of_the_day_popup.display_word(LevelData.get_word_of_the_day())
 
-## Auto-shows once per app session (tracked on GameManager, which survives
-## scene changes but not a fresh app launch) the first time a Student
-## reaches the Campaign Map - not on every return trip mid-session (e.g.
-## coming back here after finishing a level), and never for the Teacher role.
+## Auto-shows the popup once per CALENDAR DAY: the first time a Student
+## reaches the Campaign Map on a new day (Monday's word on Monday, a
+## different one on Tuesday...). After that, opening the app again the same
+## day - or coming back to the map after a level - does not pop it up
+## again; the Word of the Day button on the map still opens it any time.
+## Never shown to the Teacher role. The "already shown today" date is saved
+## with the pupil's progress, so it also survives closing the app.
 func _maybe_show_word_of_the_day() -> void:
 	if GameManager.role != "STUDENT":
 		return
@@ -81,6 +84,12 @@ func _maybe_show_word_of_the_day() -> void:
 		return
 	if "has_shown_word_of_the_day" in GameManager:
 		GameManager.has_shown_word_of_the_day = true
+	if "last_wotd_date" in GameManager:
+		var today: String = LevelData.get_today_key()
+		if GameManager.last_wotd_date == today:
+			return
+		GameManager.last_wotd_date = today
+		GameManager.save_game()
 	_on_word_of_the_day_pressed()
 
 # --- AUDIO CLICK SYSTEM ---

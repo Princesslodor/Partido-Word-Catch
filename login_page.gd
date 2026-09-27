@@ -286,6 +286,9 @@ func _on_welcome_back_not_you_pressed():
 		gm.set("player_coins", 0)
 		gm.set("player_hearts", 4)
 		gm.set("completed_levels", {})
+		# The next pupil on this phone should still see today's Word of the Day.
+		gm.set("last_wotd_date", "")
+		gm.set("has_shown_word_of_the_day", false)
 		if gm.has_method("save_game"):
 			gm.save_game()
 

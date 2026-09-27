@@ -29,6 +29,10 @@ var device_id: String = ""            # Stable per-install id used to identify t
 # repeatedly every time a Student returns to the Campaign Map mid-session
 # (e.g. after finishing a level).
 var has_shown_word_of_the_day: bool = false
+## "YYYY-MM-DD" of the last day this pupil was auto-shown the Word of the Day
+## popup, so it appears once per calendar day instead of on every app launch.
+## Unlike has_shown_word_of_the_day above, this one IS saved.
+var last_wotd_date: String = ""
 
 ## --- TEACHER ACCOUNT INFO ---
 var teacher_email: String = ""
@@ -135,7 +139,8 @@ func save_game() -> void:
 		"in_progress_stars": in_progress_stars,
 		"is_sound_enabled": is_sound_enabled,
 		"is_music_enabled": is_music_enabled,
-		"remember_teacher_login": remember_teacher_login
+		"remember_teacher_login": remember_teacher_login,
+		"last_wotd_date": last_wotd_date
 	}
 
 	# Step 2: Write to a TEMP file first, then swap it into place. If the
@@ -228,6 +233,7 @@ func load_game() -> void:
 	is_sound_enabled = save_data.get("is_sound_enabled", true)
 	is_music_enabled = save_data.get("is_music_enabled", true)
 	remember_teacher_login = save_data.get("remember_teacher_login", true)
+	last_wotd_date = str(save_data.get("last_wotd_date", ""))
 
 	print("Game loaded successfully. Player: ", player_name, " | Unlocked level: ", unlocked_level)
 	
@@ -252,6 +258,9 @@ func _generate_device_id() -> String:
 ## registration is saved, so it gets its own fresh id and its own row.
 func start_new_local_identity() -> void:
 	device_id = _generate_device_id()
+	# A different pupil on this phone should still get today's word.
+	last_wotd_date = ""
+	has_shown_word_of_the_day = false
 
 ## Sets the current player's role and saves immediately.
 func set_role(new_role: String) -> void:
