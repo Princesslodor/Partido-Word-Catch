@@ -12,7 +12,16 @@ extends Node
 #
 # SETUP: paste your Supabase project's URL and anon/public API key
 # below (Project Settings > API in the Supabase dashboard), then run
-# supabase_schema.sql in the Supabase SQL Editor once.
+# supabase_schema.sql, then supabase_hardening.sql, in the Supabase SQL
+# Editor once (in that order).
+#
+# SECURITY: every call below goes through a Postgres function
+# (/rest/v1/rpc/<name>), not a direct table query. That's on purpose -
+# see supabase_hardening.sql for why: the anon key below is meant to be
+# public (it's committed in this repo), so Row Level Security on the
+# `classes` and `students` tables denies direct access entirely, and each
+# function here exposes only the exact narrow slice of data its one job
+# needs (never a teacher's email, never a pupil's PIN).
 # ============================================
 
 const SUPABASE_URL: String = "https://uufsrfizpvgjuipkpqzv.supabase.co"
@@ -82,47 +91,60 @@ func _request(path: String, method: int, body: String = "", extra_headers: Array
 	)
 	return http
 
+## --- RPC HELPER ---
+## POSTs to a Postgres function via PostgREST (/rest/v1/rpc/<function_name>)
+## and JSON-decodes the response body. Every function in supabase_hardening.sql
+## is called this way instead of querying `classes`/`students` directly - see
+## the SECURITY note at the top of this file. Calls back with the decoded
+## value on success (an Array for a function that RETURNS TABLE, a bare
+## bool/String/etc. for one that returns a scalar, or null for RETURNS VOID),
+## or `null` if the request itself couldn't complete.
+func _call_rpc(function_name: String, params: Dictionary, on_result: Callable) -> void:
+	if not is_configured():
+		on_result.call(null)
+		return
+	var body := JSON.stringify(params)
+	var http := _request("/rest/v1/rpc/" + function_name, HTTPClient.METHOD_POST, body)
+	http.request_completed.connect(func(result, response_code, _h, resp_body: PackedByteArray):
+		http.queue_free()
+		if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
+			on_result.call(null)
+			return
+		if resp_body.size() == 0:
+			# RETURNS VOID functions (e.g. upsert_class) reply 204 with an
+			# empty body - nothing to decode, and no caller reads this value.
+			on_result.call(null)
+			return
+		on_result.call(JSON.parse_string(resp_body.get_string_from_utf8()))
+	)
+
 ## --- CLASS SYNC (teacher side) ---
 ## Upserts the class row for this teacher's permanent class code.
 func upsert_class(class_code: String, teacher_name: String, teacher_email: String, school_name: String, grade_subject: String, teacher_class_name: String, avatar_id: String = "") -> void:
 	if not is_configured() or class_code == "":
 		return
-
-	var body := JSON.stringify({
-		"class_code": class_code,
-		"teacher_name": teacher_name,
-		"teacher_email": teacher_email,
-		"school_name": school_name,
-		"grade_subject": grade_subject,
-		"teacher_class_name": teacher_class_name,
-		"avatar_id": avatar_id,
-	})
-
-	var http := _request("/rest/v1/classes?on_conflict=class_code", HTTPClient.METHOD_POST, body, [
-		"Prefer: resolution=merge-duplicates"
-	])
-	http.request_completed.connect(func(_result, _code, _h, _b): http.queue_free())
+	_call_rpc("upsert_class", {
+		"p_class_code": class_code,
+		"p_teacher_name": teacher_name,
+		"p_teacher_email": teacher_email,
+		"p_school_name": school_name,
+		"p_grade_subject": grade_subject,
+		"p_teacher_class_name": teacher_class_name,
+		"p_avatar_id": avatar_id,
+	}, func(_r): pass)
 
 ## --- CLASS LOOKUPS ---
-## Shared helper: finds one row in `classes` where `field` = `value`.
-## Calls back with: the class row (Dictionary) if a match exists, `false` if
-## the lookup succeeded but nothing matched, or `null` if the lookup itself
-## couldn't complete (offline/unconfigured/error) - so callers can tell
-## "no such account/code" apart from "couldn't check".
-func _find_class_by(field: String, value: String, on_result: Callable) -> void:
-	if not is_configured() or value.strip_edges() == "":
-		on_result.call(null)
-		return
-
-	var path := "/rest/v1/classes?%s=eq.%s&limit=1" % [field, value.strip_edges().uri_encode()]
-	var http := _request(path, HTTPClient.METHOD_GET)
-	http.request_completed.connect(func(result, response_code, _h, body: PackedByteArray):
-		http.queue_free()
-		if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+## Shared helper for the two "find one class row" functions below: both
+## RPCs return an Array (possibly empty, since they RETURN TABLE), so this
+## turns that into the same three-way result every caller already expects:
+## the class row (Dictionary) if a match exists, `false` if the lookup
+## succeeded but nothing matched, or `null` if the lookup itself couldn't
+## complete (offline/unconfigured/error).
+func _find_class_via_rpc(function_name: String, params: Dictionary, on_result: Callable) -> void:
+	_call_rpc(function_name, params, func(parsed):
+		if parsed == null:
 			on_result.call(null)
-			return
-		var parsed = JSON.parse_string(body.get_string_from_utf8())
-		if parsed is Array and parsed.size() > 0:
+		elif parsed is Array and parsed.size() > 0:
 			on_result.call(parsed[0])
 		else:
 			on_result.call(false)
@@ -130,11 +152,17 @@ func _find_class_by(field: String, value: String, on_result: Callable) -> void:
 
 ## Looks up a teacher's class by the email they typed on the Login screen.
 func find_class_by_email(teacher_email: String, on_result: Callable) -> void:
-	_find_class_by("teacher_email", teacher_email, on_result)
+	if not is_configured() or teacher_email.strip_edges() == "":
+		on_result.call(null)
+		return
+	_find_class_via_rpc("find_class_by_email", {"p_teacher_email": teacher_email.strip_edges()}, on_result)
 
 ## Looks up a class by the code a student typed to join it.
 func find_class_by_code(class_code: String, on_result: Callable) -> void:
-	_find_class_by("class_code", class_code, on_result)
+	if not is_configured() or class_code.strip_edges() == "":
+		on_result.call(null)
+		return
+	_find_class_via_rpc("find_class_by_code", {"p_class_code": class_code.strip_edges()}, on_result)
 
 ## --- STUDENT PROGRESS SYNC ---
 ## True while a students-table upsert is in flight. Guards against a subtle
@@ -151,7 +179,9 @@ func find_class_by_code(class_code: String, on_result: Callable) -> void:
 var _progress_sync_in_flight: bool = false
 var _progress_resync_pending: bool = false
 
-## Pushes this device's current GameManager progress up for the teacher to see.
+## Pushes this device's current GameManager progress up for the teacher to
+## see. The PIN travels over HTTPS same as before; supabase_hardening.sql's
+## version of this function hashes it with bcrypt before it touches disk.
 func sync_student_progress() -> void:
 	if not is_configured():
 		return
@@ -165,22 +195,16 @@ func sync_student_progress() -> void:
 		return
 	_progress_sync_in_flight = true
 
-	var body := JSON.stringify({
-		"device_id": gm.device_id,
-		"class_code": gm.class_code,
-		"player_name": gm.player_name if gm.player_name != "" else "Student",
-		"student_pin": gm.student_pin,
-		"avatar_id": gm.avatar_id,
-		"unlocked_level": gm.unlocked_level,
-		"player_coins": gm.player_coins,
-		"completed_levels": gm.completed_levels,
-	})
-
-	var http := _request("/rest/v1/students?on_conflict=device_id", HTTPClient.METHOD_POST, body, [
-		"Prefer: resolution=merge-duplicates"
-	])
-	http.request_completed.connect(func(_result, _code, _h, _b):
-		http.queue_free()
+	_call_rpc("sync_student_progress", {
+		"p_device_id": gm.device_id,
+		"p_class_code": gm.class_code,
+		"p_player_name": gm.player_name if gm.player_name != "" else "Student",
+		"p_pin": gm.student_pin,
+		"p_avatar_id": gm.avatar_id,
+		"p_unlocked_level": gm.unlocked_level,
+		"p_player_coins": gm.player_coins,
+		"p_completed_levels": gm.completed_levels,
+	}, func(_r):
 		_progress_sync_in_flight = false
 		if _progress_resync_pending:
 			_progress_resync_pending = false
@@ -202,18 +226,13 @@ func find_student_account(player_name: String, pin: String, on_result: Callable)
 	# No limit=1 here on purpose: name+PIN alone isn't guaranteed unique
 	# across different classes, so we need to see if more than one row
 	# matched before picking one - see the "ambiguous" handling below.
-	var path := "/rest/v1/students?player_name=eq.%s&student_pin=eq.%s&limit=5" % [
-		player_name.strip_edges().uri_encode(),
-		pin.strip_edges().uri_encode(),
-	]
-	var http := _request(path, HTTPClient.METHOD_GET)
-	http.request_completed.connect(func(result, response_code, _h, body: PackedByteArray):
-		http.queue_free()
-		if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+	_call_rpc("find_student_account", {
+		"p_player_name": player_name.strip_edges(),
+		"p_pin": pin.strip_edges(),
+	}, func(parsed):
+		if parsed == null:
 			on_result.call(null)
-			return
-		var parsed = JSON.parse_string(body.get_string_from_utf8())
-		if parsed is Array and parsed.size() > 1:
+		elif parsed is Array and parsed.size() > 1:
 			# Same name + PIN matches more than one account (likely in
 			# different classes) - too ambiguous to safely log into one of
 			# them automatically. Caller should ask the student to join by
@@ -238,19 +257,14 @@ func find_student_in_class(class_code: String, player_name: String, pin: String,
 		on_result.call(null)
 		return
 
-	var path := "/rest/v1/students?class_code=eq.%s&player_name=eq.%s&student_pin=eq.%s&limit=1" % [
-		class_code.strip_edges().uri_encode(),
-		player_name.strip_edges().uri_encode(),
-		pin.strip_edges().uri_encode(),
-	]
-	var http := _request(path, HTTPClient.METHOD_GET)
-	http.request_completed.connect(func(result, response_code, _h, body: PackedByteArray):
-		http.queue_free()
-		if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
+	_call_rpc("find_student_in_class", {
+		"p_class_code": class_code.strip_edges(),
+		"p_player_name": player_name.strip_edges(),
+		"p_pin": pin.strip_edges(),
+	}, func(parsed):
+		if parsed == null:
 			on_result.call(null)
-			return
-		var parsed = JSON.parse_string(body.get_string_from_utf8())
-		if parsed is Array and parsed.size() > 0:
+		elif parsed is Array and parsed.size() > 0:
 			on_result.call(parsed[0])
 		else:
 			on_result.call(false)
@@ -265,12 +279,11 @@ func claim_student_account(student_id: String, new_device_id: String, on_result:
 		on_result.call(false)
 		return
 
-	var body := JSON.stringify({"device_id": new_device_id})
-	var path := "/rest/v1/students?student_id=eq.%s" % student_id.uri_encode()
-	var http := _request(path, HTTPClient.METHOD_PATCH, body)
-	http.request_completed.connect(func(result, response_code, _h, _b):
-		http.queue_free()
-		on_result.call(result == HTTPRequest.RESULT_SUCCESS and response_code >= 200 and response_code < 300)
+	_call_rpc("claim_student_account", {
+		"p_student_id": student_id,
+		"p_new_device_id": new_device_id,
+	}, func(parsed):
+		on_result.call(parsed == true)
 	)
 
 ## --- TEACHER LEADERBOARD FETCH ---
@@ -282,14 +295,7 @@ func fetch_leaderboard(class_code: String, on_result: Callable) -> void:
 		on_result.call([])
 		return
 
-	var path := "/rest/v1/students?class_code=eq.%s&order=unlocked_level.desc,player_coins.desc" % class_code.uri_encode()
-	var http := _request(path, HTTPClient.METHOD_GET)
-	http.request_completed.connect(func(result, response_code, _h, body: PackedByteArray):
-		http.queue_free()
-		if result != HTTPRequest.RESULT_SUCCESS or response_code != 200:
-			on_result.call([])
-			return
-		var parsed = JSON.parse_string(body.get_string_from_utf8())
+	_call_rpc("fetch_leaderboard", {"p_class_code": class_code}, func(parsed):
 		if parsed is Array:
 			on_result.call(parsed)
 		else:
