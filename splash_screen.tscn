@@ -2,11 +2,10 @@
 
 [ext_resource type="Script" uid="uid://bwprx157wp0sd" path="res://splash_screen.gd" id="1_74eti"]
 [ext_resource type="Texture2D" uid="uid://dg0yp5yj5eorl" path="res://Background Image.png" id="2_r8bb4"]
-[ext_resource type="Texture2D" uid="uid://58bdbuwtorss" path="res://download.png" id="3_spqux"]
-[ext_resource type="Texture2D" uid="uid://vojbxmvf0fie" path="res://Character.png" id="4_nodus"]
 [ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://Nunito-Black.ttf" id="5_nodus"]
 [ext_resource type="Texture2D" uid="uid://bjwdwd7j2igp8" path="res://GameRating.png" id="5_r8bb4"]
 [ext_resource type="FontFile" uid="uid://b0yhtkwh7o06h" path="res://Nunito-Bold.ttf" id="6_oc6rp"]
+[ext_resource type="Texture2D" uid="uid://xv4ep8vurdcv" path="res://Logo.png" id="6_spqux"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
 bg_color = Color(0.19215687, 0.101960786, 0.05490196, 1)
@@ -76,22 +75,6 @@ offset_bottom = 1280.0
 texture = ExtResource("2_r8bb4")
 expand_mode = 1
 stretch_mode = 6
-
-[node name="GameLogo" type="TextureRect" parent="." unique_id=110851042]
-layout_mode = 0
-offset_left = -53.0
-offset_top = -15.0
-offset_right = 779.0
-offset_bottom = 322.0
-texture = ExtResource("3_spqux")
-
-[node name="Character" type="TextureRect" parent="." unique_id=1346398428]
-layout_mode = 0
-offset_left = 9.0
-offset_top = 328.0
-offset_right = 715.0
-offset_bottom = 1019.0
-texture = ExtResource("4_nodus")
 
 [node name="LoadingLabel" type="Label" parent="." unique_id=1638131542]
 layout_mode = 0
@@ -222,3 +205,13 @@ theme_override_font_sizes/font_size = 35
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
 theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_h3vdb")
 text = "CONTINUE"
+
+[node name="Character" type="TextureRect" parent="." unique_id=828368540]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 307.0
+offset_right = 660.0
+offset_bottom = 907.0
+texture = ExtResource("6_spqux")
+expand_mode = 1
+stretch_mode = 5

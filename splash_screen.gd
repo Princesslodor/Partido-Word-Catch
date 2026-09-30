@@ -1,8 +1,8 @@
 extends Control
 
 # References sa Splash Screen UI Nodes
-@onready var character = $Character
-@onready var game_logo = $GameLogo
+@onready var character = get_node_or_null("Character")
+@onready var game_logo = get_node_or_null("GameLogo")
 @onready var loading_bar = $LoadingBar
 @onready var loading_label = $LoadingLabel
 
@@ -102,10 +102,11 @@ func _start_loading_process():
 		
 		await tween.finished
 		
-		# Pagkatapos mag-load: Itatago ang Loading Bar, Label, AT Game Logo
+		# Pagkatapos mag-load: Itatago ang Loading Bar, Label, Game Logo, AT Character
 		if loading_bar: loading_bar.hide()
 		if loading_label: loading_label.hide()
 		if game_logo: game_logo.hide()
+		if character: character.hide()
 		
 		# Ipapakita ang About Game Card
 		if about_card:
