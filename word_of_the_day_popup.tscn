@@ -135,7 +135,7 @@ offset_right = 614.0
 offset_bottom = 685.0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
 theme_override_fonts/font = ExtResource("3_wotd")
-theme_override_font_sizes/font_size = 22
+theme_override_font_sizes/font_size = 30
 text = "Aso sa wikang Bikol."
 autowrap_mode = 2
 
