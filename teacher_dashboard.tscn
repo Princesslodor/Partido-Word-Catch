@@ -735,7 +735,7 @@ horizontal_scroll_mode = 0
 
 [node name="LeaderboardContent" type="Control" parent="Leaderboard/LeaderboardScroll" unique_id=1000001001]
 layout_mode = 2
-custom_minimum_size = Vector2(734, 1420)
+custom_minimum_size = Vector2(734, 1490)
 
 [node name="TextureRect" type="TextureRect" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=2145888276]
 layout_mode = 0
@@ -1048,6 +1048,17 @@ theme_override_font_sizes/font_size = 24
 text = "No class data yet — this chart will fill in once students start completing levels."
 autowrap_mode = 3
 horizontal_alignment = 1
+
+[node name="DownloadReportButton" type="Button" parent="Leaderboard/LeaderboardScroll/LeaderboardContent" unique_id=1000000800]
+layout_mode = 0
+offset_left = 11.0
+offset_top = 1415.0
+offset_right = 697.0
+offset_bottom = 1475.0
+theme_override_fonts/font = ExtResource("3_2jwbv")
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("StyleBoxFlat_n5cb2")
+text = "Download Report"
 
 [node name="TeacherProfilePanel" type="Panel" parent="." unique_id=982788672]
 layout_mode = 0
