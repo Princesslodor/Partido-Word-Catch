@@ -367,6 +367,7 @@ func _initial_for(name: String) -> String:
 ## the reference leaderboard design's plain tan avatar circles.
 func _make_avatar_circle(initial: String, diameter: float, font_size: int) -> Panel:
 	var circle := Panel.new()
+	circle.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color(0.9137255, 0.8117647, 0.6, 1)
 	var radius := int(diameter / 2.0)
@@ -379,6 +380,7 @@ func _make_avatar_circle(initial: String, diameter: float, font_size: int) -> Pa
 	circle.size = Vector2(diameter, diameter)
 
 	var label := Label.new()
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.text = initial
 	label.add_theme_font_override("font", _bold_font)
 	label.add_theme_font_size_override("font_size", font_size)
@@ -419,6 +421,7 @@ func _render_podium(students_data: Array) -> void:
 
 			if avatar_circle:
 				var initial_label := Label.new()
+				initial_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 				initial_label.text = _initial_for(player_name)
 				initial_label.add_theme_font_override("font", _bold_font)
 				initial_label.add_theme_font_size_override("font_size", 40)
@@ -433,6 +436,7 @@ func _render_podium(students_data: Array) -> void:
 			if card:
 				var cfg: Dictionary = _PODIUM_POINTS_LAYOUT[i]
 				var icon := TextureRect.new()
+				icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 				icon.texture = _star_icon
 				icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 				icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -442,6 +446,7 @@ func _render_podium(students_data: Array) -> void:
 				_dynamic_leaderboard_nodes.append(icon)
 
 				var points_label := Label.new()
+				points_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 				points_label.text = str(_total_stars(row))
 				points_label.add_theme_font_override("font", _bold_font)
 				points_label.add_theme_font_size_override("font_size", cfg.font_size)
@@ -475,6 +480,7 @@ func _render_extra_rows(students_data: Array) -> void:
 		var player_name: String = str(row.get("player_name", "Student"))
 
 		var rank_label := Label.new()
+		rank_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		rank_label.text = str(i + 4)
 		rank_label.add_theme_font_override("font", _bold_font)
 		rank_label.add_theme_font_size_override("font_size", 24)
@@ -490,6 +496,7 @@ func _render_extra_rows(students_data: Array) -> void:
 		_dynamic_leaderboard_nodes.append(avatar)
 
 		var name_label := Label.new()
+		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		name_label.add_theme_font_override("font", _bold_font)
 		name_label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
 		name_label.position = Vector2(178, y)
@@ -499,6 +506,7 @@ func _render_extra_rows(students_data: Array) -> void:
 		_dynamic_leaderboard_nodes.append(name_label)
 
 		var level_label := Label.new()
+		level_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		level_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
 		level_label.add_theme_font_override("font", _bold_font)
 		level_label.add_theme_font_size_override("font_size", 22)
@@ -510,6 +518,7 @@ func _render_extra_rows(students_data: Array) -> void:
 		_dynamic_leaderboard_nodes.append(level_label)
 
 		var icon := TextureRect.new()
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		icon.texture = _star_icon
 		icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 		icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
@@ -519,6 +528,7 @@ func _render_extra_rows(students_data: Array) -> void:
 		_dynamic_leaderboard_nodes.append(icon)
 
 		var points_label := Label.new()
+		points_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		points_label.text = str(_total_stars(row))
 		points_label.add_theme_font_override("font", _bold_font)
 		points_label.add_theme_font_size_override("font_size", 24)
@@ -552,6 +562,7 @@ func _render_graph(students_data: Array) -> void:
 		var bar_width: float = max(6.0, (float(level_value) / float(max_level)) * bar_max_width)
 
 		var name_label := Label.new()
+		name_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		name_label.add_theme_font_override("font", _bold_font)
 		name_label.add_theme_color_override("font_color", Color(0.16, 0.16, 0.16, 1))
 		name_label.position = Vector2(30, y)
@@ -561,6 +572,7 @@ func _render_graph(students_data: Array) -> void:
 		_dynamic_leaderboard_nodes.append(name_label)
 
 		var fill := ColorRect.new()
+		fill.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		fill.color = Color(0.9137255, 0.6, 0.15, 1)
 		fill.position = Vector2(150, y + 2)
 		fill.size = Vector2(bar_width, 24)
@@ -568,6 +580,7 @@ func _render_graph(students_data: Array) -> void:
 		_dynamic_leaderboard_nodes.append(fill)
 
 		var value_label := Label.new()
+		value_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		value_label.text = str(level_value)
 		value_label.add_theme_font_override("font", _bold_font)
 		value_label.add_theme_font_size_override("font_size", 20)
