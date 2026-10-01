@@ -40,7 +40,6 @@ var _dynamic_student_nodes: Array = []
 @onready var empty_roster_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/EmptyRosterMessage
 @onready var levels_graph_panel: Panel = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel
 @onready var empty_graph_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel/EmptyGraphMessage
-@onready var download_report_button: Button = $Leaderboard/LeaderboardScroll/LeaderboardContent/DownloadReportButton
 
 const MAX_EXTRA_ROWS := 5
 const MAX_GRAPH_BARS := 6
@@ -127,8 +126,6 @@ func _connect_signals() -> void:
 	if logout_confirmation_popup and logout_confirmation_popup.has_signal("confirmed"):
 		if not logout_confirmation_popup.confirmed.is_connected(_on_logout_confirmed):
 			logout_confirmation_popup.confirmed.connect(_on_logout_confirmed)
-	if download_report_button and not download_report_button.pressed.is_connected(_on_download_report_pressed):
-		download_report_button.pressed.connect(_on_download_report_pressed)
 
 func _on_settings_button_pressed() -> void:
 	if settings_menu:
@@ -589,84 +586,3 @@ func _render_graph(students_data: Array) -> void:
 		value_label.size = Vector2(52, 28)
 		levels_graph_panel.add_child(value_label)
 		_dynamic_leaderboard_nodes.append(value_label)
-
-# --- DOWNLOAD REPORT (PDF, generated on-device from the same live data) ---
-
-func _on_download_report_pressed() -> void:
-	var gm = get_node_or_null("/root/GameManager")
-	var sync = get_node_or_null("/root/SyncManager")
-	if not gm or not sync or gm.class_code == "":
-		_show_report_message("Kailangan mo munang gumawa ng class code bago mag-download ng report.")
-		return
-	if download_report_button:
-		download_report_button.disabled = true
-		download_report_button.text = "Generating..."
-	sync.fetch_leaderboard(gm.class_code, func(students_data: Array):
-		_generate_and_save_report(gm, students_data)
-	)
-
-func _generate_and_save_report(gm, students_data: Array) -> void:
-	var rows: Array = []
-	for i in range(students_data.size()):
-		var row: Dictionary = students_data[i]
-		rows.append({
-			"rank": i + 1,
-			"name": str(row.get("player_name", "Student")),
-			"level": int(row.get("unlocked_level", 1)),
-			"stars": _total_stars(row),
-		})
-
-	var teacher_name: String = gm.get("player_name") if "player_name" in gm else ""
-	var school_name: String = gm.get("school_name") if "school_name" in gm else ""
-	var class_name_text: String = gm.get("teacher_class_name") if "teacher_class_name" in gm else ""
-	var grade_subject: String = gm.get("grade_subject") if "grade_subject" in gm else ""
-	var generated_on := Time.get_datetime_string_from_system(false, true).replace("T", "  ")
-
-	var pdf_bytes: PackedByteArray = PDFReportGenerator.build_class_report(
-		teacher_name, school_name, class_name_text, grade_subject, gm.class_code, generated_on,
-		students_data.size(), _count_active_students(students_data), rows
-	)
-
-	var filename := "PartidoWordCatch_Report_%s.pdf" % gm.class_code
-	var saved_path := _save_report_bytes(pdf_bytes, filename)
-
-	if download_report_button:
-		download_report_button.disabled = false
-		download_report_button.text = "Download Report"
-
-	if saved_path != "":
-		_show_report_message("Na-save ang report:\n" + saved_path)
-	else:
-		_show_report_message("Hindi na-save ang report. Subukan ulit.")
-
-## Tries the device's public Downloads folder first (works directly on
-## Desktop; on Android it depends on the device/OS version since newer
-## Android restricts direct writes outside the app's own sandbox), then
-## falls back to the app's private storage so the report is always saved
-## somewhere even when the public folder isn't writable.
-func _save_report_bytes(bytes: PackedByteArray, filename: String) -> String:
-	var downloads_dir := OS.get_system_dir(OS.SYSTEM_DIR_DOWNLOADS)
-	if downloads_dir != "":
-		var downloads_path := downloads_dir.path_join(filename)
-		var file := FileAccess.open(downloads_path, FileAccess.WRITE)
-		if file:
-			file.store_buffer(bytes)
-			file.close()
-			return downloads_path
-
-	DirAccess.make_dir_recursive_absolute("user://reports")
-	var fallback_path := "user://reports/" + filename
-	var fallback_file := FileAccess.open(fallback_path, FileAccess.WRITE)
-	if fallback_file:
-		fallback_file.store_buffer(bytes)
-		fallback_file.close()
-		return ProjectSettings.globalize_path(fallback_path)
-	return ""
-
-func _show_report_message(msg: String) -> void:
-	var dialog := AcceptDialog.new()
-	dialog.dialog_text = msg
-	add_child(dialog)
-	dialog.confirmed.connect(dialog.queue_free)
-	dialog.close_requested.connect(dialog.queue_free)
-	dialog.popup_centered()
