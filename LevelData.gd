@@ -1,5 +1,84 @@
 extends Node
 
+## Maps each level's ORIGINAL (pre-shuffle) number to its hint image's exact
+## file extension in res://Picture_HintLevel/. Used by get_hint_image_path()
+## below instead of scanning the folder at runtime - see that function for why.
+const _HINT_IMAGE_EXT := {
+	1: "jpg", 2: "png", 3: "jpg", 4: "jpg", 5: "jpg",
+	6: "jpg", 7: "jpg", 8: "jpg", 9: "jpg", 10: "jpg",
+	11: "png", 12: "jpg", 13: "jpg", 14: "jpg", 15: "png",
+	16: "jpg", 17: "jpg", 18: "jpg", 19: "jpg", 20: "jpg",
+	21: "jpeg", 22: "png", 23: "png", 24: "png", 25: "jpg",
+	26: "png", 27: "jpeg", 28: "jpeg", 29: "jpeg", 30: "jpeg",
+}
+
+## Returns the exact res:// path to a level's hint image, given the level's
+## ORIGINAL (pre-shuffle) number - i.e. level_info["image_level"], not
+## whatever level number the shuffle currently displays it under.
+##
+## Why this exists instead of scanning the Picture_HintLevel folder for a
+## filename containing "level_N.": DirAccess folder scans read files in
+## whatever order the underlying filesystem returns them, and an exported
+## Android build packs all of res:// into one .pck archive - a different
+## storage format than the plain folder the editor reads from, with no
+## guaranteed match to the editor's listing order. That is exactly why hint
+## images could look right when testing in the editor but come out wrong
+## once installed on a phone: the first "close enough" filename picked by
+## the scan was never guaranteed to be the right one on every platform.
+## Building the exact path directly sidesteps folder order entirely.
+func get_hint_image_path(original_level_num: int) -> String:
+	var ext: String = _HINT_IMAGE_EXT.get(original_level_num, "")
+	if ext == "":
+		return ""
+	return "res://Picture_HintLevel/level_%d.%s" % [original_level_num, ext]
+
+## Word-tile pools for the sentence-construction levels (21-30), keyed the
+## same as `levels` - moved here (rather than living inside level_21_30.gd)
+## so apply_student_shuffle() can move a level's words/distractors together
+## with its clue/meaning/cultural_note as one unit, keeping them paired.
+var sentence_pools = {
+	21: {
+		"words": ["MAGANA", "NGUNYAN", "MAGKAKAN", "SI", "PAULO"],
+		"distractors": ["MAY", "SA", "DUMAN", "ANNA", "LANGOY", "ARIN", "HILING", "INI", "RAYO", "BAHAY"]
+	},
+	22: {
+		"words": ["DAKUL", "AN", "DAKOP", "NI", "TIYO", "SAMMY"],
+		"distractors": ["NAGDALAN", "URO-UTRO", "MAGANA", "IGWA", "MAHAMIS", "BANWAAN", "KAN", "SIYA", "ARIN"]
+	},
+	23: {
+		"words": ["BUROBANGGI", "SIYANG", "NAGSUSULO", "NIN", "KIRAY"],
+		"distractors": ["KADAKUL", "DAKUL", "URO-ATYAN", "IGWA", "KAMI", "KAYA", "TAWO", "NAGDALAN", "MAGANA", "SA", "MAY"]
+	},
+	24: {
+		"words": ["KADAKUL", "AN", "NAGDADALAN", "SA", "PALABAS", "NA", "INI"],
+		"distractors": ["MAGANA", "NGUNYAN", "SI", "PAULO", "MAY", "DUMAN", "ASIN", "ARIN"]
+	},
+	25: {
+		"words": ["IGWA", "SA", "LUGAR", "NINDANG", "MAY", "HALABANG", "KAMOT"],
+		"distractors": ["DAKOL", "DAKOP", "NI", "TIYO", "IGWA", "MAHAMIS", "LANGOY"]
+	},
+	26: {
+		"words": ["URO-ATYAN", "MADUMAN", "KAMI", "SA", "MUNISIPYO"],
+		"distractors": ["NAGBIBISITA", "MARIA", "HARONG", "KADAKUL", "TAWO", "FIESTA", "ASIN", "RAYO", "INI", "ANNA"]
+	},
+	27: {
+		"words": ["NAGDADALAN", "SI", "MARCO", "NIN", "TELENOVELA", "SA", "TELEBISYON"],
+		"distractors": ["MAGAYON", "KAPALIGIRAN", "BANWAAN", "TIYO", "IGWA", "KAMI", "HILING"]
+	},
+	28: {
+		"words": ["URO-UTRO", "NIYANG", "TIGSABI", "AN", "SAKUYANG", "PANGARAN"],
+		"distractors": ["NAGLALAKAD", "DALAN", "MAHAMIS", "TINAPAY", "ANNA", "ASIN", "ARIN", "INI", "SA"]
+	},
+	29: {
+		"words": ["MAHAMIS", "AN", "DILA", "NI", "LITA", "KAYA", "DAKUL", "AN", "NAIPABAKAL", "NIYA"],
+		"distractors": ["PANINDOG", "LOLA", "SILONG", "KADAKUL", "TAWO", "KAMI", "LANGOY", "SA", "MAY"]
+	},
+	30: {
+		"words": ["NAGBIBISITA", "AN", "SAMUYANG", "PAMILYA", "SA", "BANWAAN", "KAN", "PILI", "KADA", "TAON"],
+		"distractors": ["MGA", "KABATAAN", "PARK", "MAHAMIS", "TINAPAY", "ASIN", "ARIN", "INI", "SI", "MAY"]
+	}
+}
+
 var levels = {
 	1: {
 		"unit": "Yunit 1: Sarili at Pamilya",
@@ -242,3 +321,118 @@ var levels = {
 		"audio": "30.mp3"
 	}
 }
+
+## Per-student word/level shuffling.
+##
+## Why: without this, "Level 5" is always the exact same word for every
+## student, so a student can just ask a classmate what the answer to a level
+## is and skip the puzzle entirely. Reshuffling which word/sentence sits at
+## which level number - separately per student - closes that loophole while
+## keeping the curriculum's difficulty ramp intact, since the shuffle stays
+## within each thematic unit's own level range rather than across all 30.
+##
+## Seeded by the student's own class code + name + PIN (not device_id), so
+## the same student sees the same shuffled order whether they play on their
+## original device or log back in on a different one via the class code +
+## name + PIN flow - their "Level 5" always means the same word to them,
+## every session, on every device.
+##
+## LevelData is an autoload, so it stays alive for the whole app process,
+## not just one student's session - if Student A logs in, then logs out and
+## Student B logs in without the app fully restarting, apply_student_shuffle()
+## runs again for B. A plain "already shuffled" flag would wrongly skip that
+## second call and leave B stuck looking at A's shuffle, so instead we track
+## WHICH seed produced the current arrangement and only skip when the new
+## seed matches it. Every actual (re)shuffle is derived from a pristine,
+## never-mutated snapshot of the original content - taken once, the first
+## time this runs - rather than from whatever the previous student's shuffle
+## left behind, so each student's result depends only on their own seed.
+var _original_levels: Dictionary = {}
+var _original_sentence_pools: Dictionary = {}
+var _shuffled_seed_key: String = ""
+
+const _SHUFFLE_GROUPS := [
+	[1, 5], [6, 10], [11, 15], [16, 20], [21, 30]
+]
+
+func apply_student_shuffle(seed_key: String) -> void:
+	if seed_key == "" or seed_key == _shuffled_seed_key:
+		return
+	if _original_levels.is_empty():
+		for k in levels.keys():
+			_original_levels[k] = levels[k].duplicate()
+		for k in sentence_pools.keys():
+			_original_sentence_pools[k] = sentence_pools[k].duplicate()
+	_shuffled_seed_key = seed_key
+	for group in _SHUFFLE_GROUPS:
+		_shuffle_group(seed_key + "|" + str(group[0]) + "-" + str(group[1]), group[0], group[1])
+
+func _shuffle_group(seed_str: String, lo: int, hi: int) -> void:
+	var order: Array = range(lo, hi + 1)
+	var rng := RandomNumberGenerator.new()
+	rng.seed = hash(seed_str)
+	for i in range(order.size() - 1, 0, -1):
+		var j: int = rng.randi_range(0, i)
+		var tmp = order[i]
+		order[i] = order[j]
+		order[j] = tmp
+
+	var new_levels := {}
+	var new_pools := {}
+	for offset in range(order.size()):
+		var new_key: int = lo + offset
+		var source_key: int = order[offset]
+		# Reshuffled from the pristine snapshot every time, never from the
+		# live `levels` dict - see the note above on why that matters.
+		var moved: Dictionary = _original_levels[source_key].duplicate()
+		# The hint image files (Picture_HintLevel/level_N.*) are matched to
+		# whichever level number the content was ORIGINALLY authored under -
+		# stamping that here lets update_level_image() keep showing the
+		# right picture for a word after it's moved to a new level number.
+		moved["image_level"] = source_key
+		new_levels[new_key] = moved
+		if _original_sentence_pools.has(source_key):
+			new_pools[new_key] = _original_sentence_pools[source_key]
+
+	for k in new_levels.keys():
+		levels[k] = new_levels[k]
+	for k in new_pools.keys():
+		sentence_pools[k] = new_pools[k]
+
+const GlosaryoData = preload("res://glosaryo_data.gd")
+
+## Whole days since 1970-01-01 on the phone's LOCAL calendar, so the "day"
+## rolls over at local midnight (using UTC would flip it at 8 AM in the
+## Philippines). Needs no internet - it only reads the device clock.
+func _local_day_number() -> int:
+	var d: Dictionary = Time.get_datetime_dict_from_system(false)
+	var midnight: int = Time.get_unix_time_from_datetime_dict({
+		"year": d["year"], "month": d["month"], "day": d["day"],
+		"hour": 0, "minute": 0, "second": 0
+	})
+	return int(floor(midnight / 86400.0))
+
+## Today's local date as "YYYY-MM-DD" - used to remember which day a pupil
+## has already been shown the Word of the Day popup.
+func get_today_key() -> String:
+	var d: Dictionary = Time.get_datetime_dict_from_system(false)
+	return "%04d-%02d-%02d" % [d["year"], d["month"], d["day"]]
+
+## Deterministic "Word of the Day": one glossary word per calendar day, the
+## next one tomorrow, cycling back to the first once every word has been
+## used. Same word for every pupil on the same day, and it works offline
+## because the glossary (glosaryo_data.gd) is bundled with the app.
+## While the glossary is still empty it falls back to the 20 single-word
+## levels (21-30 are full sentences, not a fit for this snack-sized format),
+## read from the pristine never-shuffled list so the pick doesn't depend on
+## which student/device is asking.
+func get_word_of_the_day() -> Dictionary:
+	var day: int = _local_day_number()
+	var pool: Array = GlosaryoData.ENTRIES
+	if not pool.is_empty():
+		var entry = pool[day % pool.size()]
+		if entry is Dictionary:
+			return entry
+		return {}
+	var source: Dictionary = _original_levels if not _original_levels.is_empty() else levels
+	return source.get(1 + (day % 20), {})

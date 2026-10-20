@@ -27,6 +27,9 @@
 [ext_resource type="Texture2D" uid="uid://bsjdxhoksmgoe" path="res://Partido Word Catch Game Pic/Wood.png" id="21_1fr6y"]
 [ext_resource type="Texture2D" uid="uid://obhvidwsh0qx" path="res://Partido Word Catch Game Pic/Woods.png" id="22_2hxjc"]
 [ext_resource type="Texture2D" uid="uid://doucg5x2nfhna" path="res://Partido Word Catch Game Pic/Star with fill.png" id="27_2hxjc"]
+[ext_resource type="Texture2D" uid="uid://dn74hc6me67ly" path="res://Partido Word Catch Game Pic/Red X Icon.png" id="28_redx"]
+[ext_resource type="PackedScene" uid="uid://brbxr71qdww6a" path="res://settings_menu.tscn" id="settings_menu_ref"]
+[ext_resource type="PackedScene" uid="uid://dc3itlbsj88f7" path="res://exit_confirmation_popup.tscn" id="exit_popup_ref"]
 
 [sub_resource type="Image" id="Image_bjha6"]
 data = {
@@ -1644,13 +1647,13 @@ theme_override_constants/shadow_outline_size = 32
 theme_override_fonts/font = SubResource("FontFile_k73cj")
 theme_override_font_sizes/font_size = 31
 theme_override_styles/normal = SubResource("StyleBoxEmpty_ebxd8")
-text = "❤️ 4"
-horizontal_alignment = 1
+text = "4"
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Heart" type="Sprite2D" parent="CanvasLayer/TopBar/LiveLabel" unique_id=2012285344]
 unique_name_in_owner = true
-position = Vector2(36.5, 24.03125)
+position = Vector2(20.0, 21.5)
 scale = Vector2(0.13879009, 0.118799575)
 texture = ExtResource("8_bjha6")
 
@@ -1694,13 +1697,13 @@ theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
 theme_override_fonts/font = SubResource("FontFile_k73cj")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2hxjc")
-text = "🪙 20"
-horizontal_alignment = 1
+text = "20"
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Coin2" type="Sprite2D" parent="CanvasLayer/TopBar/CoinsLabel" unique_id=60405655]
-position = Vector2(33, 25)
-scale = Vector2(0.18243243, 0.18918923)
+position = Vector2(22, 24)
+scale = Vector2(0.135, 0.135)
 texture = ExtResource("8_ei405")
 
 [node name="SettingIcon" type="Sprite2D" parent="CanvasLayer/TopBar" unique_id=395895950]
@@ -1709,6 +1712,7 @@ scale = Vector2(0.2056751, 0.20178041)
 texture = ExtResource("9_e8dv2")
 
 [node name="SettingsButton" type="Button" parent="CanvasLayer/TopBar/SettingIcon" unique_id=535787052]
+unique_name_in_owner = true
 offset_left = -98.91211
 offset_top = -94.16176
 offset_right = 105.29346
@@ -1722,6 +1726,7 @@ scale = Vector2(0.28291816, 0.2624555)
 texture = ExtResource("10_2nhjh")
 
 [node name="BackButton" type="Button" parent="CanvasLayer/TopBar/Back" unique_id=708789625]
+unique_name_in_owner = true
 offset_left = -130.77979
 offset_top = -102.87457
 offset_right = 74.22649
@@ -2085,13 +2090,13 @@ offset_left = -304.0
 offset_top = 709.0
 offset_right = 1024.0
 offset_bottom = 789.0
-theme_override_constants/separation = 5
+theme_override_constants/separation = 4
 alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Button" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=850356015]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -2109,7 +2114,7 @@ script = ExtResource("5_kdubu")
 
 [node name="Button2" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1409939361]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -2127,7 +2132,7 @@ script = ExtResource("5_kdubu")
 
 [node name="Button3" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=2091662412]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -2145,7 +2150,7 @@ script = ExtResource("5_kdubu")
 
 [node name="Button4" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=2135585112]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -2163,7 +2168,7 @@ script = ExtResource("5_kdubu")
 
 [node name="Button5" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1815586065]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -2181,7 +2186,7 @@ script = ExtResource("5_kdubu")
 
 [node name="Button6" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1472085372]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -2199,7 +2204,7 @@ script = ExtResource("5_kdubu")
 
 [node name="Button7" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1169682446]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -2217,7 +2222,61 @@ script = ExtResource("5_kdubu")
 
 [node name="Button8" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1346596504]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(80, 80)
+custom_minimum_size = Vector2(47, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = SubResource("FontFile_k73cj")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_a2t3a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button9" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1734989321]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = SubResource("FontFile_k73cj")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_a2t3a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button10" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1771449490]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 70)
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_focus_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_colors/font_outline_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
+theme_override_fonts/font = SubResource("FontFile_k73cj")
+theme_override_font_sizes/font_size = 30
+theme_override_styles/normal = SubResource("StyleBoxTexture_a2t3a")
+theme_override_styles/hover = SubResource("StyleBoxFlat_epypp")
+theme_override_styles/focus = SubResource("StyleBoxEmpty_kdubu")
+script = ExtResource("5_kdubu")
+
+[node name="Button11" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=680335219]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -2251,6 +2310,19 @@ offset_bottom = 406.0
 size_flags_horizontal = 0
 texture = ExtResource("7_ir8iy")
 expand_mode = 1
+
+[node name="SettingsMenu" parent="CanvasLayer" instance=ExtResource("settings_menu_ref")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+quit_button_text = "MENU"
+
+[node name="ExitConfirmationPopup" parent="CanvasLayer" instance=ExtResource("exit_popup_ref")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+confirm_target_scene = "res://campaign_map_screen.tscn"
+confirm_message = "Bumalik sa Campaign Map?"
 
 [node name="VictoryPopup" type="Control" parent="CanvasLayer" unique_id=252567573]
 unique_name_in_owner = true
@@ -2287,8 +2359,8 @@ scale = Vector2(1.0950001, 1.4873188)
 texture = ExtResource("18_gt76g")
 
 [node name="Girl" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect" unique_id=2140701476]
-position = Vector2(135, 841.8125)
-scale = Vector2(0.77350414, 0.77756184)
+position = Vector2(127, 841.8125)
+scale = Vector2(0.55, 0.55288)
 texture = ExtResource("11_hqns4")
 
 [node name="Book" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect" unique_id=1524690250]
@@ -2305,6 +2377,22 @@ texture = ExtResource("21_1fr6y")
 position = Vector2(144.43747, 1121.2499)
 scale = Vector2(0.32110888, 0.5342258)
 texture = ExtResource("22_2hxjc")
+
+[node name="RedXIcon" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect"]
+position = Vector2(653, 265)
+scale = Vector2(0.14833334, 0.14166656)
+texture = ExtResource("28_redx")
+
+[node name="CloseVictoryButton" type="Button" parent="CanvasLayer/VictoryPopup/ColorRect"]
+layout_mode = 0
+offset_left = 608.0
+offset_top = 222.0
+offset_right = 698.0
+offset_bottom = 308.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBoxEmpty_ebxd8")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_ebxd8")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_ebxd8")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="CanvasLayer/VictoryPopup" unique_id=606893543]
 unique_name_in_owner = true
@@ -2373,6 +2461,7 @@ text = "Pakinggan ang tamang pagbigkas"
 [node name="MeaningLabel" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1860041230]
 unique_name_in_owner = true
 layout_mode = 0
+custom_minimum_size = Vector2(423, 52)
 offset_left = 193.0
 offset_top = 601.0
 offset_right = 616.0
@@ -2386,6 +2475,7 @@ autowrap_mode = 2
 [node name="CulturalNoteLabel" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1467786619]
 unique_name_in_owner = true
 layout_mode = 0
+custom_minimum_size = Vector2(368, 129)
 offset_left = 246.0
 offset_top = 739.0
 offset_right = 614.0
@@ -2423,6 +2513,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_20yl2")
 text = "MAHUSAY!"
 
 [node name="+coin" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1383840929]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 61.0
 offset_top = 1094.0
@@ -2433,7 +2524,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = SubResource("FontFile_k73cj")
 theme_override_font_sizes/font_size = 42
 theme_override_styles/normal = SubResource("StyleBoxEmpty_20yl2")
-text = "🪙 + 10"
+text = "+10 COINS"
 
 [node name="SpeakerButton" type="Button" parent="CanvasLayer/VictoryPopup" unique_id=357239405]
 unique_name_in_owner = true
@@ -2456,6 +2547,7 @@ stream = ExtResource("10_0h7mo")
 volume_db = 24.0
 
 [node name="NextLevel" type="Button" parent="CanvasLayer/VictoryPopup" unique_id=656088702]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 291.0
 offset_top = 1070.0
@@ -2473,5 +2565,3 @@ offset_right = 353.0
 offset_bottom = 78.0
 theme_override_font_sizes/font_size = 35
 text = "Sunod na Level  >>"
-
-[connection signal="pressed" from="CanvasLayer/VictoryPopup/NextLevel" to="." method="_on_next_level_pressed"]

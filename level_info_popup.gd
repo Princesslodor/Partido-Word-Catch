@@ -3,8 +3,8 @@ extends Control
 # --- UI NODES ---
 @onready var title_label: Label = $FrameBoard/TitleLabel
 @onready var close_button: TextureButton = $FrameBoard/TitleLabel/TextureButton
-@onready var lesson_label: Label = $FrameBoard/Panel/LessonLabel
-@onready var play_button: Button = $FrameBoard/Panel2
+@onready var lesson_label: Label = $Panel/LessonLabel
+@onready var play_button: Button = $Panel2
 
 var current_level: int = 1
 
@@ -33,6 +33,10 @@ func _on_close_pressed() -> void:
 	hide()
 
 func _on_play_pressed() -> void:
-	print("Simula ng laro para sa Level ", current_level)
-	# Dito lilipat sa Gameplay Scene kapag nakagawa ka na ng Gameplay Screen:
-	# get_tree().change_scene_to_file("res://gameplay_level_1.tscn")
+	Global.requested_level = current_level
+	if current_level >= 1 and current_level <= 16:
+		get_tree().change_scene_to_file("res://node_2d.tscn")
+	elif current_level >= 17 and current_level <= 20:
+		get_tree().change_scene_to_file("res://level_16_20.tscn")
+	elif current_level >= 21 and current_level <= 30:
+		get_tree().change_scene_to_file("res://level_21_30.tscn")

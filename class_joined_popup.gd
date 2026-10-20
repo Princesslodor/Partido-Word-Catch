@@ -8,8 +8,8 @@ signal back_pressed
 @onready var class_name_label: Label = find_child("ClassNameLabel", true, false) as Label
 @onready var teacher_label: Label = find_child("TeacherLabel", true, false) as Label
 @onready var teacher_avatar: TextureRect = find_child("TeacherAvatar", true, false) as TextureRect
-@onready var continue_button: Button = find_child("ContinueButton", true, false) as Button
-@onready var back_button: Button = find_child("BackButton", true, false) as Button
+@onready var continue_button: BaseButton = find_child("ContinueButton", true, false) as BaseButton
+@onready var back_button: BaseButton = find_child("BackButton", true, false) as BaseButton
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
@@ -34,7 +34,7 @@ func _unblock_mouse_recursive(node: Node) -> void:
 			
 		_unblock_mouse_recursive(child)
 
-func setup_and_show(p_class_name: String = "GRADE 3", p_teacher_name: String = "Ms. Santos", avatar_texture: Texture2D = null) -> void:
+func setup_and_show(p_class_name: String = "", p_teacher_name: String = "", avatar_texture: Texture2D = null) -> void:
 	if class_name_label:
 		class_name_label.text = p_class_name
 	if teacher_label:

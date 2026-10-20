@@ -1,0 +1,1072 @@
+[gd_scene format=3 uid="uid://b2wqcvgyec24p"]
+
+[ext_resource type="Texture2D" uid="uid://crxpleqs26cjb" path="res://Coastal Shore.png" id="1_153fi"]
+[ext_resource type="Script" uid="uid://cwfgklaon7puh" path="res://campaign_map_screen.gd" id="1_o4pao"]
+[ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://Nunito-Black.ttf" id="2_012ip"]
+[ext_resource type="FontFile" uid="uid://c5ljwdm2jx37j" path="res://LuckiestGuy-Regular.ttf" id="2_hsl7m"]
+[ext_resource type="Texture2D" uid="uid://cmxevj1plrq8m" path="res://Coin.png" id="4_aur43"]
+[ext_resource type="Texture2D" uid="uid://chpnym703pgnw" path="res://Gold Lock icon.png" id="4_fv1ni"]
+[ext_resource type="FontFile" uid="uid://bxcd657qk3tam" path="res://Fredoka-Medium.ttf" id="5_jdswi"]
+[ext_resource type="Texture2D" uid="uid://ucr37oowu8ku" path="res://Setting Icon.png" id="8_aur43"]
+[ext_resource type="Texture2D" uid="uid://bc6gxmlb47db" path="res://Lagonoy Valley.png" id="8_hgfbm"]
+[ext_resource type="Texture2D" uid="uid://eqx8hciieu62" path="res://Isarog Foothills.png" id="9_0a1fm"]
+[ext_resource type="Texture2D" uid="uid://0v0m0g86cv3g" path="res://Word of the Day.png" id="11_fv1ni"]
+[ext_resource type="Texture2D" uid="uid://bg1r4sixynhkt" path="res://Wood.png" id="11_o4pao"]
+[ext_resource type="PackedScene" uid="uid://brbxr71qdww6a" path="res://settings_menu.tscn" id="13_o4pao"]
+[ext_resource type="PackedScene" uid="uid://dc3itlbsj88f7" path="res://exit_confirmation_popup.tscn" id="14_exitpop"]
+[ext_resource type="PackedScene" uid="uid://c55t8c0om86gy" path="res://level_info_popup.tscn" id="15_lvlinfo"]
+[ext_resource type="PackedScene" path="res://word_of_the_day_popup.tscn" id="16_wotd"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3owqy"]
+bg_color = Color(0.90588236, 0.84705883, 0.6784314, 1)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0.5372549, 0.2901961, 0.02745098, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_color = Color(0, 0, 0, 0)
+shadow_size = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cws4v"]
+bg_color = Color(0.4, 0.4, 0.4, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_nvpfi"]
+load_path = "res://.godot/imported/Wood.png-4ffd895af5257e39ee6d7e8b2d51cbac.ctex"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2w0kd"]
+bg_color = Color(0.11119685, 0.11119685, 0.11119678, 0.5882353)
+corner_radius_top_left = 30
+corner_radius_top_right = 30
+corner_radius_bottom_right = 30
+corner_radius_bottom_left = 30
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_drsw1"]
+texture = ExtResource("11_o4pao")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hgfbm"]
+bg_color = Color(0.4, 0.4, 0.4, 1)
+
+[node name="Campaign Map Screen" type="Control" unique_id=1964460416]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o4pao")
+
+[node name="Level Container" type="Control" parent="." unique_id=936844476]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CoastalShoreLevels" type="Control" parent="Level Container" unique_id=2111809352]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="TextureRect" parent="Level Container/CoastalShoreLevels" unique_id=455146375]
+layout_mode = 0
+offset_right = 719.0
+offset_bottom = 1276.0
+texture = ExtResource("1_153fi")
+expand_mode = 1
+
+[node name="Level1" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1936957677]
+layout_mode = 0
+offset_left = 103.500000
+offset_top = 261.000000
+offset_right = 203.500000
+offset_bottom = 357.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+text = "1"
+
+[node name="Level2" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1626744664]
+layout_mode = 0
+offset_left = 513.500000
+offset_top = 385.000000
+offset_right = 613.500000
+offset_bottom = 481.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "2"
+
+[node name="LockIcon2" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level2" unique_id=609528266]
+layout_mode = 0
+offset_left = 37.500000
+offset_top = 30.000000
+offset_right = 86.500000
+offset_bottom = 84.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level3" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1600917362]
+layout_mode = 0
+offset_left = 276.500000
+offset_top = 524.000000
+offset_right = 376.500000
+offset_bottom = 620.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "3"
+
+[node name="LockIcon3" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level3" unique_id=763614610]
+layout_mode = 0
+offset_left = 34.499939
+offset_top = 29.000000
+offset_right = 83.499940
+offset_bottom = 83.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level4" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=487990614]
+layout_mode = 0
+offset_left = 273.500000
+offset_top = 763.000000
+offset_right = 373.500000
+offset_bottom = 859.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "4"
+
+[node name="LockIcon4" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level4" unique_id=1014920826]
+layout_mode = 0
+offset_left = 35.500000
+offset_top = 31.000000
+offset_right = 84.500000
+offset_bottom = 85.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level5" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=661401560]
+layout_mode = 0
+offset_left = 273.500000
+offset_top = 1044.000000
+offset_right = 373.500000
+offset_bottom = 1140.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "5"
+
+[node name="LockIcon5" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level5" unique_id=976033702]
+layout_mode = 0
+offset_left = 35.500000
+offset_top = 35.000000
+offset_right = 84.500000
+offset_bottom = 89.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level6" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1052175239]
+layout_mode = 0
+offset_left = 103.500000
+offset_top = 262.000000
+offset_right = 203.500000
+offset_bottom = 358.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "6"
+
+[node name="LockIcon6" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level6" unique_id=1418303662]
+layout_mode = 0
+offset_left = 36.500000
+offset_top = 29.000000
+offset_right = 85.500000
+offset_bottom = 83.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level7" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=425151326]
+layout_mode = 0
+offset_left = 514.500000
+offset_top = 384.000000
+offset_right = 614.500000
+offset_bottom = 480.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "7"
+
+[node name="LockIcon7" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level7" unique_id=1791531791]
+layout_mode = 0
+offset_left = 39.500000
+offset_top = 29.000000
+offset_right = 88.500000
+offset_bottom = 83.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level8" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=42975180]
+layout_mode = 0
+offset_left = 275.500000
+offset_top = 524.000000
+offset_right = 375.500000
+offset_bottom = 620.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "8"
+
+[node name="LockIcon8" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level8" unique_id=252492745]
+layout_mode = 0
+offset_left = 34.500000
+offset_top = 28.000061
+offset_right = 83.500000
+offset_bottom = 82.000060
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level9" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1939337393]
+layout_mode = 0
+offset_left = 273.500000
+offset_top = 763.000000
+offset_right = 373.500000
+offset_bottom = 859.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "9"
+
+[node name="LockIcon9" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level9" unique_id=1852808620]
+layout_mode = 0
+offset_left = 38.500000
+offset_top = 29.000000
+offset_right = 87.500000
+offset_bottom = 83.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level10" type="Button" parent="Level Container/CoastalShoreLevels" unique_id=1210123238]
+layout_mode = 0
+offset_left = 274.500000
+offset_top = 1043.000000
+offset_right = 374.500000
+offset_bottom = 1139.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "10"
+
+[node name="LockIcon10" type="TextureRect" parent="Level Container/CoastalShoreLevels/Level10" unique_id=485709276]
+layout_mode = 0
+offset_left = 36.500000
+offset_top = 30.000000
+offset_right = 85.500000
+offset_bottom = 84.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Header" type="Control" parent="Level Container/CoastalShoreLevels" unique_id=1557734493]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="TitleBanner" type="TextureRect" parent="Level Container/CoastalShoreLevels/Header" unique_id=1522871851]
+layout_mode = 0
+offset_left = 109.0
+offset_top = -2.0
+offset_right = 497.0
+offset_bottom = 126.0
+texture = SubResource("CompressedTexture2D_nvpfi")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Level Container/CoastalShoreLevels/Header/TitleBanner" unique_id=1631710311]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 44.0
+offset_right = 330.0
+offset_bottom = 87.0
+theme_override_fonts/font = ExtResource("2_hsl7m")
+theme_override_font_sizes/font_size = 40
+text = "CAMPAIGN MAP"
+
+[node name="WordoftheDaybutton" type="TextureButton" parent="Level Container/CoastalShoreLevels/Header" unique_id=1211321949]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 25.000002
+offset_right = 509.0
+offset_bottom = 362.0
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("11_fv1ni")
+
+[node name="CoinDisplay" type="Panel" parent="Level Container/CoastalShoreLevels/Header" unique_id=1014263039]
+layout_mode = 0
+offset_left = 509.0
+offset_top = 27.0
+offset_right = 622.0
+offset_bottom = 80.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2w0kd")
+
+[node name="Coin" type="TextureRect" parent="Level Container/CoastalShoreLevels/Header/CoinDisplay" unique_id=1616841280]
+layout_mode = 0
+offset_left = -3.0
+offset_right = 54.0
+offset_bottom = 59.0
+texture = ExtResource("4_aur43")
+expand_mode = 1
+
+[node name="CoinLabel" type="Label" parent="Level Container/CoastalShoreLevels/Header/CoinDisplay" unique_id=1331411523]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.294
+anchor_bottom = 0.22500001
+offset_left = 58.0
+offset_top = 12.0
+offset_right = 58.015995
+offset_bottom = 26.95
+theme_override_fonts/font = ExtResource("5_jdswi")
+theme_override_font_sizes/font_size = 25
+text = "20"
+horizontal_alignment = 1
+
+[node name="LagonoyValleyLevels" type="Control" parent="Level Container" unique_id=459598532]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="TextureRect" parent="Level Container/LagonoyValleyLevels" unique_id=1436565487]
+layout_mode = 0
+offset_right = 719.0
+offset_bottom = 1276.0
+texture = ExtResource("8_hgfbm")
+expand_mode = 1
+
+[node name="Level11" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=28468588]
+layout_mode = 0
+offset_left = 382.500000
+offset_top = 230.000000
+offset_right = 482.500000
+offset_bottom = 326.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "11"
+
+[node name="LockIcon11" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level11" unique_id=330232460]
+layout_mode = 0
+offset_left = 33.500000
+offset_top = 33.000000
+offset_right = 82.500000
+offset_bottom = 87.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level12" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1466246561]
+layout_mode = 0
+offset_left = 128.500000
+offset_top = 326.000000
+offset_right = 228.500000
+offset_bottom = 422.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "12"
+
+[node name="LockIcon12" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level12" unique_id=170255882]
+layout_mode = 0
+offset_left = 35.500000
+offset_top = 29.000000
+offset_right = 84.500000
+offset_bottom = 83.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level13" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=823381791]
+layout_mode = 0
+offset_left = 267.500000
+offset_top = 509.000000
+offset_right = 367.500000
+offset_bottom = 605.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "13"
+
+[node name="LockIcon13" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level13" unique_id=579608020]
+layout_mode = 0
+offset_left = 35.500000
+offset_top = 29.000000
+offset_right = 84.500000
+offset_bottom = 83.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level14" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1907239977]
+layout_mode = 0
+offset_left = 382.500000
+offset_top = 765.000000
+offset_right = 482.500000
+offset_bottom = 861.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "14"
+
+[node name="LockIcon14" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level14" unique_id=1324407431]
+layout_mode = 0
+offset_left = 35.500000
+offset_top = 25.000000
+offset_right = 84.500000
+offset_bottom = 79.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level15" type="Button" parent="Level Container/LagonoyValleyLevels" unique_id=1802662116]
+layout_mode = 0
+offset_left = 318.500000
+offset_top = 1063.000000
+offset_right = 418.500000
+offset_bottom = 1159.000000
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "15"
+
+[node name="LockIcon15" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Level15" unique_id=225731782]
+layout_mode = 0
+offset_left = 36.499970
+offset_top = 30.000000
+offset_right = 85.499970
+offset_bottom = 84.000000
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Header" type="Control" parent="Level Container/LagonoyValleyLevels" unique_id=167014152]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="TitleBanner" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Header" unique_id=1194037854]
+layout_mode = 0
+offset_left = 113.0
+offset_top = -2.0
+offset_right = 501.0
+offset_bottom = 126.0
+texture = SubResource("CompressedTexture2D_nvpfi")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Level Container/LagonoyValleyLevels/Header/TitleBanner" unique_id=1512322481]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 44.0
+offset_right = 330.0
+offset_bottom = 87.0
+theme_override_fonts/font = ExtResource("2_hsl7m")
+theme_override_font_sizes/font_size = 40
+text = "CAMPAIGN MAP"
+
+[node name="WordoftheDaybutton" type="TextureButton" parent="Level Container/LagonoyValleyLevels/Header" unique_id=1269135809]
+layout_mode = 0
+offset_left = 7.0000024
+offset_top = 28.000002
+offset_right = 512.0
+offset_bottom = 365.0
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("11_fv1ni")
+
+[node name="CoinDisplay" type="Panel" parent="Level Container/LagonoyValleyLevels/Header" unique_id=171729225]
+layout_mode = 0
+offset_left = 511.0
+offset_top = 28.0
+offset_right = 631.0
+offset_bottom = 81.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2w0kd")
+
+[node name="Coin" type="TextureRect" parent="Level Container/LagonoyValleyLevels/Header/CoinDisplay" unique_id=1536544762]
+layout_mode = 0
+offset_left = -3.0
+offset_right = 54.0
+offset_bottom = 59.0
+texture = ExtResource("4_aur43")
+expand_mode = 1
+
+[node name="CoinLabel" type="Label" parent="Level Container/LagonoyValleyLevels/Header/CoinDisplay" unique_id=724943020]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.294
+anchor_bottom = 0.22500001
+offset_left = 58.0
+offset_top = 12.0
+offset_right = 58.015995
+offset_bottom = 26.95
+theme_override_fonts/font = ExtResource("5_jdswi")
+theme_override_font_sizes/font_size = 25
+text = "20"
+horizontal_alignment = 1
+
+[node name="IsarogFoothillsLevels" type="Control" parent="Level Container" unique_id=1900491580]
+visible = false
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Background" type="TextureRect" parent="Level Container/IsarogFoothillsLevels" unique_id=258780899]
+layout_mode = 0
+offset_right = 719.0
+offset_bottom = 1276.0
+texture = ExtResource("9_0a1fm")
+expand_mode = 1
+
+[node name="Level16" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000200]
+layout_mode = 0
+offset_left = 272.0
+offset_top = 159.0
+offset_right = 349.0
+offset_bottom = 233.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "16"
+
+[node name="LockIcon16" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level16" unique_id=2000000201]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level17" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000202]
+layout_mode = 0
+offset_left = 382.0
+offset_top = 223.0
+offset_right = 459.0
+offset_bottom = 297.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "17"
+
+[node name="LockIcon17" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level17" unique_id=2000000203]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level18" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000204]
+layout_mode = 0
+offset_left = 251.0
+offset_top = 262.0
+offset_right = 328.0
+offset_bottom = 336.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "18"
+
+[node name="LockIcon18" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level18" unique_id=2000000205]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level19" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000206]
+layout_mode = 0
+offset_left = 327.0
+offset_top = 349.0
+offset_right = 404.0
+offset_bottom = 423.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "19"
+
+[node name="LockIcon19" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level19" unique_id=2000000207]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level20" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000208]
+layout_mode = 0
+offset_left = 461.0
+offset_top = 389.0
+offset_right = 538.0
+offset_bottom = 463.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "20"
+
+[node name="LockIcon20" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level20" unique_id=2000000209]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level21" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000210]
+layout_mode = 0
+offset_left = 372.0
+offset_top = 468.0
+offset_right = 449.0
+offset_bottom = 542.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "21"
+
+[node name="LockIcon21" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level21" unique_id=2000000211]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level22" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000212]
+layout_mode = 0
+offset_left = 250.0
+offset_top = 497.0
+offset_right = 327.0
+offset_bottom = 571.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "22"
+
+[node name="LockIcon22" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level22" unique_id=2000000213]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level23" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000214]
+layout_mode = 0
+offset_left = 186.0
+offset_top = 596.0
+offset_right = 263.0
+offset_bottom = 670.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "23"
+
+[node name="LockIcon23" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level23" unique_id=2000000215]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level24" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000216]
+layout_mode = 0
+offset_left = 300.0
+offset_top = 639.0
+offset_right = 377.0
+offset_bottom = 713.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "24"
+
+[node name="LockIcon24" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level24" unique_id=2000000217]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level25" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000218]
+layout_mode = 0
+offset_left = 386.0
+offset_top = 733.0
+offset_right = 463.0
+offset_bottom = 807.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "25"
+
+[node name="LockIcon25" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level25" unique_id=2000000219]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level26" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000220]
+layout_mode = 0
+offset_left = 298.0
+offset_top = 821.0
+offset_right = 375.0
+offset_bottom = 895.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "26"
+
+[node name="LockIcon26" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level26" unique_id=2000000221]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level27" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000222]
+layout_mode = 0
+offset_left = 219.0
+offset_top = 904.0
+offset_right = 296.0
+offset_bottom = 978.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "27"
+
+[node name="LockIcon27" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level27" unique_id=2000000223]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level28" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000224]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 991.0
+offset_right = 357.0
+offset_bottom = 1065.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "28"
+
+[node name="LockIcon28" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level28" unique_id=2000000225]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level29" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000226]
+layout_mode = 0
+offset_left = 344.0
+offset_top = 1068.0
+offset_right = 421.0
+offset_bottom = 1142.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "29"
+
+[node name="LockIcon29" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level29" unique_id=2000000227]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Level30" type="Button" parent="Level Container/IsarogFoothillsLevels" unique_id=2000000228]
+layout_mode = 0
+offset_left = 365.0
+offset_top = 1184.0
+offset_right = 442.0
+offset_bottom = 1258.0
+theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 25
+theme_override_styles/normal = SubResource("StyleBoxFlat_3owqy")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_cws4v")
+disabled = true
+text = "30"
+
+[node name="LockIcon30" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Level30" unique_id=2000000229]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 18.0
+offset_right = 73.0
+offset_bottom = 72.0
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_fv1ni")
+expand_mode = 1
+
+[node name="Header" type="Control" parent="Level Container/IsarogFoothillsLevels" unique_id=1412630971]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="TitleBanner" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Header" unique_id=1178854172]
+layout_mode = 0
+offset_left = 109.0
+offset_top = -4.0
+offset_right = 497.0
+offset_bottom = 124.0
+texture = SubResource("CompressedTexture2D_nvpfi")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="Level Container/IsarogFoothillsLevels/Header/TitleBanner" unique_id=2001977335]
+layout_mode = 0
+offset_left = 53.0
+offset_top = 44.0
+offset_right = 330.0
+offset_bottom = 87.0
+theme_override_fonts/font = ExtResource("2_hsl7m")
+theme_override_font_sizes/font_size = 40
+text = "CAMPAIGN MAP"
+
+[node name="WordOftheDaybutton" type="TextureButton" parent="Level Container/IsarogFoothillsLevels/Header" unique_id=1744658013]
+layout_mode = 0
+offset_left = 8.000001
+offset_top = 31.000002
+offset_right = 513.0
+offset_bottom = 368.0
+scale = Vector2(0.2, 0.2)
+texture_normal = ExtResource("11_fv1ni")
+
+[node name="CoinDisplay" type="Panel" parent="Level Container/IsarogFoothillsLevels/Header" unique_id=763623163]
+layout_mode = 0
+offset_left = 515.0
+offset_top = 32.0
+offset_right = 632.0
+offset_bottom = 85.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_2w0kd")
+
+[node name="Coin" type="TextureRect" parent="Level Container/IsarogFoothillsLevels/Header/CoinDisplay" unique_id=1653677554]
+layout_mode = 0
+offset_left = -3.0
+offset_right = 54.0
+offset_bottom = 59.0
+texture = ExtResource("4_aur43")
+expand_mode = 1
+
+[node name="CoinLabel" type="Label" parent="Level Container/IsarogFoothillsLevels/Header/CoinDisplay" unique_id=1531173080]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.294
+anchor_bottom = 0.22500001
+offset_left = 58.0
+offset_top = 12.0
+offset_right = 58.015995
+offset_bottom = 26.95
+theme_override_fonts/font = ExtResource("5_jdswi")
+theme_override_font_sizes/font_size = 25
+text = "20"
+horizontal_alignment = 1
+
+[node name="RegionOptionButton" type="OptionButton" parent="." unique_id=1936397783]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 1122.0
+offset_right = 228.0
+offset_bottom = 1192.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("2_012ip")
+theme_override_font_sizes/font_size = 22
+theme_override_styles/normal = SubResource("StyleBoxTexture_drsw1")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_hgfbm")
+alignment = 1
+item_count = 4
+popup/item_0/text = "YUNIT 1"
+popup/item_0/id = 0
+popup/item_1/text = "YUNIT 2"
+popup/item_1/id = 1
+popup/item_2/text = "YUNIT 3"
+popup/item_2/id = 2
+popup/item_3/text = "YUNIT 4"
+popup/item_3/id = 3
+
+[node name="PlayerAvatarDisplay" type="TextureRect" parent="." unique_id=2100000001]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 590.0
+offset_top = 1140.0
+offset_right = 700.0
+offset_bottom = 1250.0
+expand_mode = 1
+stretch_mode = 5
+
+[node name="SettingsButton" type="TextureButton" parent="." unique_id=375040293]
+layout_mode = 0
+offset_left = 634.0
+offset_top = 17.0
+offset_right = 971.0
+offset_bottom = 354.0
+scale = Vector2(0.23, 0.23)
+texture_normal = ExtResource("8_aur43")
+ignore_texture_size = true
+stretch_mode = 0
+
+[node name="SettingsMenu" parent="." unique_id=707809916 instance=ExtResource("13_o4pao")]
+visible = false
+layout_mode = 1
+show_logout_button = true
+
+[node name="ExitConfirmationPopup" parent="." unique_id=91985844 instance=ExtResource("14_exitpop")]
+visible = false
+layout_mode = 1
+quit_app = true
+
+[node name="LogoutConfirmationPopup" parent="." unique_id=1117548000 instance=ExtResource("14_exitpop")]
+visible = false
+layout_mode = 1
+confirm_message = "Log out and return to the role selection screen?"
+
+[node name="LevelInfoPopup" parent="." unique_id=588900884 instance=ExtResource("15_lvlinfo")]
+visible = false
+layout_mode = 1
+
+[node name="WordOfTheDayPopup" parent="." unique_id=588900885 instance=ExtResource("16_wotd")]
+visible = false
+layout_mode = 1

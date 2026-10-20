@@ -1,7 +1,7 @@
 [gd_scene format=4 uid="uid://cxd4h5t3cro5w"]
 
 [ext_resource type="Script" uid="uid://bi6bfgifgwftp" path="res://level_16_20.gd" id="1_4n2vs"]
-[ext_resource type="Texture2D" uid="uid://b3a0y760t5ah0" path="res://Partido Word Catch Game Pic/Coastal Shore.png" id="2_737h5"]
+[ext_resource type="Texture2D" uid="uid://1jy1iox5qrkr" path="res://Partido Word Catch Game Pic/Isarog Foothills.png" id="2_isrgft"]
 [ext_resource type="Texture2D" uid="uid://e8817vusx1u" path="res://images/boy.png" id="3_wpjvt"]
 [ext_resource type="Texture2D" uid="uid://b070kmkn52spb" path="res://images/hint_shuffle_remove.png" id="4_jj1h5"]
 [ext_resource type="Texture2D" uid="uid://psgxa5sx8335" path="res://images/design wood.png" id="4_nx70y"]
@@ -27,6 +27,8 @@
 [ext_resource type="Texture2D" uid="uid://bsjdxhoksmgoe" path="res://Partido Word Catch Game Pic/Wood.png" id="19_ukqgk"]
 [ext_resource type="Texture2D" uid="uid://obhvidwsh0qx" path="res://Partido Word Catch Game Pic/Woods.png" id="20_5jjqu"]
 [ext_resource type="Texture2D" uid="uid://dn74hc6me67ly" path="res://Partido Word Catch Game Pic/Red X Icon.png" id="21_ukqgk"]
+[ext_resource type="PackedScene" uid="uid://brbxr71qdww6a" path="res://settings_menu.tscn" id="settings_menu_ref"]
+[ext_resource type="PackedScene" uid="uid://dc3itlbsj88f7" path="res://exit_confirmation_popup.tscn" id="exit_popup_ref"]
 
 [sub_resource type="Image" id="Image_540hr"]
 data = {
@@ -3602,12 +3604,12 @@ script = ExtResource("1_4n2vs")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1447703769]
 
-[node name="CoastalShore" type="Sprite2D" parent="CanvasLayer" unique_id=695898938]
+[node name="IsarogFoothillsBg" type="Sprite2D" parent="CanvasLayer" unique_id=695898938]
 position = Vector2(362.5, 639.8751)
 scale = Vector2(0.7509765, 0.85879487)
-texture = ExtResource("2_737h5")
+texture = ExtResource("2_isrgft")
 
-[node name="HintShuffleRemove2" type="Sprite2D" parent="CanvasLayer/CoastalShore" unique_id=654326239]
+[node name="HintShuffleRemove2" type="Sprite2D" parent="CanvasLayer/IsarogFoothillsBg" unique_id=654326239]
 position = Vector2(-124.50455, 612.63165)
 scale = Vector2(0.9041509, 1)
 texture = ExtResource("4_jj1h5")
@@ -3720,13 +3722,13 @@ theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
 theme_override_fonts/font = SubResource("FontFile_su8cw")
 theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxEmpty_24dk6")
-text = "🪙 20"
-horizontal_alignment = 1
+text = "20"
+horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Coin" type="Sprite2D" parent="CanvasLayer/TopBar/CoinsLabel" unique_id=1236065922]
-position = Vector2(33, 25)
-scale = Vector2(0.18243243, 0.1891892)
+position = Vector2(22, 24)
+scale = Vector2(0.135, 0.135)
 texture = ExtResource("8_jj1h5")
 
 [node name="Back" type="Sprite2D" parent="CanvasLayer/TopBar" unique_id=1177748743]
@@ -3735,6 +3737,7 @@ scale = Vector2(0.28291816, 0.2624555)
 texture = ExtResource("8_aqx06")
 
 [node name="BackButton" type="Button" parent="CanvasLayer/TopBar/Back" unique_id=1858282121]
+unique_name_in_owner = true
 offset_left = -102.50314
 offset_top = -95.25426
 offset_right = 106.03772
@@ -3748,6 +3751,7 @@ scale = Vector2(0.2056751, 0.20178041)
 texture = ExtResource("9_737h5")
 
 [node name="SettingsButton2" type="Button" parent="CanvasLayer/TopBar/SettingIcon" unique_id=1031045466]
+unique_name_in_owner = true
 offset_left = -79.46387
 offset_top = -99.117645
 offset_right = 90.707275
@@ -4095,13 +4099,13 @@ offset_left = -302.0
 offset_top = 709.0
 offset_right = 1026.0
 offset_bottom = 785.0
-theme_override_constants/separation = 7
+theme_override_constants/separation = 5
 alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Button" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=850356015]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4119,7 +4123,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button2" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1409939361]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4137,7 +4141,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button3" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=2091662412]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4155,7 +4159,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button4" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=2135585112]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4173,7 +4177,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button5" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1815586065]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4191,7 +4195,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button6" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1472085372]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4209,7 +4213,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button7" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1169682446]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4227,7 +4231,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button8" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1346596504]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4245,7 +4249,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button9" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1734989321]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4263,7 +4267,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button10" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=1771449490]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4281,7 +4285,7 @@ script = ExtResource("10_c6b6m")
 
 [node name="Button11" type="Button" parent="CanvasLayer/AnswerSlotsContainer" unique_id=680335219]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(55, 70)
+custom_minimum_size = Vector2(47, 70)
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
@@ -4315,6 +4319,19 @@ offset_bottom = 409.0
 size_flags_horizontal = 0
 texture = ExtResource("11_v2seu")
 expand_mode = 1
+
+[node name="SettingsMenu" parent="CanvasLayer" instance=ExtResource("settings_menu_ref")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+quit_button_text = "MENU"
+
+[node name="ExitConfirmationPopup" parent="CanvasLayer" instance=ExtResource("exit_popup_ref")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+confirm_target_scene = "res://campaign_map_screen.tscn"
+confirm_message = "Bumalik sa Campaign Map?"
 
 [node name="VictoryPopup" type="Control" parent="CanvasLayer" unique_id=252567573]
 unique_name_in_owner = true
@@ -4351,8 +4368,8 @@ scale = Vector2(1.0950001, 1.4873188)
 texture = ExtResource("16_5ldww")
 
 [node name="Girl" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect" unique_id=2140701476]
-position = Vector2(135, 843)
-scale = Vector2(0.77350414, 0.75388217)
+position = Vector2(127, 843)
+scale = Vector2(0.55, 0.53606)
 texture = ExtResource("13_v6ov3")
 
 [node name="Book" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect/Girl" unique_id=1524690250]
@@ -4374,6 +4391,17 @@ texture = ExtResource("20_5jjqu")
 position = Vector2(653, 265)
 scale = Vector2(0.14833334, 0.14166656)
 texture = ExtResource("21_ukqgk")
+
+[node name="CloseVictoryButton" type="Button" parent="CanvasLayer/VictoryPopup/ColorRect"]
+layout_mode = 0
+offset_left = 608.0
+offset_top = 222.0
+offset_right = 698.0
+offset_bottom = 308.0
+flat = true
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2u7jv")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_2u7jv")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_2u7jv")
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="CanvasLayer/VictoryPopup" unique_id=1361571903]
 unique_name_in_owner = true
@@ -4442,6 +4470,7 @@ text = "Pakinggan ang tamang pagbigkas"
 [node name="MeaningLabel" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1860041230]
 unique_name_in_owner = true
 layout_mode = 0
+custom_minimum_size = Vector2(423, 52)
 offset_left = 193.0
 offset_top = 601.0
 offset_right = 616.0
@@ -4455,6 +4484,7 @@ autowrap_mode = 2
 [node name="CulturalNoteLabel" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1467786619]
 unique_name_in_owner = true
 layout_mode = 0
+custom_minimum_size = Vector2(368, 129)
 offset_left = 246.0
 offset_top = 739.0
 offset_right = 614.0
@@ -4492,6 +4522,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_20yl2")
 text = "MAHUSAY!"
 
 [node name="+coin" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1383840929]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 61.0
 offset_top = 1094.0
@@ -4502,7 +4533,7 @@ theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_fonts/font = SubResource("FontFile_k73cj")
 theme_override_font_sizes/font_size = 42
 theme_override_styles/normal = SubResource("StyleBoxEmpty_20yl2")
-text = "🪙 + 10"
+text = "+10 COINS"
 
 [node name="SpeakerButton" type="Button" parent="CanvasLayer/VictoryPopup" unique_id=357239405]
 unique_name_in_owner = true
@@ -4525,6 +4556,7 @@ stream = ExtResource("18_m3ylr")
 volume_db = 24.0
 
 [node name="NextLevel" type="Button" parent="CanvasLayer/VictoryPopup" unique_id=656088702]
+unique_name_in_owner = true
 layout_mode = 0
 offset_left = 291.0
 offset_top = 1070.0
@@ -4542,5 +4574,3 @@ offset_right = 353.0
 offset_bottom = 78.0
 theme_override_font_sizes/font_size = 35
 text = "Sunod na Level  >>"
-
-[connection signal="pressed" from="CanvasLayer/VictoryPopup/NextLevel" to="." method="_on_next_level_pressed"]

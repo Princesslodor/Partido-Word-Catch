@@ -1,0 +1,303 @@
+extends Node
+# ============================================
+# SyncManager.gd
+# ============================================
+# Talks to Supabase so a teacher's leaderboard can see student progress
+# from other devices. The game is fully playable offline - every sync
+# call here is fire-and-forget: if there's no internet, or Supabase
+# isn't configured yet, it just fails quietly and the game keeps using
+# the local save (GameManager) as the source of truth. The next
+# successful sync (e.g. next time the app has internet) pushes
+# whatever the local save currently has, so nothing needs a queue.
+#
+# SETUP: paste your Supabase project's URL and anon/public API key
+# below (Project Settings > API in the Supabase dashboard), then run
+# supabase_schema.sql, then supabase_hardening.sql, in the Supabase SQL
+# Editor once (in that order).
+#
+# SECURITY: every call below goes through a Postgres function
+# (/rest/v1/rpc/<name>), not a direct table query. That's on purpose -
+# see supabase_hardening.sql for why: the anon key below is meant to be
+# public (it's committed in this repo), so Row Level Security on the
+# `classes` and `students` tables denies direct access entirely, and each
+# function here exposes only the exact narrow slice of data its one job
+# needs (never a teacher's email, never a pupil's PIN).
+# ============================================
+
+const SUPABASE_URL: String = "https://uufsrfizpvgjuipkpqzv.supabase.co"
+const SUPABASE_ANON_KEY: String = "sb_publishable_7rWRg70DOh-DPu6xUy5XWg_61DHfI7_"
+
+const REQUEST_TIMEOUT: float = 8.0
+
+## Short human-readable reason the most recent failed request failed, so
+## screens can show it to the user instead of a generic "no internet" -
+## that's the only way to see what's actually going wrong on a device we
+## can't attach a debugger to.
+var last_error: String = ""
+
+func _result_to_text(result: int) -> String:
+	match result:
+		HTTPRequest.RESULT_CANT_RESOLVE:
+			return "can't resolve host"
+		HTTPRequest.RESULT_CANT_CONNECT:
+			return "can't connect"
+		HTTPRequest.RESULT_TLS_HANDSHAKE_ERROR:
+			return "TLS handshake error"
+		HTTPRequest.RESULT_TIMEOUT:
+			return "timed out"
+		HTTPRequest.RESULT_CONNECTION_ERROR:
+			return "connection error"
+		HTTPRequest.RESULT_NO_RESPONSE:
+			return "no response"
+		HTTPRequest.RESULT_SUCCESS:
+			return "http "
+		_:
+			return "error code " + str(result)
+
+func is_configured() -> bool:
+	return SUPABASE_URL != "" and SUPABASE_ANON_KEY != ""
+
+func _headers(extra: Array = []) -> PackedStringArray:
+	var headers: Array = [
+		"apikey: " + SUPABASE_ANON_KEY,
+		"Authorization: Bearer " + SUPABASE_ANON_KEY,
+		"Content-Type: application/json",
+	]
+	headers.append_array(extra)
+	return PackedStringArray(headers)
+
+## Creates a throwaway HTTPRequest node so concurrent calls don't collide,
+## and cleans it up once the response (or failure) comes back.
+func _request(path: String, method: int, body: String = "", extra_headers: Array = []) -> HTTPRequest:
+	var http := HTTPRequest.new()
+	http.timeout = REQUEST_TIMEOUT
+	add_child(http)
+	var full_url := SUPABASE_URL + path
+	var send_err := http.request(full_url, _headers(extra_headers), method, body)
+	if send_err != OK:
+		last_error = "couldn't start request (code " + str(send_err) + ")"
+		push_warning("SyncManager: request() failed to even start for %s - error code %s" % [full_url, send_err])
+		# request() failing synchronously means request_completed will NEVER
+		# fire on its own - callers (who connect to it right after this
+		# function returns) would otherwise wait forever. Fire it ourselves,
+		# deferred so it happens after callers have had a chance to connect.
+		http.call_deferred("emit_signal", "request_completed", HTTPRequest.RESULT_CANT_CONNECT, 0, PackedStringArray(), PackedByteArray())
+	http.request_completed.connect(func(result, response_code, _h, resp_body: PackedByteArray):
+		if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
+			last_error = _result_to_text(result) + (str(response_code) if result == HTTPRequest.RESULT_SUCCESS else "")
+			push_warning("SyncManager: request to %s failed - result=%s response_code=%s body=%s" % [
+				full_url, result, response_code, resp_body.get_string_from_utf8()
+			])
+	)
+	return http
+
+## --- RPC HELPER ---
+## POSTs to a Postgres function via PostgREST (/rest/v1/rpc/<function_name>)
+## and JSON-decodes the response body. Every function in supabase_hardening.sql
+## is called this way instead of querying `classes`/`students` directly - see
+## the SECURITY note at the top of this file. Calls back with the decoded
+## value on success (an Array for a function that RETURNS TABLE, a bare
+## bool/String/etc. for one that returns a scalar, or null for RETURNS VOID),
+## or `null` if the request itself couldn't complete.
+func _call_rpc(function_name: String, params: Dictionary, on_result: Callable) -> void:
+	if not is_configured():
+		on_result.call(null)
+		return
+	var body := JSON.stringify(params)
+	var http := _request("/rest/v1/rpc/" + function_name, HTTPClient.METHOD_POST, body)
+	http.request_completed.connect(func(result, response_code, _h, resp_body: PackedByteArray):
+		http.queue_free()
+		if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
+			on_result.call(null)
+			return
+		if resp_body.size() == 0:
+			# RETURNS VOID functions (e.g. upsert_class) reply 204 with an
+			# empty body - nothing to decode, and no caller reads this value.
+			on_result.call(null)
+			return
+		on_result.call(JSON.parse_string(resp_body.get_string_from_utf8()))
+	)
+
+## --- CLASS SYNC (teacher side) ---
+## Upserts the class row for this teacher's permanent class code.
+func upsert_class(class_code: String, teacher_name: String, teacher_email: String, school_name: String, grade_subject: String, teacher_class_name: String, avatar_id: String = "") -> void:
+	if not is_configured() or class_code == "":
+		return
+	_call_rpc("upsert_class", {
+		"p_class_code": class_code,
+		"p_teacher_name": teacher_name,
+		"p_teacher_email": teacher_email,
+		"p_school_name": school_name,
+		"p_grade_subject": grade_subject,
+		"p_teacher_class_name": teacher_class_name,
+		"p_avatar_id": avatar_id,
+	}, func(_r): pass)
+
+## --- CLASS LOOKUPS ---
+## Shared helper for the two "find one class row" functions below: both
+## RPCs return an Array (possibly empty, since they RETURN TABLE), so this
+## turns that into the same three-way result every caller already expects:
+## the class row (Dictionary) if a match exists, `false` if the lookup
+## succeeded but nothing matched, or `null` if the lookup itself couldn't
+## complete (offline/unconfigured/error).
+func _find_class_via_rpc(function_name: String, params: Dictionary, on_result: Callable) -> void:
+	_call_rpc(function_name, params, func(parsed):
+		if parsed == null:
+			on_result.call(null)
+		elif parsed is Array and parsed.size() > 0:
+			on_result.call(parsed[0])
+		else:
+			on_result.call(false)
+	)
+
+## Looks up a teacher's class by the email they typed on the Login screen.
+func find_class_by_email(teacher_email: String, on_result: Callable) -> void:
+	if not is_configured() or teacher_email.strip_edges() == "":
+		on_result.call(null)
+		return
+	_find_class_via_rpc("find_class_by_email", {"p_teacher_email": teacher_email.strip_edges()}, on_result)
+
+## Looks up a class by the code a student typed to join it.
+func find_class_by_code(class_code: String, on_result: Callable) -> void:
+	if not is_configured() or class_code.strip_edges() == "":
+		on_result.call(null)
+		return
+	_find_class_via_rpc("find_class_by_code", {"p_class_code": class_code.strip_edges()}, on_result)
+
+## --- STUDENT PROGRESS SYNC ---
+## True while a students-table upsert is in flight. Guards against a subtle
+## race: save_game() can call sync_student_progress() twice in quick
+## succession (e.g. a wrong answer costs a star then a heart, each its own
+## save), and each call is its own independent HTTP request with no
+## sequencing. Under real network jitter, the EARLIER (now-stale) request's
+## response can land after the LATER one, so its upsert runs last and
+## overwrites the newer data - the teacher's leaderboard would then show
+## outdated coins/progress until the next sync. Coalescing concurrent calls
+## into a single in-flight request, plus one guaranteed trailing resync,
+## means only one upsert for this student is ever in flight at a time, so
+## there's nothing left to arrive out of order.
+var _progress_sync_in_flight: bool = false
+var _progress_resync_pending: bool = false
+
+## Pushes this device's current GameManager progress up for the teacher to
+## see. The PIN travels over HTTPS same as before; supabase_hardening.sql's
+## version of this function hashes it with bcrypt before it touches disk.
+func sync_student_progress() -> void:
+	if not is_configured():
+		return
+
+	var gm = get_node_or_null("/root/GameManager")
+	if not gm or gm.role != "STUDENT" or gm.class_code == "" or gm.device_id == "":
+		return
+
+	if _progress_sync_in_flight:
+		_progress_resync_pending = true
+		return
+	_progress_sync_in_flight = true
+
+	_call_rpc("sync_student_progress", {
+		"p_device_id": gm.device_id,
+		"p_class_code": gm.class_code,
+		"p_player_name": gm.player_name if gm.player_name != "" else "Student",
+		"p_pin": gm.student_pin,
+		"p_avatar_id": gm.avatar_id,
+		"p_unlocked_level": gm.unlocked_level,
+		"p_player_coins": gm.player_coins,
+		"p_completed_levels": gm.completed_levels,
+	}, func(_r):
+		_progress_sync_in_flight = false
+		if _progress_resync_pending:
+			_progress_resync_pending = false
+			sync_student_progress()
+	)
+
+## --- CROSS-DEVICE STUDENT LOGIN ---
+## Looks up an existing student account by exact name + PIN (a student only
+## ever belongs to one class, so there's no need to also ask for the class
+## code - it comes back as part of the matched row instead). Calls back
+## with the student row (Dictionary) if a match exists, `false` if the
+## lookup succeeded but nothing matched, or `null` if the lookup itself
+## couldn't complete.
+func find_student_account(player_name: String, pin: String, on_result: Callable) -> void:
+	if not is_configured() or player_name.strip_edges() == "" or pin.strip_edges() == "":
+		on_result.call(null)
+		return
+
+	# No limit=1 here on purpose: name+PIN alone isn't guaranteed unique
+	# across different classes, so we need to see if more than one row
+	# matched before picking one - see the "ambiguous" handling below.
+	_call_rpc("find_student_account", {
+		"p_player_name": player_name.strip_edges(),
+		"p_pin": pin.strip_edges(),
+	}, func(parsed):
+		if parsed == null:
+			on_result.call(null)
+		elif parsed is Array and parsed.size() > 1:
+			# Same name + PIN matches more than one account (likely in
+			# different classes) - too ambiguous to safely log into one of
+			# them automatically. Caller should ask the student to join by
+			# class code instead, which scopes the lookup unambiguously.
+			on_result.call("ambiguous")
+		elif parsed is Array and parsed.size() > 0:
+			on_result.call(parsed[0])
+		else:
+			on_result.call(false)
+	)
+
+## Looks up an existing student account scoped to ONE specific class (used
+## right after entering a class code, before finalizing "registration") -
+## as opposed to find_student_account() above, which searches across every
+## class for the standalone Login screen. Lets the class-code flow tell
+## "this name+PIN already played in this class, restore them" apart from
+## "this is a genuinely new student, start them at zero". Calls back with
+## the student row (Dictionary) if a match exists, `false` if the lookup
+## succeeded but nothing matched, or `null` if it couldn't complete.
+func find_student_in_class(class_code: String, player_name: String, pin: String, on_result: Callable) -> void:
+	if not is_configured() or class_code.strip_edges() == "" or player_name.strip_edges() == "" or pin.strip_edges() == "":
+		on_result.call(null)
+		return
+
+	_call_rpc("find_student_in_class", {
+		"p_class_code": class_code.strip_edges(),
+		"p_player_name": player_name.strip_edges(),
+		"p_pin": pin.strip_edges(),
+	}, func(parsed):
+		if parsed == null:
+			on_result.call(null)
+		elif parsed is Array and parsed.size() > 0:
+			on_result.call(parsed[0])
+		else:
+			on_result.call(false)
+	)
+
+## Re-points an existing student row at a NEW device_id, so logging into an
+## account on a different phone doesn't create a second, duplicate row the
+## next time that account syncs - it keeps updating the same one. Calls
+## back with true/false for whether the claim succeeded.
+func claim_student_account(student_id: String, new_device_id: String, on_result: Callable) -> void:
+	if not is_configured() or student_id == "":
+		on_result.call(false)
+		return
+
+	_call_rpc("claim_student_account", {
+		"p_student_id": student_id,
+		"p_new_device_id": new_device_id,
+	}, func(parsed):
+		on_result.call(parsed == true)
+	)
+
+## --- TEACHER LEADERBOARD FETCH ---
+## Calls back with an Array of student rows (each a Dictionary), ordered by
+## unlocked_level descending. Calls back with an empty array if offline,
+## unconfigured, or the class has no students yet.
+func fetch_leaderboard(class_code: String, on_result: Callable) -> void:
+	if not is_configured() or class_code == "":
+		on_result.call([])
+		return
+
+	_call_rpc("fetch_leaderboard", {"p_class_code": class_code}, func(parsed):
+		if parsed is Array:
+			on_result.call(parsed)
+		else:
+			on_result.call([])
+	)

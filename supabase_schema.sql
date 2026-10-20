@@ -1,0 +1,57 @@
+-- Partido Word Catch — Supabase schema
+-- Run this once in your Supabase project's SQL Editor (Project > SQL Editor > New query).
+
+create table if not exists classes (
+  class_code text primary key,
+  teacher_name text,
+  teacher_email text,
+  school_name text,
+  grade_subject text,
+  teacher_class_name text,
+  avatar_id text,
+  created_at timestamptz default now()
+);
+
+-- Safe to re-run: adds the column if this table already existed without it.
+alter table classes add column if not exists teacher_email text;
+
+-- Safe to re-run: adds the column if this table already existed without it -
+-- lets the "Class Joined!" popup show the teacher's own chosen avatar
+-- instead of a hardcoded placeholder.
+alter table classes add column if not exists avatar_id text;
+
+-- Supabase's REST API (PostgREST) caches the table schema and doesn't
+-- always notice a plain ALTER TABLE right away - this tells it to reload,
+-- otherwise requests mentioning the new column can fail with a 400
+-- "Could not find the 'teacher_email' column ... in the schema cache".
+notify pgrst, 'reload schema';
+
+create table if not exists students (
+  student_id uuid primary key default gen_random_uuid(),
+  class_code text references classes(class_code) on delete cascade,
+  device_id text unique,
+  player_name text not null default 'Student',
+  student_pin text,
+  avatar_id text,
+  unlocked_level int default 1,
+  player_coins int default 0,
+  completed_levels jsonb default '{}'::jsonb,
+  updated_at timestamptz default now()
+);
+
+-- Safe to re-run: adds the column if this table already existed without it -
+-- needed so a student can log into their existing account on a different
+-- device (class code + name + PIN), instead of the account being locked to
+-- whichever device first registered it.
+alter table students add column if not exists student_pin text;
+notify pgrst, 'reload schema';
+
+-- No real accounts/login exist in the app yet (just class codes), so this
+-- uses simple open policies scoped to the anon key rather than per-user auth.
+-- Anyone with the anon key can read/write — acceptable for a classroom tool,
+-- but note this if the app ever needs stronger data protection later.
+alter table classes enable row level security;
+alter table students enable row level security;
+
+create policy "anon full access" on classes for all using (true) with check (true);
+create policy "anon full access" on students for all using (true) with check (true);

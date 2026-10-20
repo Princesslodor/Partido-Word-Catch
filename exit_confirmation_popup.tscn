@@ -55,13 +55,16 @@ expand_mode = 1
 [node name="Label" type="Label" parent="BackgroundOverlay/ExitConfirmationBackground" unique_id=1497673397]
 layout_mode = 0
 offset_left = 150.0
-offset_top = 220.0
+offset_top = 210.0
 offset_right = 593.0
-offset_bottom = 262.0
+offset_bottom = 300.0
 theme_override_colors/font_color = Color(0.011087579, 0.011087578, 0.01108758, 1)
 theme_override_fonts/font = ExtResource("2_ovqrb")
 theme_override_font_sizes/font_size = 30
 text = "Gusto mo bang umalis sa laro?"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
 
 [node name="OkButton" type="Button" parent="BackgroundOverlay/ExitConfirmationBackground" unique_id=1321715188]
 layout_mode = 0

@@ -5,11 +5,12 @@ signal back_pressed
 
 # --- DIRECT NODE REFERENCES ---
 # Sinisigurado nitong makuha ang tamang LineEdit nodes sa iyong Scene Tree
-@onready var name_input: LineEdit = $StudentRegistrationContainer/FieldContainer/LineEdit if has_node("StudentRegistrationContainer/FieldContainer/LineEdit") else null
-@onready var pin_input: LineEdit = $StudentRegistrationContainer/FieldContainer2/LineEdit if has_node("StudentRegistrationContainer/FieldContainer2/LineEdit") else null
+@onready var name_input: LineEdit = $FieldContainer/LineEdit if has_node("FieldContainer/LineEdit") else null
+@onready var pin_input: LineEdit = $FieldContainer2/LineEdit if has_node("FieldContainer2/LineEdit") else null
 
-@onready var continue_button: Button = find_child("ContinueButton", true, false) as Button
-@onready var back_button: Button = find_child("BackButton", true, false) as Button
+@onready var continue_button: BaseButton = find_child("ContinueButton", true, false) as BaseButton
+@onready var back_button: BaseButton = find_child("BackButton", true, false) as BaseButton
+@onready var status_label: Label = $StatusLabel if has_node("StatusLabel") else null
 
 func _ready() -> void:
 	if pin_input:
@@ -41,19 +42,101 @@ func _on_continue_pressed() -> void:
 	var student_name: String = name_input.text.strip_edges() if name_input else ""
 	var student_pin: String = pin_input.text.strip_edges() if pin_input else ""
 
-	print(">>> DEBUG REGISTRATION | Name: '", student_name, "' | PIN: '", student_pin, "'")
+	if status_label: status_label.text = ""
 
-	# VALIDATION CHECK (Pansamantalang nagse-set ng default value para hindi mag-block kung testing)
 	if student_name == "":
-		print("WARNING: Walang pangalan. Gagamit ng default na 'Student'")
-		student_name = "Student"
+		if status_label: status_label.text = "Please enter your name."
+		return
+	var pin_is_all_digits := true
+	for c in student_pin:
+		if c < "0" or c > "9":
+			pin_is_all_digits = false
+			break
+	if student_pin.length() != 4 or not pin_is_all_digits:
+		if status_label: status_label.text = "PIN must be exactly 4 digits."
+		return
 
-	# Save sa GameManager
 	var gm = get_node_or_null("/root/GameManager")
+	var sync = get_node_or_null("/root/SyncManager")
+	var class_code: String = gm.class_code if gm and "class_code" in gm else ""
+
+	# Before treating this as a brand-new student, check whether this exact
+	# name+PIN already has an account in THIS class - if so, this is really
+	# the same student coming back (e.g. after "Not You" cleared the local
+	# device, or a reinstall), and their real progress should be restored
+	# instead of starting them over at zero.
+	if sync and sync.has_method("find_student_in_class") and class_code != "" and student_pin != "":
+		if continue_button: continue_button.disabled = true
+		sync.find_student_in_class(class_code, student_name, student_pin, func(existing_row):
+			if existing_row is Dictionary:
+				_confirm_existing_account(gm, sync, student_name, student_pin, existing_row)
+			else:
+				if continue_button: continue_button.disabled = false
+				_finish_registration(gm, sync, student_name, student_pin, null)
+		)
+	else:
+		_finish_registration(gm, sync, student_name, student_pin, null)
+
+## A name+PIN match was found in this class - but with simple 4-digit PINs
+## (very common among Grade 3 pupils, e.g. "1234"), two DIFFERENT students
+## picking the same name and the same easy PIN is a real possibility, not
+## just the same student returning. Restoring progress silently in that case
+## would hand one pupil's level/coins/avatar to a different pupil. So we ask
+## first, and only restore if they confirm it's really their own account.
+func _confirm_existing_account(gm, sync, student_name: String, student_pin: String, existing_row: Dictionary) -> void:
+	var dialog := ConfirmationDialog.new()
+	dialog.dialog_text = "May account na sa klaseng ito na gamit ang pangalang \"%s\" at PIN na ito.\n\nIkaw ba ito? Kung oo, ibabalik namin ang dati mong progress." % student_name
+	dialog.get_ok_button().text = "Oo, ako ito"
+	dialog.get_cancel_button().text = "Hindi, ako'y bago"
+	add_child(dialog)
+
+	var _resolve := func(use_existing: bool):
+		if continue_button: continue_button.disabled = false
+		_finish_registration(gm, sync, student_name, student_pin, existing_row if use_existing else null)
+		dialog.queue_free()
+
+	dialog.confirmed.connect(func(): _resolve.call(true))
+	dialog.canceled.connect(func(): _resolve.call(false))
+	dialog.popup_centered()
+
+func _finish_registration(gm, sync, student_name: String, student_pin: String, existing_row) -> void:
 	if gm:
-		gm.set("current_role", "STUDENT")
+		if gm.has_method("set_role"):
+			gm.set_role("STUDENT")
 		gm.set("player_name", student_name)
 		gm.set("student_pin", student_pin)
+
+		if existing_row is Dictionary:
+			# Same student, returning to a class they'd already joined -
+			# restore their real progress instead of resetting it.
+			gm.set("avatar_id", str(existing_row.get("avatar_id", "")))
+			gm.set("unlocked_level", int(existing_row.get("unlocked_level", 1)))
+			gm.set("player_coins", int(existing_row.get("player_coins", 0)))
+			var completed = existing_row.get("completed_levels", {})
+			gm.set("completed_levels", completed if completed is Dictionary else {})
+			gm.set("player_hearts", 4)
+
+			var student_id: String = str(existing_row.get("student_id", ""))
+			if student_id != "" and sync and sync.has_method("claim_student_account"):
+				sync.claim_student_account(student_id, gm.device_id, func(_ok): pass)
+		else:
+			# Genuinely new student - a clean slate. Otherwise a new student
+			# on a device that previously had another student's progress
+			# saved would inherit their unlocked levels/completed levels,
+			# showing up as an "already unlocked" account.
+			gm.set("avatar_id", "")
+			gm.set("unlocked_level", 1)
+			gm.set("player_hearts", 4)
+			gm.set("completed_levels", {})
+			gm.set("player_coins", 20)   # Starting bonus for a newly-registered student
+			# Fresh device_id too, so this new account gets its own row
+			# online instead of overwriting whichever account previously
+			# used this device (see start_new_local_identity()'s comment).
+			if gm.has_method("start_new_local_identity"):
+				gm.start_new_local_identity()
+
+		if gm.has_method("save_game"):
+			gm.save_game()
 
 	print(">>> REGISTRATION SUCCESSFUL! LILIPAT SA CLASS JOINED POPUP <<<")
 	registration_successful.emit()
@@ -61,7 +144,9 @@ func _on_continue_pressed() -> void:
 	# DERETSO LILIPAT SA CLASS JOINED POPUP VIA PARENT
 	var main_login = get_parent()
 	if main_login and main_login.has_method("show_class_joined_popup"):
-		main_login.show_class_joined_popup("GRADE 3", "Ms. Santos")
+		var joined_class: String = gm.joined_class_name if gm and "joined_class_name" in gm and gm.joined_class_name != "" else (gm.class_code if gm and "class_code" in gm else "")
+		var joined_teacher: String = gm.joined_teacher_name if gm and "joined_teacher_name" in gm else ""
+		main_login.show_class_joined_popup(joined_class, joined_teacher)
 	else:
 		# Fallback direct call sa popup node
 		var popup = main_login.get_node_or_null("ClassJoinedPopup") if main_login else null

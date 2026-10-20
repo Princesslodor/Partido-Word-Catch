@@ -6,6 +6,7 @@ signal toggle_changed(is_on: bool)
 @export var is_on: bool = true:
 	set(value):
 		is_on = value
+		button_pressed = value
 		_update_toggle_visuals(true)
 
 # Color Palette
