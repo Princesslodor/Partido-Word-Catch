@@ -247,6 +247,7 @@ func setup_scrambled_letters(word: String):
 				tile.setup_tile(letter_val)
 		else:
 			tile.visible = false
+	Global.pop_in_sequence(tiles)
 
 func check_answer(from_hint: bool = false):
 	var slot_container = _get_answer_slot_container()
@@ -291,6 +292,7 @@ func check_answer(from_hint: bool = false):
 			handle_wrong_answer()
 
 func handle_wrong_answer():
+	Global.wrong_answer_effects(self, _get_answer_slot_container(), player_stars)
 	player_stars -= 1
 	if player_stars < 0:
 		player_stars = 0
@@ -502,6 +504,7 @@ func show_victory_popup():
 		
 	if has_node("%VictoryPopup"):
 		%VictoryPopup.visible = true
+		Global.victory_stars_for_level(self, player_stars)
 		
 	if level_info.has("audio"):
 		play_audio(level_info["audio"])

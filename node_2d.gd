@@ -208,6 +208,7 @@ func setup_scrambled_letters(word: String):
 			if tiles[i].has_method("setup_tile"): tiles[i].setup_tile(letters[i])
 		else:
 			tiles[i].visible = false
+	Global.pop_in_sequence(tiles)
 
 func check_slots_automatically():
 	var slot_container = _get_answer_slot_container()
@@ -252,6 +253,7 @@ func check_answer():
 	check_slots_automatically()
 
 func handle_wrong_answer():
+	Global.wrong_answer_effects(self, _get_answer_slot_container(), player_stars)
 	player_stars -= 1
 	if player_stars < 0:
 		player_stars = 0
@@ -462,7 +464,9 @@ func show_victory_popup():
 	if has_node("%WordLabel"): %WordLabel.text = level_info.get("word", "")
 	if has_node("%MeaningLabel"): %MeaningLabel.text = level_info.get("meaning", "")
 	if has_node("%CulturalNoteLabel"): %CulturalNoteLabel.text = level_info.get("cultural_note", "")
-	if has_node("%VictoryPopup"): %VictoryPopup.visible = true
+	if has_node("%VictoryPopup"):
+		%VictoryPopup.visible = true
+		Global.victory_stars_for_level(self, player_stars)
 	
 	var particles = get_node_or_null("%CPUParticles2D")
 	if particles and particles is CPUParticles2D:

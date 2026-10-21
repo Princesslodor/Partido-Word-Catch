@@ -234,6 +234,7 @@ func _update_level_locks(container: Control, offset: int, visible_range: Vector2
 			continue
 
 		btn.show()
+		Global.pulse(btn, false)
 		var global_level_num: int = offset + button_counter
 		var lock_icon_name := "LockIcon" + str(global_level_num)
 
@@ -262,6 +263,7 @@ func _update_level_locks(container: Control, offset: int, visible_range: Vector2
 			btn.disabled = false
 			btn.modulate = Color(1, 1, 1, 1)
 			btn.add_theme_stylebox_override("normal", _get_next_level_highlight_style())
+			Global.pulse(btn)
 			if btn.has_node(lock_icon_name):
 				btn.get_node(lock_icon_name).hide()
 

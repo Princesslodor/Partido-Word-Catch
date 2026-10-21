@@ -18,6 +18,7 @@ func _drop_data(_at_position, data):
 	
 	# Ilagay ang bagong letter sa slot
 	text = dropped_letter
+	Global.bounce(self)
 	current_origin_button = origin_btn
 	
 	# Siguraduhing blangko ang pinanggalingang tile sa baba (may maiwang space)

@@ -227,6 +227,7 @@ func setup_scrambled_word_blocks():
 			# para hindi ito gumalaw o mawala kapag pinindot (dahil drag-and-drop ang laro).
 		else:
 			tile.visible = false
+	Global.pop_in_sequence(tiles)
 
 func _on_answer_slot_pressed(slot_index: int):
 	# Dito na lang nakakonekta kapag gusto nilang i-clear o tanggalin ang laman ng slot kung kinakailangan
@@ -266,6 +267,7 @@ func check_answer(from_hint: bool = false):
 			handle_wrong_answer()
 
 func handle_wrong_answer():
+	Global.wrong_answer_effects(self, _get_answer_slot_container(), player_stars)
 	player_stars -= 1
 	if player_stars < 0:
 		player_stars = 0
@@ -489,6 +491,7 @@ func show_victory_popup():
 
 	if has_node("%VictoryPopup"):
 		%VictoryPopup.visible = true
+		Global.victory_stars_for_level(self, player_stars)
 
 func _on_reveal_hint_pressed():
 	if player_coins < 10:

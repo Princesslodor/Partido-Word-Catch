@@ -101,7 +101,7 @@ func _fade_tween() -> Tween:
 ## --- BUTTON SQUISH ---
 ## Every button shrinks a little while held and springs back on release.
 func _on_button_down(button: BaseButton) -> void:
-	if button.disabled:
+	if button.disabled or button.has_meta("_pulse_tween"):
 		return
 	if not button.has_meta("_base_scale"):
 		button.set_meta("_base_scale", button.scale)
@@ -110,7 +110,7 @@ func _on_button_down(button: BaseButton) -> void:
 	tween.tween_property(button, "scale", button.get_meta("_base_scale") * 0.93, 0.07)
 
 func _on_button_up(button: BaseButton) -> void:
-	if not button.has_meta("_base_scale"):
+	if not button.has_meta("_base_scale") or button.has_meta("_pulse_tween"):
 		return
 	var tween := button.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tween.tween_property(button, "scale", button.get_meta("_base_scale"), 0.18) \
@@ -132,6 +132,172 @@ func _center_pivot(control: Control) -> void:
 			return
 		control.position -= delta * (Vector2.ONE - control.scale)
 	control.pivot_offset = new_pivot
+
+## --- IN-LEVEL ANIMATIONS ---
+## Small effects the level scripts call at the right moments.
+
+## The scale a control was designed at (kept the first time we animate it,
+## so every effect returns it to exactly that size).
+func _base_scale(control: Control) -> Vector2:
+	if not control.has_meta("_base_scale"):
+		control.set_meta("_base_scale", control.scale)
+	return control.get_meta("_base_scale")
+
+## Visible tiles grow in one after another (a level starting, or a shuffle).
+func pop_in_sequence(nodes: Array, step: float = 0.05) -> void:
+	var delay := 0.0
+	for node in nodes:
+		if node is Control and node.visible:
+			_base_scale(node)
+			# Hidden until its turn. (Not shrunk yet: a container resets its
+			# children's scale when it lays them out, so the size is only
+			# set once the tween starts.)
+			node.modulate.a = 0.0
+			# Deferred: tiles inside a container only get their size next frame.
+			_pop_in_node.call_deferred(node, delay)
+			delay += step
+
+func _pop_in_node(control: Control, delay: float) -> void:
+	if not is_instance_valid(control):
+		return
+	var base := _base_scale(control)
+	var tween := control.create_tween()
+	tween.tween_interval(delay)
+	tween.tween_callback(func():
+		control.scale = base
+		_center_pivot(control)
+		control.modulate.a = 1.0
+	)
+	tween.tween_property(control, "scale", base, 0.28).from(base * 0.2) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+## A quick springy bounce (a letter landing in a slot).
+func bounce(control: Control) -> void:
+	if not is_instance_valid(control):
+		return
+	var base := _base_scale(control)
+	control.scale = base
+	_center_pivot(control)
+	var tween := control.create_tween()
+	tween.tween_property(control, "scale", base * 1.18, 0.08).set_ease(Tween.EASE_OUT)
+	tween.tween_property(control, "scale", base, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+## Side-to-side shake (the answer row on a wrong answer). Always ends back
+## at the exact starting position, even if shaken again mid-shake.
+func shake(control: Control) -> void:
+	if not is_instance_valid(control):
+		return
+	if not control.has_meta("_shake_x"):
+		control.set_meta("_shake_x", control.position.x)
+	var x0: float = control.get_meta("_shake_x")
+	if control.has_meta("_shake_tween"):
+		var old: Tween = control.get_meta("_shake_tween")
+		if old and old.is_valid():
+			old.kill()
+	var tween := control.create_tween()
+	control.set_meta("_shake_tween", tween)
+	for dx in [14.0, -12.0, 9.0, -6.0, 3.0, 0.0]:
+		tween.tween_property(control, "position:x", x0 + dx, 0.045)
+	tween.tween_callback(func():
+		control.position.x = x0
+		control.remove_meta("_shake_x")
+		control.remove_meta("_shake_tween")
+	)
+
+## A star (or any sprite/control) that's about to disappear grows and fades
+## away instead of just vanishing. Works on a copy, so the real node can be
+## hidden right away as before.
+func pop_away(item: CanvasItem) -> void:
+	if not is_instance_valid(item) or not item.is_visible_in_tree():
+		return
+	var ghost := item.duplicate(0) as CanvasItem
+	ghost.set_script(null)
+	item.get_parent().add_child(ghost)
+	ghost.visible = true
+	if ghost is Control:
+		_center_pivot(ghost)
+	var tween := ghost.create_tween().set_parallel()
+	tween.tween_property(ghost, "scale", ghost.scale * 1.8, 0.35).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ghost, "modulate:a", 0.0, 0.35)
+	tween.chain().tween_callback(ghost.queue_free)
+
+## Wrong answer in a level: shake the answer row and pop away the star
+## that's being lost. Call before player_stars is reduced.
+func wrong_answer_effects(level: Node, answer_row: Node, stars_before: int) -> void:
+	if answer_row is Control:
+		shake(answer_row)
+	if stars_before >= 1 and stars_before <= 3:
+		var star_name: String = ["StarWithFill", "StarWithFill2", "StarWithFill3"][stars_before - 1]
+		var star := level.get_node_or_null("CanvasLayer/LevelDesign/" + star_name) as CanvasItem
+		if star:
+			pop_away(star)
+
+## Victory in a level: hang the earned stars under the "MAHUSAY!" sign.
+func victory_stars_for_level(level: Node, earned: int) -> void:
+	var popup := level.get_node_or_null("%VictoryPopup") as Control
+	var star := level.get_node_or_null("CanvasLayer/LevelDesign/StarWithFill")
+	if popup == null or star == null:
+		return
+	var sign := popup.get_node_or_null("MAHUSAY!") as Control
+	# In the popup's own coordinates, so the popup's pop-in scale doesn't
+	# throw the stars off.
+	var center := Vector2(360, 215)
+	if sign:
+		center = sign.position + Vector2(sign.size.x * sign.scale.x / 2.0, sign.size.y * sign.scale.y + 48.0)
+	show_victory_stars(popup, earned, star.texture, center)
+
+## Three stars hanging under the victory sign, popping in one after another.
+## Earned stars are full colour, missed ones are dimmed. center is in the
+## popup's local coordinates.
+func show_victory_stars(popup: Control, earned: int, texture: Texture2D, center: Vector2) -> void:
+	if not is_instance_valid(popup) or texture == null:
+		return
+	var old := popup.get_node_or_null("VictoryStars")
+	if old:
+		old.free()
+	var row := Control.new()
+	row.name = "VictoryStars"
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	popup.add_child(row)
+	var sizes := [64.0, 80.0, 64.0]
+	var offsets := [Vector2(-78, 6), Vector2(0, -6), Vector2(78, 6)]
+	for i in 3:
+		var star := TextureRect.new()
+		star.texture = texture
+		star.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		star.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		star.size = Vector2(sizes[i], sizes[i])
+		row.add_child(star)
+		star.position = center + offsets[i] - star.size / 2.0
+		star.pivot_offset = star.size / 2.0
+		if i >= earned:
+			star.modulate = Color(0.35, 0.33, 0.3, 0.85)
+		star.scale = Vector2.ZERO
+		var tween := star.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+		tween.tween_interval(0.35 + i * 0.22)
+		tween.tween_property(star, "scale", Vector2.ONE, 0.32).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+## Gentle "tap me" pulse (the next level on the campaign map). Pass
+## on = false to stop it and put the node back at its normal size.
+func pulse(control: Control, on: bool = true) -> void:
+	if not is_instance_valid(control):
+		return
+	if control.has_meta("_pulse_tween"):
+		var old: Tween = control.get_meta("_pulse_tween")
+		if old and old.is_valid():
+			old.kill()
+		control.remove_meta("_pulse_tween")
+		control.scale = _base_scale(control)
+	if not on:
+		return
+	var base := _base_scale(control)
+	control.scale = base
+	_center_pivot(control)
+	var tween := control.create_tween().set_loops()
+	tween.tween_property(control, "scale", base * 1.08, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(control, "scale", base, 0.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	control.set_meta("_pulse_tween", tween)
 
 ## --- POPUP POP-IN ---
 ## Any Control whose name ends in "Popup" (VictoryPopup, ClassJoinedPopup,
