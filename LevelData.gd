@@ -39,7 +39,7 @@ func get_hint_image_path(original_level_num: int) -> String:
 var sentence_pools = {
 	21: {
 		"words": ["MAGANA", "NGUNYAN", "MAGKAKAN", "SI", "MARCO"],
-		"distractors": ["PAULO", "MAY", "SA", "DUMAN", "ANNA", "LANGOY", "ARIN", "HILING", "INI", "RAYO", "BAHAY"]
+		"distractors": ["MAY", "SA", "DUMAN", "ANNA", "LANGOY", "ARIN", "HILING", "INI", "RAYO", "BAHAY"]
 	},
 	22: {
 		"words": ["DAKUL", "AN", "DAKOP", "NI", "TIYO", "SAMMY"],
