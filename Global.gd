@@ -313,6 +313,35 @@ func setup_tile_hover(button: Button) -> void:
 	button.mouse_entered.connect(func(): hover_grow(button, true))
 	button.mouse_exited.connect(func(): hover_grow(button, false))
 
+# Tile pictures have a rim (and see-through edges), so keep the word inside
+# the flat middle: a share of the width (meta "_fit_padding_share") plus a bit.
+const FIT_TEXT_PADDING_SHARE := 0.10
+const FIT_TEXT_PADDING := 4.0
+## Shrinks a tile's font just enough for its word to fit inside the box
+## (long words like NAGBIBISITA), and goes back to the scene's own size for
+## short ones. Never goes below min_size so the word stays readable.
+func fit_text_to_box(button: Button, min_size: int = 11) -> void:
+	if not button.has_meta("_fit_base_font_size"):
+		button.set_meta("_fit_base_font_size", button.get_theme_font_size("font_size"))
+	var base: int = button.get_meta("_fit_base_font_size")
+	button.add_theme_font_size_override("font_size", fitting_font_size(button, button.text, base, min_size))
+	# The box keeps its size instead of stretching around the word.
+	button.clip_text = true
+
+## Largest font size (from base down to min_size) at which text fits the box.
+func fitting_font_size(button: Button, text: String, base: int, min_size: int = 11) -> int:
+	var box_w: float = button.custom_minimum_size.x
+	if box_w <= 0.0:
+		box_w = button.size.x
+	var share: float = button.get_meta("_fit_padding_share", FIT_TEXT_PADDING_SHARE)
+	var room := box_w - (box_w * share + FIT_TEXT_PADDING) * 2.0
+	var font := button.get_theme_font("font")
+	var fs := base
+	if text != "" and font and room > 0.0:
+		while fs > min_size and font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x > room:
+			fs -= 1
+	return fs
+
 func hover_grow(control: Control, on: bool) -> void:
 	if not is_instance_valid(control) or control.has_meta("_pulse_tween"):
 		return

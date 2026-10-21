@@ -7,6 +7,14 @@ func _ready():
 	# Grow a little with a highlight on hover, instead of the flat box.
 	Global.setup_tile_hover(self)
 
+# Text gets swapped from many places (drop, tap to clear, hints), so check
+# each frame and resize the font whenever the word changes.
+var _fitted_text: String = "<not fitted yet>"
+func _process(_delta):
+	if text != _fitted_text:
+		_fitted_text = text
+		Global.fit_text_to_box(self)
+
 func _can_drop_data(_at_position, data):
 	if is_locked:
 		return false
