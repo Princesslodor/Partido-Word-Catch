@@ -250,6 +250,23 @@ func victory_stars_for_level(level: Node, earned: int) -> void:
 		center = sign.position + Vector2(sign.size.x * sign.scale.x / 2.0, sign.size.y * sign.scale.y + 48.0)
 	show_victory_stars(popup, earned, star.texture, center)
 
+## Results card heading and button text. Finishing with 0 stars counts as
+## a failed level: "SAYANG!" and a button that replays the level, instead
+## of "MAHUSAY!" and "Sunod na Level".
+func set_result_texts(level: Node, failed: bool, last_level: bool = false) -> void:
+	var title := level.get_node_or_null("CanvasLayer/VictoryPopup/MAHUSAY!") as Label
+	var next_label := level.get_node_or_null("CanvasLayer/VictoryPopup/NextLevel/Label") as Label
+	var title_text := "MAHUSAY!"
+	var next_text := "Sunod na Level  >>"
+	if failed:
+		title_text = "SAYANG!"
+		next_text = "Subukan ulit"
+	elif last_level:
+		title_text = "TAPOS MO NA!"
+		next_text = "Bumalik sa Mapa"
+	if title: title.text = title_text
+	if next_label: next_label.text = next_text
+
 ## Three stars hanging under the victory sign, popping in one after another.
 ## Earned stars are full colour, missed ones are dimmed. center is in the
 ## popup's local coordinates.

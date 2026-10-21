@@ -7,6 +7,9 @@ var player_coins: int:
 	set(val): GameManager.player_coins = val
 
 var player_stars: int = 3
+# Set when the level was finished with 0 stars; the results card then
+# offers "Subukan ulit" (replay this level) instead of the next level.
+var level_failed: bool = false
 var player_hearts: int:
 	get: return GameManager.player_hearts
 	set(val): GameManager.player_hearts = val
@@ -450,13 +453,20 @@ func _on_close_victory_pressed() -> void:
 
 func show_victory_popup():
 	var lvl_key = int(current_level)
-	GameManager.add_coins(10)
-	GameManager.in_progress_stars.erase(str(lvl_key))
-	GameManager.complete_level(lvl_key, player_stars)
-	if has_node("%CoinsLabel"):
-		%CoinsLabel.text = str(player_coins)
-	if has_node("%+coin"):
-		get_node("%+coin").text = "+10 COINS"
+	level_failed = player_stars <= 0
+	if level_failed:
+		# 0 stars: no coins, no unlock, and the next try starts fresh.
+		GameManager.in_progress_stars.erase(str(lvl_key))
+		GameManager.save_game()
+		if has_node("%+coin"): get_node("%+coin").text = ""
+	else:
+		GameManager.add_coins(10)
+		GameManager.in_progress_stars.erase(str(lvl_key))
+		GameManager.complete_level(lvl_key, player_stars)
+		if has_node("%CoinsLabel"):
+			%CoinsLabel.text = str(player_coins)
+		if has_node("%+coin"):
+			get_node("%+coin").text = "+10 COINS"
 	
 	if LevelData.levels.has(lvl_key):
 		var level_info = LevelData.levels[lvl_key]
@@ -472,21 +482,19 @@ func show_victory_popup():
 	var particles = get_node_or_null("%CPUParticles2D")
 	if particles and particles is CPUParticles2D:
 		particles.emitting = false
-		particles.restart()
-		particles.emitting = true
+		if not level_failed:
+			particles.restart()
+			particles.emitting = true
 
 	# Level 30 is the last level in the whole game - the regular "next
 	# level" flow has nowhere to go from here, so show a distinct
 	# completion message/sound and send the player back to the map instead.
-	var title_label = get_node_or_null("CanvasLayer/VictoryPopup/MAHUSAY!")
-	var next_level_label = get_node_or_null("CanvasLayer/VictoryPopup/NextLevel/Label")
-	if lvl_key >= 30:
-		if title_label: title_label.text = "TAPOS MO NA!"
-		if next_level_label: next_level_label.text = "Bumalik sa Mapa"
+	Global.set_result_texts(self, level_failed, lvl_key >= 30)
+	if level_failed:
+		pass
+	elif lvl_key >= 30:
 		Global.play_game_complete_sound()
 	else:
-		if title_label: title_label.text = "MAHUSAY!"
-		if next_level_label: next_level_label.text = "Sunod na Level  >>"
 		Global.play_horray()
 
 	if has_node("%VictoryPopup"):
@@ -558,6 +566,10 @@ func _on_back_button_pressed():
 		%ExitConfirmationPopup.open_popup()
 
 func _on_next_level_button_pressed():
+	if level_failed:
+		level_failed = false
+		load_current_level()
+		return
 	if current_level >= 30:
 		# No level 31 to load - the button reads "Bumalik sa Mapa" at this
 		# point (see show_victory_popup()), so send the player back to the

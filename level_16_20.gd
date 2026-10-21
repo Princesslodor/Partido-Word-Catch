@@ -7,6 +7,9 @@ var player_coins: int:
 	set(val): GameManager.player_coins = val
 
 var player_stars: int = 3
+# Set when the level was finished with 0 stars; the results card then
+# offers "Subukan ulit" (replay this level) instead of the next level.
+var level_failed: bool = false
 var player_hearts: int:
 	get: return GameManager.player_hearts
 	set(val): GameManager.player_hearts = val
@@ -477,13 +480,21 @@ func show_victory_popup():
 	var lvl_key = int(current_level)
 	var level_info = LevelData.levels[lvl_key]
 
-	GameManager.add_coins(10)
-	GameManager.in_progress_stars.erase(str(lvl_key))
-	GameManager.complete_level(lvl_key, player_stars)
-	if has_node("%CoinsLabel"):
-		%CoinsLabel.text = str(player_coins)
-	if has_node("%+coin"):
-		get_node("%+coin").text = "+10 COINS"
+	level_failed = player_stars <= 0
+	if level_failed:
+		# 0 stars: no coins, no unlock, and the next try starts fresh.
+		GameManager.in_progress_stars.erase(str(lvl_key))
+		GameManager.save_game()
+		if has_node("%+coin"): get_node("%+coin").text = ""
+	else:
+		GameManager.add_coins(10)
+		GameManager.in_progress_stars.erase(str(lvl_key))
+		GameManager.complete_level(lvl_key, player_stars)
+		if has_node("%CoinsLabel"):
+			%CoinsLabel.text = str(player_coins)
+		if has_node("%+coin"):
+			get_node("%+coin").text = "+10 COINS"
+	Global.set_result_texts(self, level_failed)
 	
 	if has_node("%WordLabel"):
 		%WordLabel.text = level_info.get("word", "")
@@ -497,10 +508,12 @@ func show_victory_popup():
 	var particles = get_node_or_null("%CPUParticles2D")
 	if particles and particles is CPUParticles2D:
 		particles.emitting = false
-		particles.restart()
-		particles.emitting = true
-	
-	Global.play_horray()
+		if not level_failed:
+			particles.restart()
+			particles.emitting = true
+
+	if not level_failed:
+		Global.play_horray()
 		
 	if has_node("%VictoryPopup"):
 		%VictoryPopup.visible = true
@@ -610,6 +623,10 @@ func _on_back_button_pressed():
 		%ExitConfirmationPopup.open_popup()
 
 func _on_next_level_button_pressed():
+	if level_failed:
+		level_failed = false
+		load_current_level()
+		return
 	current_level += 1
 
 	if current_level == 21:
