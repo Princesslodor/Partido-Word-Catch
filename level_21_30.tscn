@@ -3915,8 +3915,8 @@ text = "Pakinggan ang tamang pagbigkas"
 
 [node name="MeaningLabel" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1860041230]
 unique_name_in_owner = true
-layout_mode = 0
 custom_minimum_size = Vector2(423, 52)
+layout_mode = 0
 offset_left = 193.0
 offset_top = 630.0
 offset_right = 616.0
@@ -3929,8 +3929,8 @@ autowrap_mode = 2
 
 [node name="CulturalNoteLabel" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1467786619]
 unique_name_in_owner = true
-layout_mode = 0
 custom_minimum_size = Vector2(368, 129)
+layout_mode = 0
 offset_left = 246.0
 offset_top = 761.0
 offset_right = 614.0
@@ -3943,8 +3943,8 @@ autowrap_mode = 2
 
 [node name="WordLabel" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1459336413]
 unique_name_in_owner = true
-layout_mode = 0
 custom_minimum_size = Vector2(531, 81)
+layout_mode = 0
 offset_left = 108.0
 offset_top = 398.0
 offset_right = 639.0

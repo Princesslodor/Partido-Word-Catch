@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://bqk07b0q5l0rj" path="res://login_page.gd" id="1_jlmyn"]
 [ext_resource type="Texture2D" uid="uid://dg0yp5yj5eorl" path="res://Background Image.png" id="1_yakwh"]
-[ext_resource type="Texture2D" uid="uid://58bdbuwtorss" path="res://download.png" id="2_qrlyr"]
 [ext_resource type="Texture2D" uid="uid://dm36qy402y4ka" path="res://Student.png" id="3_w5qi1"]
+[ext_resource type="Texture2D" uid="uid://pasdrxjttch2" path="res://logo2.png" id="4_hgb5e"]
 [ext_resource type="Texture2D" uid="uid://ciy55mwgllrsm" path="res://Back.png" id="5_w5qi1"]
 [ext_resource type="FontFile" uid="uid://b0yhtkwh7o06h" path="res://Nunito-Bold.ttf" id="6_wkk7v"]
 [ext_resource type="FontFile" uid="uid://c65llbf5gao2k" path="res://Nunito-Black.ttf" id="7_51wku"]
@@ -161,7 +161,7 @@ border_width_left = 2
 border_width_top = 2
 border_width_right = 2
 border_width_bottom = 2
-border_color = Color(0.8784314, 0.8156863, 0.72156864, 1)
+border_color = Color(0.7411765, 0.38431373, 0.07450981, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -215,7 +215,6 @@ expand_mode = 1
 stretch_mode = 6
 
 [node name="RoleSelectionContainer" type="Control" parent="." unique_id=1206947907]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -250,18 +249,17 @@ text = "Who's Playing?"
 
 [node name="GameLogo" type="TextureRect" parent="RoleSelectionContainer" unique_id=1534697093]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(800, 0)
 layout_mode = 1
 anchors_preset = -1
 anchor_left = 0.27600002
 anchor_top = 0.072000004
 anchor_right = 0.27600002
 anchor_bottom = 0.072000004
-offset_left = -123.46802
-offset_top = -23.056007
-offset_right = 676.532
-offset_bottom = 245.944
-texture = ExtResource("2_qrlyr")
+offset_left = -35.468018
+offset_top = -15.056007
+offset_right = 562.532
+offset_bottom = 233.944
+texture = ExtResource("4_hgb5e")
 expand_mode = 1
 
 [node name="StudentCard" type="Panel" parent="RoleSelectionContainer" unique_id=1900639477]
@@ -424,17 +422,18 @@ text = "Email"
 
 [node name="LineEdit" type="LineEdit" parent="LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer" unique_id=2061609050]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = -19.0
 offset_top = -14.0
 offset_right = 533.0
 offset_bottom = 66.0
-placeholder_text = "e.g. teacher@email.com"
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
+placeholder_text = "e.g. teacher@email.com"
+caret_blink = true
 
 [node name="FieldContainer2" type="Control" parent="LoginFormContainer/MarginContainer/VBoxContainer" unique_id=1222023333]
 anchors_preset = 0
@@ -456,16 +455,17 @@ text = "Password"
 
 [node name="LineEdit" type="LineEdit" parent="LoginFormContainer/MarginContainer/VBoxContainer/FieldContainer2" unique_id=825679223]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = -15.0
 offset_top = 97.0
 offset_right = 528.0
 offset_bottom = 172.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
+caret_blink = true
 secret = true
 
 [node name="OptionRow" type="Control" parent="LoginFormContainer/MarginContainer/VBoxContainer" unique_id=964896753]
@@ -497,8 +497,8 @@ offset_top = -272.0
 offset_right = 518.0
 offset_bottom = -230.0
 theme_override_colors/font_color = Color(0.54509807, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0.54509807, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0.54509807, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.54509807, 0, 0, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 24
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3owqy")
@@ -522,6 +522,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_2s3ny")
 text = "LOGIN"
 
 [node name="LoginStatusLabel" type="Label" parent="LoginFormContainer/MarginContainer/VBoxContainer/Spacer" unique_id=1944566928]
+visible = false
 layout_mode = 0
 offset_left = 20.0
 offset_top = 692.0
@@ -530,12 +531,10 @@ offset_bottom = 720.0
 theme_override_colors/font_color = Color(0.7019608, 0.10980392, 0.10980392, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 18
-text = ""
-autowrap_mode = 3
 horizontal_alignment = 1
 vertical_alignment = 1
+autowrap_mode = 3
 clip_text = true
-visible = false
 
 [node name="RegisterRow" type="Control" parent="LoginFormContainer/MarginContainer/VBoxContainer" unique_id=1775318756]
 anchors_preset = 0
@@ -614,16 +613,17 @@ autowrap_mode = 2
 
 [node name="ClassCodeEdit" type="LineEdit" parent="ClassCodeContainer/EnterCodeContainer" unique_id=1913485671]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 111.0
 offset_top = 302.0
 offset_right = 578.0
 offset_bottom = 425.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2sdbu")
+caret_blink = true
 
 [node name="Button" type="Button" parent="ClassCodeContainer/EnterCodeContainer" unique_id=1643597482]
 layout_mode = 0
@@ -637,6 +637,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_6k0s3")
 text = "JOIN CLASS"
 
 [node name="JoinStatusLabel" type="Label" parent="ClassCodeContainer/EnterCodeContainer" unique_id=1643597483]
+visible = false
 layout_mode = 0
 offset_left = 60.0
 offset_top = 638.0
@@ -645,11 +646,9 @@ offset_bottom = 680.0
 theme_override_colors/font_color = Color(0.7019608, 0.10980392, 0.10980392, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 22
-text = ""
-autowrap_mode = 3
 horizontal_alignment = 1
 vertical_alignment = 1
-visible = false
+autowrap_mode = 3
 
 [node name="StudentLoginLinkButton" type="Button" parent="ClassCodeContainer/EnterCodeContainer" unique_id=2000000100]
 layout_mode = 0
@@ -661,8 +660,8 @@ theme_override_colors/font_color = Color(0.16862746, 0.34509805, 0.007843138, 1)
 theme_override_colors/font_hover_color = Color(0.16862746, 0.34509805, 0.007843138, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 24
-flat = true
 text = "Already play in this class? Log In"
+flat = true
 
 [node name="StudentLoginContainer" type="Control" parent="." unique_id=2000000101]
 visible = false
@@ -714,33 +713,35 @@ autowrap_mode = 2
 
 [node name="NameEdit" type="LineEdit" parent="StudentLoginContainer/LoginBoard" unique_id=2000000106]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 111.0
 offset_top = 220.0
 offset_right = 578.0
 offset_bottom = 280.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = SubResource("StyleBoxFlat_2sdbu")
 placeholder_text = "Your Name"
+caret_blink = true
 
 [node name="PinEdit" type="LineEdit" parent="StudentLoginContainer/LoginBoard" unique_id=2000000107]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 111.0
 offset_top = 300.0
 offset_right = 578.0
 offset_bottom = 360.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 26
 theme_override_styles/normal = SubResource("StyleBoxFlat_2sdbu")
 placeholder_text = "4-digit PIN"
-secret = true
 max_length = 4
+caret_blink = true
+secret = true
 
 [node name="LoginButton" type="Button" parent="StudentLoginContainer/LoginBoard" unique_id=2000000108]
 layout_mode = 0
@@ -754,6 +755,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_6k0s3")
 text = "LOG IN"
 
 [node name="LoginStatusLabel" type="Label" parent="StudentLoginContainer/LoginBoard" unique_id=2000000109]
+visible = false
 layout_mode = 0
 offset_left = 60.0
 offset_top = 520.0
@@ -762,11 +764,9 @@ offset_bottom = 580.0
 theme_override_colors/font_color = Color(0.7019608, 0.10980392, 0.10980392, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 22
-text = ""
-autowrap_mode = 3
 horizontal_alignment = 1
 vertical_alignment = 1
-visible = false
+autowrap_mode = 3
 
 [node name="StudentWelcomeBack" type="Control" parent="." unique_id=2000000001]
 visible = false
@@ -834,8 +834,8 @@ offset_top = 620.0
 offset_right = 613.0
 offset_bottom = 660.0
 theme_override_colors/font_color = Color(0.54509807, 0, 0, 1)
-theme_override_colors/font_hover_color = Color(0.54509807, 0, 0, 1)
 theme_override_colors/font_pressed_color = Color(0.54509807, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0.54509807, 0, 0, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 22
 theme_override_styles/normal = SubResource("StyleBoxEmpty_3owqy")
@@ -886,9 +886,9 @@ vertical_alignment = 1
 
 [node name="SubtitleLabel" type="Label" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=923996360]
 layout_mode = 0
-offset_left = -27.0
+offset_left = -32.0
 offset_top = 59.0
-offset_right = 630.0
+offset_right = 625.0
 offset_bottom = 172.0
 size_flags_vertical = 6
 theme_override_colors/font_color = Color(0.47843137, 0.43137255, 0.39607844, 1)
@@ -919,17 +919,18 @@ text = "Full Name"
 
 [node name="NameInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer" unique_id=945111976]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 13.0
 offset_top = -68.0
 offset_right = 533.0
 offset_bottom = 11.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
 placeholder_text = "e.g. Maria Clara"
+caret_blink = true
 
 [node name="FieldContainer2" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=557120262]
 anchors_preset = 0
@@ -951,16 +952,17 @@ text = "Email"
 
 [node name="EmailInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer2" unique_id=1505487583]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 15.0
 offset_top = 23.0
 offset_right = 530.0
 offset_bottom = 106.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
+caret_blink = true
 
 [node name="FieldContainer3" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=1357415941]
 anchors_preset = 0
@@ -982,16 +984,17 @@ text = "Create Password"
 
 [node name="PasswordInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer3" unique_id=1261404397]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 14.0
 offset_top = -36.0
 offset_right = 529.0
 offset_bottom = 41.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
+caret_blink = true
 secret = true
 
 [node name="FieldContainer4" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=1231939289]
@@ -1014,16 +1017,17 @@ text = "School Name"
 
 [node name="SchoolNameInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer4" unique_id=184946243]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 17.0
 offset_top = 407.0
 offset_right = 530.0
 offset_bottom = 489.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
+caret_blink = true
 
 [node name="FieldContainer5" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=387748627]
 anchors_preset = 0
@@ -1045,16 +1049,17 @@ text = "Grade/Subject Taught"
 
 [node name="Grade_Subject TaughtInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer5" unique_id=186052991]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 21.0
 offset_top = 590.0
 offset_right = 534.0
 offset_bottom = 672.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
+caret_blink = true
 
 [node name="FieldContainer6" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=1782355534]
 anchors_preset = 0
@@ -1076,16 +1081,17 @@ text = "Class Name"
 
 [node name="ClassNameInput" type="LineEdit" parent="TeacherCreateAccount/MarginContainer/VBoxContainer/FieldContainer6" unique_id=796059548]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
 offset_left = 23.0
 offset_top = 721.0
 offset_right = 536.0
 offset_bottom = 803.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
+caret_blink = true
 
 [node name="Spacer" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=696567447]
 anchors_preset = 0
@@ -1101,7 +1107,6 @@ offset_bottom = 962.0
 theme_override_colors/font_color = Color(0.7, 0.1, 0.1, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 20
-text = ""
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -1118,6 +1123,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_2s3ny")
 text = "CREATE ACCOUNT"
 
 [node name="StudentRegistration" type="Control" parent="." unique_id=2003935725]
+visible = false
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
@@ -1141,12 +1147,12 @@ expand_mode = 1
 [node name="TitleLabel" type="Label" parent="StudentRegistration" unique_id=261842628]
 layout_mode = 0
 offset_left = 139.0
-offset_top = 357.0
+offset_top = 361.0
 offset_right = 596.0
-offset_bottom = 419.0
+offset_bottom = 423.0
 theme_override_colors/font_color = Color(0.10980392, 0.2509804, 0.05882353, 1)
 theme_override_fonts/font = ExtResource("7_51wku")
-theme_override_font_sizes/font_size = 45
+theme_override_font_sizes/font_size = 40
 text = "Student Registration"
 horizontal_alignment = 1
 
@@ -1159,7 +1165,6 @@ offset_bottom = 740.0
 theme_override_colors/font_color = Color(0.7, 0.1, 0.1, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 20
-text = ""
 horizontal_alignment = 1
 autowrap_mode = 2
 
@@ -1194,16 +1199,17 @@ text = "Your Name"
 
 [node name="LineEdit" type="LineEdit" parent="StudentRegistration/FieldContainer" unique_id=168719696]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
-offset_left = 94.0
+offset_left = 104.0
 offset_top = 227.0
-offset_right = 578.0
+offset_right = 566.0
 offset_bottom = 307.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
+caret_blink = true
 
 [node name="FieldContainer2" type="Control" parent="StudentRegistration" unique_id=170310448]
 anchors_preset = 0
@@ -1225,16 +1231,17 @@ text = "Create a 4-digit Pin"
 
 [node name="LineEdit" type="LineEdit" parent="StudentRegistration/FieldContainer2" unique_id=849749240]
 layout_mode = 0
-caret_blink = true
-theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
-offset_left = 96.0
+offset_left = 102.0
 offset_top = 337.0
-offset_right = 575.0
+offset_right = 565.0
 offset_bottom = 412.0
 theme_override_colors/font_color = Color(0.1, 0.1, 0.1, 1)
 theme_override_colors/font_placeholder_color = Color(0.45, 0.45, 0.45, 1)
+theme_override_colors/caret_color = Color(0.1, 0.1, 0.1, 1)
+theme_override_constants/caret_width = 3
 theme_override_font_sizes/font_size = 28
 theme_override_styles/normal = SubResource("StyleBoxFlat_h3vdb")
+caret_blink = true
 secret = true
 
 [node name="ClassJoinedPopup" type="Control" parent="." unique_id=1095951468]
@@ -1299,16 +1306,15 @@ offset_bottom = 563.0
 theme_override_colors/font_color = Color(0.10980392, 0.2509804, 0.05882353, 1)
 theme_override_fonts/font = ExtResource("7_51wku")
 theme_override_font_sizes/font_size = 28
-text = ""
 horizontal_alignment = 1
 clip_text = true
 text_overrun_behavior = 3
 
 [node name="TeacherRow" type="Panel" parent="ClassJoinedPopup" unique_id=405702843]
 layout_mode = 0
-offset_left = 105.0
+offset_left = 132.0
 offset_top = 570.0
-offset_right = 620.0
+offset_right = 593.0
 offset_bottom = 715.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_vmt3b")
 

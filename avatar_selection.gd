@@ -1,6 +1,5 @@
 extends Control
 
-# Safe references gamit ang find_child (hahanapin nito ang node sa buong tree)
 @onready var back_button: BaseButton = find_child("BackButton", true, false) as BaseButton
 @onready var confirm_button: BaseButton = find_child("ConfirmButton", true, false) as BaseButton
 @onready var student_container: Control = find_child("StudentAvatarContainer", true, false) as Control
@@ -8,18 +7,32 @@ extends Control
 @onready var student_grid: Control = find_child("StudentAvatarGrid", true, false) as Control
 @onready var teacher_grid: Control = find_child("TeacherAvatarGrid", true, false) as Control
 
-# Dynamic Role: Gagamitin kung "STUDENT" o "TEACHER" ang kasalukuyang user
 var current_role: String = "STUDENT"
 var selected_avatar_id: String = ""
+var selected_avatar_path: String = ""
 
-# Data Mapping para sa bawat Card (batay sa aktwal na pangalan ng node sa Scene Tree)
-# Isang babae, isang lalaki lang bawat role (2026-09-27) - inalis ang mga
-# "_2" variant card mula sa Scene Tree, kaya wala na ring entry dito.
+# Data Mapping na may hiwalay na image paths para sa Student at Teacher
 var avatar_data: Dictionary = {
-	"StudentCard": {"id": "student_female_1", "role": "STUDENT"},
-	"StudentCard3": {"id": "student_male_1", "role": "STUDENT"},
-	"TeacherCard": {"id": "teacher_female_1", "role": "TEACHER"},
-	"TeacherCard3": {"id": "teacher_male_1", "role": "TEACHER"}
+	"StudentCard": {
+		"id": "student_female_1", 
+		"role": "STUDENT", 
+		"path": "res://StudentF1.png"
+	},
+	"StudentCard3": {
+		"id": "student_male_1", 
+		"role": "STUDENT", 
+		"path": "res://Student.png"
+	},
+	"TeacherCard": {
+		"id": "teacher_female_1", 
+		"role": "TEACHER", 
+		"path": "res://TeacherF1.png"
+	},
+	"TeacherCard3": {
+		"id": "teacher_male_1", 
+		"role": "TEACHER", 
+		"path": "res://Teacher.png"
+	}
 }
 
 func _ready() -> void:
@@ -28,17 +41,12 @@ func _ready() -> void:
 		current_role = gm.role
 
 	_setup_initial_ui()
-	_connect_signals()
 	_filter_avatars_by_role()
+	_connect_signals()
 	_connect_sound_to_all_buttons(self)
 	await get_tree().process_frame
 	_center_avatar_rows()
 
-## Positions the Female/Male card row so it sits vertically centered in the
-## leftover space between the subtitle text and the Confirm button, instead
-## of a fixed offset guessed ahead of time - computed here, after layout,
-## from each node's REAL on-screen size, so it stays centered regardless of
-## resolution or any future change to the panel/subtitle/button sizes.
 func _center_avatar_rows() -> void:
 	_center_one_row(student_container, student_grid)
 	_center_one_row(teacher_container, teacher_grid)
@@ -49,19 +57,14 @@ func _center_one_row(container: Control, grid: Control) -> void:
 	var subtitle: Control = container.find_child("SubtitleLabel", true, false) as Control
 	if not subtitle or not confirm_button:
 		return
-	# Everything below is compared in GLOBAL (screen) space first, since
-	# grid's parent (TopBar) and confirm_button (a direct child of the
-	# scene root) don't share the same local coordinate space.
 	var subtitle_bottom: float = subtitle.global_position.y + subtitle.size.y
 	var confirm_top: float = confirm_button.global_position.y
 	var available: float = confirm_top - subtitle_bottom
 	if available <= 0:
 		return
 	var target_top: float = subtitle_bottom + (available - grid.size.y) / 2.0
-	# Convert back into the grid's own parent's local space before assigning.
 	grid.position.y = target_top - grid.get_parent().global_position.y
 
-# --- AUDIO CLICK SYSTEM ---
 func _connect_sound_to_all_buttons(node: Node):
 	for child in node.get_children():
 		if child is BaseButton:
@@ -73,10 +76,6 @@ func _connect_sound_to_all_buttons(node: Node):
 func _on_global_button_pressed():
 	Global.play_click_sound()
 
-## Each card Button now sits inside its own VBoxContainer (paired with its
-## "Female"/"Male" caption Label) so the grid's direct children are the
-## VBoxContainers, not the Buttons themselves - this walks one level
-## further to find the actual Button cards regardless of that wrapping.
 func _all_cards() -> Array:
 	var cards: Array = []
 	if student_grid:
@@ -95,41 +94,51 @@ func _find_buttons(node: Node) -> Array:
 	return found
 
 func _setup_initial_ui() -> void:
-	# Wala munang naka-select sa simula, kaya dimmed lahat ng cards
 	for card in _all_cards():
 		if card is Button:
 			card.modulate = Color(0.6, 0.6, 0.6, 1)
 
 func _filter_avatars_by_role() -> void:
-	# Ipakita lamang ang container na tumutugma sa kasalukuyang role
+	# Itago/Ipakita ang tamang container batay sa role
 	if student_container:
 		student_container.visible = (current_role == "STUDENT")
 	if teacher_container:
 		teacher_container.visible = (current_role == "TEACHER")
 
 func _connect_signals() -> void:
-	# Connect Button Click events
-	if back_button:
+	if back_button and not back_button.pressed.is_connected(_on_back_pressed):
 		back_button.pressed.connect(_on_back_pressed)
-	if confirm_button:
+	if confirm_button and not confirm_button.pressed.is_connected(_on_confirm_pressed):
 		confirm_button.pressed.connect(_on_confirm_pressed)
 
-	# Connect Grid Cards Toggled event (gamit ang Toggle Mode)
 	for card in _all_cards():
 		if card is Button:
-			card.toggled.connect(func(toggled_on: bool): _on_avatar_toggled(card, toggled_on))
+			if not card.toggled.is_connected(_on_avatar_toggled.bind(card)):
+				card.toggled.connect(func(toggled_on: bool): _on_avatar_toggled(card, toggled_on))
 
 func _on_avatar_toggled(card_node: Button, toggled_on: bool) -> void:
+	var card_name = card_node.name
+	
+	# Siguraduhing tumutugma ang itinuturong card sa kasalukuyang role
+	if avatar_data.has(card_name):
+		var card_role = avatar_data[card_name]["role"]
+		if card_role != current_role:
+			return
+
 	if toggled_on:
-		var card_name = card_node.name
 		if avatar_data.has(card_name):
 			selected_avatar_id = avatar_data[card_name]["id"]
-			print("Napiling Avatar ID: ", selected_avatar_id)
+			selected_avatar_path = avatar_data[card_name].get("path", "")
+			print("Napiling Avatar ID: ", selected_avatar_id, " | Path: ", selected_avatar_path)
 
-		# I-highlight ang napiling card
+		# I-uncheck/dim ang ibang cards
+		for other_card in _all_cards():
+			if other_card != card_node:
+				other_card.button_pressed = false
+				other_card.modulate = Color(0.6, 0.6, 0.6, 1)
+
 		card_node.modulate = Color(1, 1, 1, 1)
 	else:
-		# I-dim ulit kapag napalitan ng ibang card
 		card_node.modulate = Color(0.6, 0.6, 0.6, 1)
 
 func _on_confirm_pressed() -> void:
@@ -142,14 +151,14 @@ func _on_confirm_pressed() -> void:
 	var gm = get_node_or_null("/root/GameManager")
 	if gm:
 		gm.set("avatar_id", selected_avatar_id)
+		gm.set("avatar_path", selected_avatar_path)
 		if gm.has_method("save_game"):
 			gm.save_game()
 
-	if gm and "role" in gm and gm.role == "TEACHER":
+	if current_role == "TEACHER":
 		get_tree().change_scene_to_file("res://teacher_dashboard.tscn")
 	else:
 		get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
 
 func _on_back_pressed() -> void:
-	# Bumalik sa Login o Role Selection
 	get_tree().change_scene_to_file("res://login_page.tscn")

@@ -15,6 +15,7 @@ func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_PASS
 	_unblock_mouse_recursive(self)
 	_connect_signals()
+	_load_teacher_avatar()
 
 func _connect_signals() -> void:
 	if continue_button and not continue_button.pressed.is_connected(_on_continue_pressed):
@@ -34,22 +35,40 @@ func _unblock_mouse_recursive(node: Node) -> void:
 			
 		_unblock_mouse_recursive(child)
 
+func _load_teacher_avatar() -> void:
+	if not teacher_avatar:
+		return
+
+	var avatar_path: String = ""
+
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and "avatar_path" in gm:
+		avatar_path = gm.avatar_path
+
+	if avatar_path == "" and "selected_teacher_avatar_path" in Global:
+		avatar_path = Global.selected_teacher_avatar_path
+
+	if avatar_path != "" and ResourceLoader.exists(avatar_path):
+		teacher_avatar.texture = load(avatar_path)
+
 func setup_and_show(p_class_name: String = "", p_teacher_name: String = "", avatar_texture: Texture2D = null) -> void:
 	if class_name_label:
 		class_name_label.text = p_class_name
 	if teacher_label:
 		teacher_label.text = "Teacher: " + p_teacher_name
-	if teacher_avatar and avatar_texture:
-		teacher_avatar.texture = avatar_texture
+		
+	if avatar_texture:
+		if teacher_avatar:
+			teacher_avatar.texture = avatar_texture
+	else:
+		_load_teacher_avatar()
 
 	show()
 	move_to_front()
 
 func _on_continue_pressed() -> void:
-	print(">>> CONTINUE CLICKED: LILIPAT SA AVATAR SELECTION <<<")
 	continue_pressed.emit()
 	
-	# Kuhanin ang reference ng Tree bago tuluyang baguhin ang scene
 	var tree = get_tree()
 	if tree:
 		tree.change_scene_to_file(next_scene_path)
@@ -57,6 +76,5 @@ func _on_continue_pressed() -> void:
 		push_error("Error: Cannot change scene, SceneTree is null!")
 
 func _on_back_pressed() -> void:
-	print(">>> BACK CLICKED <<<")
 	back_pressed.emit()
 	hide()
