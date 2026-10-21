@@ -1,6 +1,10 @@
 extends Button
 
 var cached_letter: String = ""
+# True only on the tile a drag started from. Every Control gets the
+# drag-end notification, so without this a missed drop would refill all
+# the emptied tiles, including ones whose word is already in an answer box.
+var _is_drag_source: bool = false
 
 func _ready():
 	# Grow a little with a highlight on hover, instead of the flat box.
@@ -42,10 +46,12 @@ func _get_drag_data(_at_position):
 	
 	# Pansamantalang gawing blangko ang pinanggalingan para may maiwang space
 	text = ""
+	_is_drag_source = true
 	return drag_data
 
 func _notification(what):
-	if what == NOTIFICATION_DRAG_END:
+	if what == NOTIFICATION_DRAG_END and _is_drag_source:
+		_is_drag_source = false
 		# Kung binitawan sa labas (hindi tinanggap ng AnswerSlot), ibalik ang letrang hinawakan
 		if not is_drag_successful():
 			if text == "":
