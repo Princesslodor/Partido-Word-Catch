@@ -49,7 +49,13 @@ var joined_grade_subject: String = ""
 ## --- PROGRESS ---
 var unlocked_level: int = 1           # Highest level the player can currently play (default: level 1 only)
 var player_coins: int = 0             # Player's total coin balance
-var player_hearts: int = 4            # Lives remaining in the current gameplay session
+var player_hearts: int = 5            # Lives left; failing a level costs one (max MAX_HEARTS)
+## Unix time when the next heart comes back, or 0 while hearts are full.
+## Wall-clock based, so hearts refill while the game is closed or offline.
+var heart_refill_at: int = 0
+
+const MAX_HEARTS: int = 5
+const HEART_REFILL_SECONDS: int = 30 * 60
 
 ## --- PER-LEVEL COMPLETION DATA ---
 ## Dictionary structure: { level_num: { "completed": bool, "best_score": int } }
@@ -172,6 +178,7 @@ func _write_save_file() -> bool:
 		"unlocked_level": unlocked_level,
 		"player_coins": player_coins,
 		"player_hearts": player_hearts,
+		"heart_refill_at": heart_refill_at,
 		"completed_levels": completed_levels,
 		"in_progress_stars": in_progress_stars,
 		"is_sound_enabled": is_sound_enabled,
@@ -256,7 +263,8 @@ func load_game() -> void:
 	device_id = save_data.get("device_id", "")
 	unlocked_level = save_data.get("unlocked_level", 1)
 	player_coins = save_data.get("player_coins", 0)
-	player_hearts = save_data.get("player_hearts", 4)
+	player_hearts = int(save_data.get("player_hearts", MAX_HEARTS))
+	heart_refill_at = int(save_data.get("heart_refill_at", 0))
 	completed_levels = save_data.get("completed_levels", {})
 	in_progress_stars = save_data.get("in_progress_stars", {})
 	is_sound_enabled = save_data.get("is_sound_enabled", true)
@@ -321,6 +329,51 @@ const AVATAR_TEXTURE_PATHS: Dictionary = {
 ## to a placeholder icon instead of crashing on a bad load().
 func get_avatar_texture_path(for_avatar_id: String) -> String:
 	return AVATAR_TEXTURE_PATHS.get(for_avatar_id, "")
+
+## Gives back every heart that has refilled since heart_refill_at, one per
+## HEART_REFILL_SECONDS, up to MAX_HEARTS. Cheap enough to call every
+## frame. Returns true when the heart count changed.
+func refresh_hearts() -> bool:
+	var now := int(Time.get_unix_time_from_system())
+	var before := player_hearts
+	if player_hearts >= MAX_HEARTS:
+		player_hearts = mini(player_hearts, MAX_HEARTS)
+		heart_refill_at = 0
+		return player_hearts != before
+	# No countdown yet (older save), or the phone's clock was set back.
+	if heart_refill_at <= 0 or heart_refill_at - now > HEART_REFILL_SECONDS:
+		heart_refill_at = now + HEART_REFILL_SECONDS
+	while now >= heart_refill_at and player_hearts < MAX_HEARTS:
+		player_hearts += 1
+		heart_refill_at += HEART_REFILL_SECONDS
+	if player_hearts >= MAX_HEARTS:
+		heart_refill_at = 0
+	if player_hearts != before:
+		save_game()
+		return true
+	return false
+
+## Seconds until the next heart comes back, or 0 while hearts are full.
+func seconds_to_next_heart() -> int:
+	if player_hearts >= MAX_HEARTS or heart_refill_at <= 0:
+		return 0
+	return maxi(heart_refill_at - int(Time.get_unix_time_from_system()), 0)
+
+## Failing a level costs one heart. Starts the refill countdown if hearts
+## were full. Saves immediately.
+func lose_heart() -> void:
+	refresh_hearts()
+	if player_hearts >= MAX_HEARTS:
+		heart_refill_at = int(Time.get_unix_time_from_system()) + HEART_REFILL_SECONDS
+	player_hearts = maxi(player_hearts - 1, 0)
+	save_game()
+
+## One heart bought with coins. Saves immediately.
+func gain_heart() -> void:
+	player_hearts = mini(player_hearts + 1, MAX_HEARTS)
+	if player_hearts >= MAX_HEARTS:
+		heart_refill_at = 0
+	save_game()
 
 ## Adds coins to the player's total and saves immediately.
 ## Call this whenever a player earns coins (e.g. completing a level).

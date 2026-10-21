@@ -250,22 +250,180 @@ func victory_stars_for_level(level: Node, earned: int) -> void:
 		center = sign.position + Vector2(sign.size.x * sign.scale.x / 2.0, sign.size.y * sign.scale.y + 48.0)
 	show_victory_stars(popup, earned, star.texture, center)
 
-## Results card heading and button text. Finishing with 0 stars counts as
-## a failed level: "SAYANG!" and a button that replays the level, instead
-## of "MAHUSAY!" and "Sunod na Level".
-func set_result_texts(level: Node, failed: bool, last_level: bool = false) -> void:
+## Results card heading and button text. A failed level turns the card
+## into the fail screen (see _set_fail_card); level_num picks the unit
+## shown on its sign.
+func set_result_texts(level: Node, failed: bool, last_level: bool = false, level_num: int = 0) -> void:
+	var popup := level.get_node_or_null("CanvasLayer/VictoryPopup") as Control
+	if popup:
+		_set_fail_card(popup, failed)
 	var title := level.get_node_or_null("CanvasLayer/VictoryPopup/MAHUSAY!") as Label
 	var next_label := level.get_node_or_null("CanvasLayer/VictoryPopup/NextLevel/Label") as Label
 	var title_text := "MAHUSAY!"
 	var next_text := "Sunod na Level  >>"
 	if failed:
-		title_text = "SAYANG!"
-		next_text = "Subukan ulit"
+		title_text = "YUNIT %d" % unit_for_level(level_num)
+		next_text = "Subukan Ulit"
 	elif last_level:
 		title_text = "TAPOS MO NA!"
 		next_text = "Bumalik sa Mapa"
 	if title: title.text = title_text
 	if next_label: next_label.text = next_text
+
+## Levels per unit, in order: Yunit 1-3 have 5 levels, Yunit 4 has 15.
+const UNIT_LEVEL_COUNTS: Array = [5, 5, 5, 15]
+
+func unit_for_level(level_num: int) -> int:
+	var last := 0
+	for i in UNIT_LEVEL_COUNTS.size():
+		last += UNIT_LEVEL_COUNTS[i]
+		if level_num <= last:
+			return i + 1
+	return UNIT_LEVEL_COUNTS.size()
+
+## Word card nodes hidden while the results card shows the fail screen.
+const _WORD_CARD_NODES: Array = ["salita_title", "kahulugan_title", "culturalnote _title",
+	"pakinggan_ang_pagbigkas", "MeaningLabel", "CulturalNoteLabel", "WordLabel",
+	"SpeakerButton", "+coin", "ColorRect/Book", "ColorRect/Woods"]
+
+## Switches the results card between the word card (a win) and the fail
+## screen: "HINDI NAKAPASA!", three empty stars, a broken heart and a
+## centred "Subukan Ulit" button. Positions are on the 720x1280 canvas.
+func _set_fail_card(popup: Control, failed: bool) -> void:
+	for path in _WORD_CARD_NODES:
+		var node := popup.get_node_or_null(path) as CanvasItem
+		if node:
+			node.visible = not failed
+	var card := popup.get_node_or_null("FailCard") as Control
+	if failed and card == null:
+		card = _build_fail_card(popup)
+	if card:
+		card.visible = failed
+	if failed:
+		var old_stars := popup.get_node_or_null("VictoryStars")
+		if old_stars:
+			old_stars.free()
+		var particles := popup.get_node_or_null("CPUParticles2D") as CPUParticles2D
+		if particles:
+			particles.emitting = false
+
+	var title := popup.get_node_or_null("MAHUSAY!") as Label
+	if title:
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER if failed else HORIZONTAL_ALIGNMENT_LEFT
+
+	# The button moves to the middle (no coins sign beside it) and its text
+	# is centred; the original layout is kept to put back after a win.
+	var button := popup.get_node_or_null("NextLevel") as Control
+	var label := popup.get_node_or_null("NextLevel/Label") as Label
+	if button == null or label == null:
+		return
+	if not button.has_meta("win_position"):
+		button.set_meta("win_position", button.position)
+		label.set_meta("win_rect", Rect2(label.position, label.size))
+		label.set_meta("win_font_size", label.get_theme_font_size("font_size"))
+	if failed:
+		button.position = Vector2(360 - button.size.x / 2.0, button.get_meta("win_position").y)
+		label.position = Vector2(0, 21)
+		label.size = Vector2(button.size.x, 55)
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.add_theme_font_size_override("font_size", 40)
+	else:
+		var rect: Rect2 = label.get_meta("win_rect")
+		button.position = button.get_meta("win_position")
+		label.position = rect.position
+		label.size = rect.size
+		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		label.add_theme_font_size_override("font_size", label.get_meta("win_font_size"))
+
+func _build_fail_card(popup: Control) -> Control:
+	var card := Control.new()
+	card.name = "FailCard"
+	card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	popup.add_child(card)
+	# Keep the close button and the "Subukan Ulit" button on top.
+	popup.move_child(card, popup.get_node("ColorRect").get_index() + 1)
+
+	var sign := popup.get_node_or_null("MAHUSAY!") as Label
+	if sign:
+		var title := sign.duplicate() as Label
+		card.add_child(title)
+		title.visible = true
+		title.text = "HINDI NAKAPASA!"
+		title.add_theme_font_size_override("font_size", 56)
+		title.add_theme_color_override("font_color", Color(0.78, 0.16, 0.10))
+		title.add_theme_color_override("font_outline_color", Color(1, 1, 1))
+		title.add_theme_constant_override("outline_size", 10)
+		title.add_theme_color_override("font_shadow_color", Color(0.35, 0.2, 0.1, 0.5))
+		title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		title.position = Vector2(80, 335)
+		title.size = Vector2(560, 80)
+
+	var body := popup.get_node_or_null("pakinggan_ang_pagbigkas") as Label
+	if body:
+		# body is already hidden with the word card, so show the copies.
+		var line := body.duplicate() as Label
+		card.add_child(line)
+		line.visible = true
+		line.text = "Sayang! Kaya mo 'yan, subukan ulit."
+		line.add_theme_font_size_override("font_size", 26)
+		line.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		line.position = Vector2(80, 420)
+		line.size = Vector2(560, 40)
+
+		var lost := body.duplicate() as Label
+		card.add_child(lost)
+		lost.visible = true
+		lost.text = "-1 buhay"
+		lost.add_theme_font_size_override("font_size", 34)
+		lost.add_theme_color_override("font_color", Color(0.78, 0.16, 0.10))
+		lost.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lost.position = Vector2(80, 840)
+		lost.size = Vector2(560, 50)
+
+	# Empty stars: a faded filled star under the outline-only one.
+	var full_tex := load("res://Partido Word Catch Game Pic/Star with fill.png") as Texture2D
+	var empty_tex := load("res://Partido Word Catch Game Pic/Star without fill.png") as Texture2D
+	var sizes := [120.0, 150.0, 120.0]
+	var centers := [Vector2(220, 560), Vector2(360, 530), Vector2(500, 560)]
+	for i in 3:
+		for tex in [full_tex, empty_tex]:
+			var star := TextureRect.new()
+			star.texture = tex
+			star.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			star.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+			star.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			star.size = Vector2(sizes[i], sizes[i])
+			star.position = centers[i] - star.size / 2.0
+			if tex == full_tex:
+				star.modulate = Color(0.55, 0.5, 0.45, 0.45)
+			card.add_child(star)
+
+	# Broken heart: the heart picture split down the middle, halves tipped
+	# apart, with a parchment-coloured crack between them.
+	var heart := load("res://images/heart.png") as Texture2D
+	if heart:
+		var half_size := Vector2(heart.get_width() / 2.0, heart.get_height()) * 0.62
+		var center := Vector2(360, 745)
+		for side in 2:
+			var piece := AtlasTexture.new()
+			piece.atlas = heart
+			piece.region = Rect2(side * heart.get_width() / 2.0, 0, heart.get_width() / 2.0, heart.get_height())
+			var half := TextureRect.new()
+			half.texture = piece
+			half.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			half.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			half.size = half_size
+			half.pivot_offset = Vector2(half_size.x if side == 0 else 0.0, half_size.y)
+			half.position = center + Vector2(-half_size.x - 6 if side == 0 else 6, -half_size.y / 2.0)
+			half.rotation_degrees = -14 if side == 0 else 14
+			card.add_child(half)
+		var crack := Line2D.new()
+		crack.width = 7
+		crack.default_color = Color(1.0, 0.925, 0.785)
+		crack.points = PackedVector2Array([Vector2(360, 680), Vector2(348, 705), Vector2(372, 730),
+			Vector2(350, 758), Vector2(366, 790), Vector2(360, 820)])
+		card.add_child(crack)
+	return card
 
 ## Three stars hanging under the victory sign, popping in one after another.
 ## Earned stars are full colour, missed ones are dimmed. center is in the

@@ -6,16 +6,13 @@ var player_coins: int:
 	set(val): GameManager.player_coins = val
 
 var player_stars: int = 3
-# Set when the level was finished with 0 stars; the results card then
-# offers "Subukan ulit" (replay this level) instead of the next level.
+# Set when the level was failed (all 3 stars lost); the results card then
+# shows the fail screen, whose "Subukan Ulit" button replays this level.
 var level_failed: bool = false
 var player_hearts: int:
 	get: return GameManager.player_hearts
 	set(val): GameManager.player_hearts = val
 
-# Timer para sa 10 minuto (10 * 60 = 600 seconds)
-var heart_regen_timer: Timer
-const REGEN_TIME: float = 600.0
 const RESTORE_HEART_COST: int = 20
 
 var out_of_hearts_modal: Control = null
@@ -53,23 +50,12 @@ func _ready():
 		if not close_btn.is_connected("pressed", Callable(self, "_on_close_victory_pressed")):
 			close_btn.pressed.connect(_on_close_victory_pressed)
 
-	setup_heart_timer()
 	load_current_level()
 	_connect_sound_to_all_buttons(self)
 
 func _process(_delta):
 	check_slots_automatically()
 	update_timer_display()
-
-func setup_heart_timer():
-	heart_regen_timer = Timer.new()
-	heart_regen_timer.wait_time = REGEN_TIME
-	heart_regen_timer.one_shot = false
-	heart_regen_timer.timeout.connect(_on_heart_regen_timeout)
-	add_child(heart_regen_timer)
-	
-	if player_hearts < 4:
-		heart_regen_timer.start()
 
 func load_current_level():
 	if has_node("%VictoryPopup"): %VictoryPopup.visible = false
@@ -81,6 +67,10 @@ func load_current_level():
 	# shouldn't hand a fresh 3 stars for free) - defaults to 3 if this
 	# level has no in-progress attempt saved.
 	player_stars = GameManager.in_progress_stars.get(str(lvl_key), 3)
+	# 0 stars means a failed try (older saves kept it); start fresh.
+	if player_stars <= 0:
+		player_stars = 3
+	level_failed = false
 	update_stars_display()
 	update_hearts_display()
 	last_slots_full_state = false
@@ -262,23 +252,29 @@ func handle_wrong_answer():
 		player_stars = 0
 	update_stars_display()
 
+	if player_stars <= 0:
+		fail_level()
+		return
+
 	# Persist immediately so leaving for the campaign map right after a
-	# mistake (without triggering the hearts-lost save below) doesn't
-	# lose the reduced star count.
+	# mistake doesn't hand back the lost star.
 	GameManager.in_progress_stars[str(int(current_level))] = player_stars
 	GameManager.save_game()
 
-	if player_stars <= 0:
-		player_hearts -= 1
-		if player_hearts < 0:
-			player_hearts = 0
-		update_hearts_display()
-		GameManager.save_game()  # heart loss on top of the star save above
-
-		if heart_regen_timer.is_stopped():
-			heart_regen_timer.start()
-
-		_check_out_of_hearts()
+## Out of stars: the level is failed. It costs one heart, gives 0 stars and
+## shows the fail screen, whose "Subukan Ulit" button restarts the level.
+func fail_level():
+	level_failed = true
+	GameManager.in_progress_stars.erase(str(int(current_level)))
+	GameManager.lose_heart()
+	update_hearts_display()
+	# Let the last star finish popping away first.
+	await get_tree().create_timer(0.6).timeout
+	if not is_inside_tree() or not level_failed:
+		return
+	Global.set_result_texts(self, true, false, int(current_level))
+	if has_node("%VictoryPopup"):
+		%VictoryPopup.visible = true
 
 func update_stars_display():
 	if has_node("CanvasLayer/LevelDesign/StarWithFill"):
@@ -292,32 +288,20 @@ func update_hearts_display():
 	if has_node("%LiveLabel"):
 		get_node("%LiveLabel").text = str(player_hearts)
 
+## Gives back hearts that refilled since the last check (they keep
+## refilling while the game is closed) and shows the countdown to the next one.
 func update_timer_display():
-	if heart_regen_timer and not heart_regen_timer.is_stopped():
-		var time_left = int(heart_regen_timer.time_left)
-		var minutes = time_left / 60
-		var seconds = time_left % 60
-		var time_string = "%02d:%02d" % [minutes, seconds]
-		if has_node("%HeartTimerLabel"):
-			%HeartTimerLabel.text = time_string
-		if out_of_hearts_countdown_label and is_instance_valid(out_of_hearts_countdown_label):
-			out_of_hearts_countdown_label.text = time_string
-	else:
-		if has_node("%HeartTimerLabel"):
-			%HeartTimerLabel.text = ""
-
-func _on_heart_regen_timeout():
-	if player_hearts < 4:
-		player_hearts += 1
+	if GameManager.refresh_hearts():
 		update_hearts_display()
-		GameManager.save_game()
-
-	if player_hearts < 4:
-		heart_regen_timer.start()
-	else:
-		heart_regen_timer.stop()
-
-	_check_out_of_hearts()
+		_check_out_of_hearts()
+	var time_left := GameManager.seconds_to_next_heart()
+	var time_string := ""
+	if time_left > 0:
+		time_string = "%02d:%02d" % [time_left / 60, time_left % 60]
+	if has_node("%HeartTimerLabel"):
+		%HeartTimerLabel.text = time_string
+	if out_of_hearts_countdown_label and is_instance_valid(out_of_hearts_countdown_label):
+		out_of_hearts_countdown_label.text = time_string
 
 ## Shows a blocking modal explaining why play is locked once hearts hit 0,
 ## with a live countdown to the next heart - and hides it again the moment
@@ -346,7 +330,7 @@ func _on_restore_heart_pressed() -> void:
 		return
 	player_coins -= RESTORE_HEART_COST
 	Global.play_coin_spend_sound()
-	player_hearts = min(player_hearts + 1, 4)
+	GameManager.gain_heart()
 	update_hearts_display()
 	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 	GameManager.save_game()
@@ -455,23 +439,19 @@ func _on_close_victory_pressed() -> void:
 func show_victory_popup():
 	var lvl_key = int(current_level)
 	var level_info = LevelData.levels[lvl_key]
-	level_failed = player_stars <= 0
-	if level_failed:
-		# 0 stars: no coins, no unlock, and the next try starts fresh.
-		GameManager.in_progress_stars.erase(str(lvl_key))
-		GameManager.save_game()
-		if has_node("%+coin"): get_node("%+coin").text = ""
-	else:
-		GameManager.add_coins(10)
-		# Level's finished, so there's no "in-progress attempt" to resume
-		# anymore - replaying it later should start fresh with 3 stars again.
-		# Erased before complete_level() so its own save_game() call picks up
-		# this change too, instead of needing a separate save here.
-		GameManager.in_progress_stars.erase(str(lvl_key))
-		GameManager.complete_level(lvl_key, player_stars)
-		if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
-		if has_node("%+coin"): get_node("%+coin").text = "+10 COINS"
-	Global.set_result_texts(self, level_failed)
+	if player_stars <= 0:
+		fail_level()
+		return
+	GameManager.add_coins(10)
+	# Level's finished, so there's no "in-progress attempt" to resume
+	# anymore - replaying it later should start fresh with 3 stars again.
+	# Erased before complete_level() so its own save_game() call picks up
+	# this change too, instead of needing a separate save here.
+	GameManager.in_progress_stars.erase(str(lvl_key))
+	GameManager.complete_level(lvl_key, player_stars)
+	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
+	if has_node("%+coin"): get_node("%+coin").text = "+10 COINS"
+	Global.set_result_texts(self, false)
 	if has_node("%WordLabel"): %WordLabel.text = level_info.get("word", "")
 	if has_node("%MeaningLabel"): %MeaningLabel.text = level_info.get("meaning", "")
 	if has_node("%CulturalNoteLabel"): %CulturalNoteLabel.text = level_info.get("cultural_note", "")
@@ -482,12 +462,10 @@ func show_victory_popup():
 	var particles = get_node_or_null("%CPUParticles2D")
 	if particles and particles is CPUParticles2D:
 		particles.emitting = false
-		if not level_failed:
-			particles.restart()
-			particles.emitting = true
+		particles.restart()
+		particles.emitting = true
 
-	if not level_failed:
-		Global.play_horray()
+	Global.play_horray()
 
 # --- HINT BUTTONS ---
 func _on_reveal_hint_pressed():
