@@ -397,12 +397,13 @@ size_flags_vertical = 6
 theme_override_colors/font_color = Color(0.47843137, 0.43137255, 0.39607844, 1)
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 30
-text = "Login to continue your adventure.
-"
+text = "New or returning teacher?
+Sign in with your Google account."
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="FieldContainer" type="Control" parent="LoginFormContainer/MarginContainer/VBoxContainer" unique_id=1135631527]
+visible = false
 anchors_preset = 0
 offset_left = 27.0
 offset_top = 247.0
@@ -436,6 +437,7 @@ placeholder_text = "e.g. teacher@email.com"
 caret_blink = true
 
 [node name="FieldContainer2" type="Control" parent="LoginFormContainer/MarginContainer/VBoxContainer" unique_id=1222023333]
+visible = false
 anchors_preset = 0
 offset_left = 27.0
 offset_top = 289.0
@@ -491,6 +493,7 @@ theme_override_font_sizes/font_size = 23
 text = "Remember Me"
 
 [node name="Button" type="Button" parent="LoginFormContainer/MarginContainer/VBoxContainer/OptionRow" unique_id=1921906558]
+visible = false
 layout_mode = 0
 offset_left = 263.0
 offset_top = -272.0
@@ -512,14 +515,14 @@ offset_bottom = 40.0
 [node name="LoginButton" type="Button" parent="LoginFormContainer/MarginContainer/VBoxContainer/Spacer" unique_id=1944566927]
 custom_minimum_size = Vector2(150, 60)
 layout_mode = 0
-offset_left = 149.0
+offset_left = 49.0
 offset_top = 624.0
-offset_right = 449.0
+offset_right = 549.0
 offset_bottom = 684.0
 theme_override_fonts/font = ExtResource("6_wkk7v")
-theme_override_font_sizes/font_size = 35
+theme_override_font_sizes/font_size = 30
 theme_override_styles/normal = SubResource("StyleBoxFlat_2s3ny")
-text = "LOGIN"
+text = "CONTINUE WITH GOOGLE"
 
 [node name="LoginStatusLabel" type="Label" parent="LoginFormContainer/MarginContainer/VBoxContainer/Spacer" unique_id=1944566928]
 visible = false
@@ -537,6 +540,7 @@ autowrap_mode = 3
 clip_text = true
 
 [node name="RegisterRow" type="Control" parent="LoginFormContainer/MarginContainer/VBoxContainer" unique_id=1775318756]
+visible = false
 anchors_preset = 0
 offset_right = 395.0
 offset_bottom = 49.0
@@ -965,6 +969,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_drsw1")
 caret_blink = true
 
 [node name="FieldContainer3" type="Control" parent="TeacherCreateAccount/MarginContainer/VBoxContainer" unique_id=1357415941]
+visible = false
 anchors_preset = 0
 offset_left = 27.0
 offset_top = 480.0

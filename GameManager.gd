@@ -68,6 +68,13 @@ var is_sound_enabled: bool = true    # Sound effects (SFX bus)
 var is_music_enabled: bool = true    # Background music (Music bus)
 var remember_teacher_login: bool = true    # "Remember Me" on the Teacher Login screen
 
+## --- OFFLINE SYNC ---
+## True while this device has student progress the server hasn't accepted
+## yet (e.g. levels played with no internet). Saved to disk, so progress
+## made offline still gets uploaded after the app is closed and reopened -
+## SyncManager keeps retrying until it goes through.
+var pending_sync: bool = false
+
 
 ## --- SAVE FILE LOCATION ---
 ## "user://" is a special Godot path that points to a safe, writable folder
@@ -117,6 +124,36 @@ func _notification(what: int) -> void:
 ## Call this every time something important changes
 ## (coins earned, level unlocked, settings changed).
 func save_game() -> void:
+	# Anything a student saves needs to reach the teacher eventually; this
+	# stays true until SyncManager confirms the upload (see mark_synced).
+	if role == "STUDENT":
+		pending_sync = true
+	if not _write_save_file():
+		return
+
+	# Opportunistic online sync: fires and forgets. If there's no internet
+	# or Supabase isn't configured yet, this just fails and the local save
+	# above (already done) stays the source of truth - pending_sync makes
+	# SyncManager try again later.
+	var sync = get_node_or_null("/root/SyncManager")
+	if sync:
+		if role == "STUDENT" and sync.has_method("sync_student_progress"):
+			sync.sync_student_progress()
+		elif role == "TEACHER" and class_code != "" and sync.has_method("teacher_save_my_class") and sync.has_teacher_session():
+			# Only updates the signed-in teacher's own class - the database
+			# ignores whatever class_code this device has saved.
+			sync.teacher_save_my_class(player_name, school_name, grade_subject, teacher_class_name, avatar_id, func(_code): pass)
+
+## Called by SyncManager once the server has the latest progress. Writes
+## the cleared flag to disk without starting another sync.
+func mark_synced() -> void:
+	if not pending_sync:
+		return
+	pending_sync = false
+	_write_save_file()
+
+## Writes the current player data to disk. Returns false if it couldn't.
+func _write_save_file() -> bool:
 	# Step 1: Put all the data we want to save into one Dictionary.
 	var save_data: Dictionary = {
 		"player_name": player_name,
@@ -140,7 +177,8 @@ func save_game() -> void:
 		"is_sound_enabled": is_sound_enabled,
 		"is_music_enabled": is_music_enabled,
 		"remember_teacher_login": remember_teacher_login,
-		"last_wotd_date": last_wotd_date
+		"last_wotd_date": last_wotd_date,
+		"pending_sync": pending_sync
 	}
 
 	# Step 2: Write to a TEMP file first, then swap it into place. If the
@@ -155,7 +193,7 @@ func save_game() -> void:
 	var file: FileAccess = FileAccess.open(temp_path, FileAccess.WRITE)
 	if file == null:
 		print("ERROR: Could not open temp save file for writing. Error code: ", FileAccess.get_open_error())
-		return
+		return false
 
 	# Step 3: Convert our Dictionary into a JSON text string, and write it to the file.
 	var json_text: String = JSON.stringify(save_data)
@@ -170,19 +208,10 @@ func save_game() -> void:
 		dir.rename(temp_path, SAVE_FILE_PATH)
 	else:
 		print("ERROR: Could not access user:// to finalize the save file.")
-		return
+		return false
 
 	print("Game saved successfully.")
-
-	# Opportunistic online sync: fires and forgets. If there's no internet
-	# or Supabase isn't configured yet, this just fails silently and the
-	# local save above (already done) stays the source of truth.
-	var sync = get_node_or_null("/root/SyncManager")
-	if sync:
-		if role == "STUDENT" and sync.has_method("sync_student_progress"):
-			sync.sync_student_progress()
-		elif role == "TEACHER" and class_code != "" and sync.has_method("upsert_class"):
-			sync.upsert_class(class_code, player_name, teacher_email, school_name, grade_subject, teacher_class_name, avatar_id)
+	return true
 
 
 ## --- LOAD ---
@@ -234,6 +263,7 @@ func load_game() -> void:
 	is_music_enabled = save_data.get("is_music_enabled", true)
 	remember_teacher_login = save_data.get("remember_teacher_login", true)
 	last_wotd_date = str(save_data.get("last_wotd_date", ""))
+	pending_sync = bool(save_data.get("pending_sync", false))
 
 	print("Game loaded successfully. Player: ", player_name, " | Unlocked level: ", unlocked_level)
 	
@@ -244,10 +274,12 @@ func load_game() -> void:
 ## Generates a random per-install id (not tied to real hardware/account),
 ## used to tell players apart when syncing to the online leaderboard.
 func _generate_device_id() -> String:
+	# Cryptographically random: the database treats this id as proof that a
+	# sync really comes from this pupil's phone, so it mustn't be guessable.
 	var chars := "abcdefghijklmnopqrstuvwxyz0123456789"
 	var id := ""
-	for i in range(16):
-		id += chars[randi() % chars.length()]
+	for b in Crypto.new().generate_random_bytes(16):
+		id += chars[b % chars.length()]
 	return id
 
 ## Students sync via an upsert keyed on device_id (see SyncManager.
@@ -289,22 +321,6 @@ const AVATAR_TEXTURE_PATHS: Dictionary = {
 ## to a placeholder icon instead of crashing on a bad load().
 func get_avatar_texture_path(for_avatar_id: String) -> String:
 	return AVATAR_TEXTURE_PATHS.get(for_avatar_id, "")
-
-## Returns this teacher's permanent class code, generating one the first
-## time it's needed. A class only ever gets one code for its whole life.
-func get_or_create_class_code() -> String:
-	if class_code != "":
-		return class_code
-
-	const CODE_CHARS := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-	const CODE_LENGTH := 6
-	var code := ""
-	for i in range(CODE_LENGTH):
-		code += CODE_CHARS[randi() % CODE_CHARS.length()]
-
-	class_code = code
-	save_game()
-	return class_code
 
 ## Adds coins to the player's total and saves immediately.
 ## Call this whenever a player earns coins (e.g. completing a level).
