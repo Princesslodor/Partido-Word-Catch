@@ -105,8 +105,7 @@ func _on_button_down(button: BaseButton) -> void:
 		return
 	if not button.has_meta("_base_scale"):
 		button.set_meta("_base_scale", button.scale)
-	if button.pivot_offset == Vector2.ZERO:
-		button.pivot_offset = button.size / 2.0
+		_center_pivot(button)
 	var tween := button.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tween.tween_property(button, "scale", button.get_meta("_base_scale") * 0.93, 0.07)
 
@@ -116,6 +115,23 @@ func _on_button_up(button: BaseButton) -> void:
 	var tween := button.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tween.tween_property(button, "scale", button.get_meta("_base_scale"), 0.18) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+## Moves the scaling centre to the middle without moving what's on screen.
+## Many buttons are drawn scaled (e.g. the map's Settings and Word of the
+## Day icons at 0.2x), and for those changing pivot_offset alone shifts
+## the drawn button, so the position is shifted back by the same amount.
+## Buttons inside a Container are left alone - the container owns their
+## position.
+func _center_pivot(control: Control) -> void:
+	var new_pivot := control.size / 2.0
+	var delta := new_pivot - control.pivot_offset
+	if delta == Vector2.ZERO:
+		return
+	if control.scale != Vector2.ONE:
+		if control.get_parent() is Container:
+			return
+		control.position -= delta * (Vector2.ONE - control.scale)
+	control.pivot_offset = new_pivot
 
 ## --- POPUP POP-IN ---
 ## Any Control whose name ends in "Popup" (VictoryPopup, ClassJoinedPopup,
@@ -132,12 +148,15 @@ func _watch_popup(popup: Control) -> void:
 func _pop_in(popup: Control) -> void:
 	if not is_instance_valid(popup) or not popup.is_inside_tree():
 		return
-	popup.pivot_offset = popup.size / 2.0
-	popup.scale = Vector2(0.92, 0.92)
+	if not popup.has_meta("_base_scale"):
+		popup.set_meta("_base_scale", popup.scale)
+		_center_pivot(popup)
+	var base: Vector2 = popup.get_meta("_base_scale")
+	popup.scale = base * 0.92
 	popup.modulate.a = 0.0
 	var tween := popup.create_tween().set_parallel().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 	tween.tween_property(popup, "modulate:a", 1.0, 0.18)
-	tween.tween_property(popup, "scale", Vector2.ONE, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(popup, "scale", base, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 ## --- BUTTON HOVER/PRESS LOOK ---
 ## Most buttons only set a "normal" style in their .tscn, so on hover,
