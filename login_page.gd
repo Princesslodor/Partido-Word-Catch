@@ -275,7 +275,7 @@ func _on_welcome_back_continue_pressed():
 		# to pick one instead of continuing with a blank avatar.
 		_change_to_avatar_selection()
 		return
-	get_tree().change_scene_to_file(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
+	Global.change_scene(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
 
 func _on_welcome_back_not_you_pressed():
 	var gm = get_node_or_null("/root/GameManager")
@@ -323,7 +323,7 @@ func _on_teacher_selected():
 		# need to go through Login (which requires an online lookup) just
 		# to get back into an account that's already sitting right here.
 		if teacher_dashboard_scene != "":
-			get_tree().change_scene_to_file(teacher_dashboard_scene)
+			Global.change_scene(teacher_dashboard_scene)
 		return
 
 	# _save_role_to_gm() flips role and immediately calls save_game(), which
@@ -487,12 +487,12 @@ func _on_student_login_pressed() -> void:
 					gm.set("joined_grade_subject", str(class_row.get("grade_subject", "")))
 				if gm.has_method("save_game"):
 					gm.save_game()
-				get_tree().change_scene_to_file(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
+				Global.change_scene(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
 			)
 		else:
 			if gm.has_method("save_game"):
 				gm.save_game()
-			get_tree().change_scene_to_file(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
+			Global.change_scene(campaign_map_scene if campaign_map_scene != "" else "res://campaign_map_screen.tscn")
 	)
 
 func _show_student_login_status(message: String) -> void:
@@ -506,7 +506,7 @@ func _on_class_joined_continued():
 
 func _change_to_avatar_selection():
 	var target = avatar_selection_scene if avatar_selection_scene != "" else "res://avatar_selection.tscn"
-	get_tree().change_scene_to_file(target)
+	Global.change_scene(target)
 
 ## "Continue with Google": opens Google sign-in in the browser (skipped
 ## if this phone is already signed in), then opens the teacher's class, or
@@ -562,7 +562,7 @@ func _open_signed_in_teacher_class() -> void:
 			if gm.has_method("save_game"):
 				gm.save_game()
 		if teacher_dashboard_scene != "":
-			get_tree().change_scene_to_file(teacher_dashboard_scene)
+			Global.change_scene(teacher_dashboard_scene)
 	)
 
 func _show_login_status(message: String) -> void:

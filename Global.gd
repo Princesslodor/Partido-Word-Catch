@@ -54,6 +54,90 @@ func _ready():
 	_apply_saved_audio_settings()
 
 	get_tree().node_added.connect(_on_node_added)
+	_setup_screen_fade()
+
+## --- SCREEN TRANSITIONS ---
+## Use Global.change_scene(path) instead of get_tree().change_scene_to_file():
+## the screen fades to dark, switches, then fades back in. Taps are blocked
+## while it fades so a double tap can't switch twice.
+const FADE_OUT_TIME := 0.2
+const FADE_IN_TIME := 0.3
+var _fade: ColorRect
+var _changing_scene: bool = false
+
+func _setup_screen_fade() -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 128
+	add_child(layer)
+	_fade = ColorRect.new()
+	_fade.color = Color(0.08, 0.06, 0.04, 0.0)
+	_fade.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(_fade)
+	get_tree().scene_changed.connect(_fade_in)
+
+func change_scene(path: String) -> void:
+	if _changing_scene:
+		return
+	_changing_scene = true
+	_fade.mouse_filter = Control.MOUSE_FILTER_STOP
+	var tween := _fade_tween()
+	tween.tween_property(_fade, "color:a", 1.0, FADE_OUT_TIME)
+	await tween.finished
+	if get_tree().change_scene_to_file(path) != OK:
+		push_error("Global.change_scene: couldn't open " + path)
+		_fade_in()
+
+func _fade_in() -> void:
+	_changing_scene = false
+	var tween := _fade_tween()
+	tween.tween_property(_fade, "color:a", 0.0, FADE_IN_TIME)
+	tween.tween_callback(func(): _fade.mouse_filter = Control.MOUSE_FILTER_IGNORE)
+
+## Keeps running while a level has paused the game.
+func _fade_tween() -> Tween:
+	return create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+
+## --- BUTTON SQUISH ---
+## Every button shrinks a little while held and springs back on release.
+func _on_button_down(button: BaseButton) -> void:
+	if button.disabled:
+		return
+	if not button.has_meta("_base_scale"):
+		button.set_meta("_base_scale", button.scale)
+	if button.pivot_offset == Vector2.ZERO:
+		button.pivot_offset = button.size / 2.0
+	var tween := button.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.tween_property(button, "scale", button.get_meta("_base_scale") * 0.93, 0.07)
+
+func _on_button_up(button: BaseButton) -> void:
+	if not button.has_meta("_base_scale"):
+		return
+	var tween := button.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.tween_property(button, "scale", button.get_meta("_base_scale"), 0.18) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+## --- POPUP POP-IN ---
+## Any Control whose name ends in "Popup" (VictoryPopup, ClassJoinedPopup,
+## ExitConfirmationPopup, ...) fades in and grows slightly with a small
+## bounce each time it's shown.
+func _watch_popup(popup: Control) -> void:
+	popup.visibility_changed.connect(func():
+		if is_instance_valid(popup) and popup.is_visible_in_tree():
+			_pop_in(popup)
+	)
+	if popup.is_visible_in_tree():
+		_pop_in.call_deferred(popup)
+
+func _pop_in(popup: Control) -> void:
+	if not is_instance_valid(popup) or not popup.is_inside_tree():
+		return
+	popup.pivot_offset = popup.size / 2.0
+	popup.scale = Vector2(0.92, 0.92)
+	popup.modulate.a = 0.0
+	var tween := popup.create_tween().set_parallel().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
+	tween.tween_property(popup, "modulate:a", 1.0, 0.18)
+	tween.tween_property(popup, "scale", Vector2.ONE, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 ## --- BUTTON HOVER/PRESS LOOK ---
 ## Most buttons only set a "normal" style in their .tscn, so on hover,
@@ -67,6 +151,11 @@ func _ready():
 const _AUTO_STATES_META := "_auto_button_states"
 
 func _on_node_added(node: Node) -> void:
+	if node is BaseButton:
+		node.button_down.connect(_on_button_down.bind(node))
+		node.button_up.connect(_on_button_up.bind(node))
+	elif node is Control and node.name.ends_with("Popup") and node.get_class() == "Control":
+		_watch_popup(node)
 	if node is Button and not node.has_meta(_AUTO_STATES_META):
 		node.set_meta(_AUTO_STATES_META, {})
 		node.theme_changed.connect(_refresh_button_states.bind(node))

@@ -97,6 +97,6 @@ func _on_continue_button_pressed():
 	
 	if next_scene != "" and ResourceLoader.exists(next_scene):
 		print("PUMUPUNTA NA SA LOGIN SCENE: ", next_scene)
-		get_tree().change_scene_to_file(next_scene)
+		Global.change_scene(next_scene)
 	else:
 		print("ERROR: Walang nakalagay na valid na Login Scene path sa 'Next Scene' property!")

@@ -433,7 +433,7 @@ func _ensure_out_of_hearts_modal() -> Control:
 	back_btn.size = Vector2(200, 45)
 	back_btn.add_theme_color_override("font_color", Color(0.1, 0.1, 0.1, 1))
 	back_btn.add_theme_color_override("font_hover_color", Color(0.1, 0.1, 0.1, 1))
-	back_btn.pressed.connect(func(): get_tree().change_scene_to_file("res://campaign_map_screen.tscn"))
+	back_btn.pressed.connect(func(): Global.change_scene("res://campaign_map_screen.tscn"))
 	panel.add_child(back_btn)
 
 	if has_node("CanvasLayer"):
@@ -444,7 +444,7 @@ func _ensure_out_of_hearts_modal() -> Control:
 	return overlay
 
 func _on_close_victory_pressed() -> void:
-	get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
+	Global.change_scene("res://campaign_map_screen.tscn")
 
 func show_victory_popup():
 	var lvl_key = int(current_level)
@@ -559,7 +559,7 @@ func _on_next_level_button_pressed():
 		# No level 31 to load - the button reads "Bumalik sa Mapa" at this
 		# point (see show_victory_popup()), so send the player back to the
 		# Campaign Map instead of silently doing nothing.
-		get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
+		Global.change_scene("res://campaign_map_screen.tscn")
 		return
 	current_level += 1
 	if current_level <= 30:

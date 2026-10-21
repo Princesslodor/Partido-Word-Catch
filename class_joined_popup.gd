@@ -72,7 +72,7 @@ func _on_continue_pressed() -> void:
 	if continue_pressed.get_connections().size() > 0:
 		continue_pressed.emit()
 		return
-	get_tree().change_scene_to_file(next_scene_path)
+	Global.change_scene(next_scene_path)
 
 func _on_back_pressed() -> void:
 	back_pressed.emit()

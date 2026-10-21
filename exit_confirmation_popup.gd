@@ -53,4 +53,4 @@ func _on_yes_pressed():
 	if quit_app:
 		get_tree().quit()
 	else:
-		get_tree().change_scene_to_file(confirm_target_scene)
+		Global.change_scene(confirm_target_scene)

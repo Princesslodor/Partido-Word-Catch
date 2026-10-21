@@ -156,9 +156,9 @@ func _on_confirm_pressed() -> void:
 			gm.save_game()
 
 	if current_role == "TEACHER":
-		get_tree().change_scene_to_file("res://teacher_dashboard.tscn")
+		Global.change_scene("res://teacher_dashboard.tscn")
 	else:
-		get_tree().change_scene_to_file("res://campaign_map_screen.tscn")
+		Global.change_scene("res://campaign_map_screen.tscn")
 
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file("res://login_page.tscn")
+	Global.change_scene("res://login_page.tscn")
