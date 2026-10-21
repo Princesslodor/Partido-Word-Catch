@@ -192,6 +192,23 @@ var _refresh_waiters: Array = []
 func _ready() -> void:
 	set_process(false)
 	_load_session()
+	# Keep networking (and the offline retry below) running even while a
+	# level pauses the scene tree.
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	var retry_timer := Timer.new()
+	retry_timer.wait_time = OFFLINE_RETRY_SECONDS
+	retry_timer.timeout.connect(retry_pending_sync)
+	add_child(retry_timer)
+	retry_timer.start()
+	# Upload anything left over from an offline session as soon as the app
+	# opens (deferred so GameManager has finished loading the save file).
+	call_deferred("retry_pending_sync")
+
+func _notification(what: int) -> void:
+	# Coming back to the app is a good moment to try again - the phone may
+	# have got its connection back while the game was in the background.
+	if what == NOTIFICATION_APPLICATION_RESUMED or what == NOTIFICATION_APPLICATION_FOCUS_IN:
+		retry_pending_sync()
 
 func has_teacher_session() -> bool:
 	return _refresh_token != ""
@@ -490,6 +507,19 @@ func teacher_save_my_class(teacher_name: String, school_name: String, grade_subj
 var _progress_sync_in_flight: bool = false
 var _progress_resync_pending: bool = false
 
+## --- OFFLINE PLAY ---
+## Gameplay never waits for the network: GameManager.save_game() writes to
+## the phone first and sets pending_sync. Until an upload is accepted, this
+## node retries every OFFLINE_RETRY_SECONDS, when the app is reopened or
+## brought back to the front, and on the next save - so progress made with
+## no internet shows up for the teacher automatically once it's back.
+const OFFLINE_RETRY_SECONDS: float = 30.0
+
+func retry_pending_sync() -> void:
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and gm.pending_sync and not _progress_sync_in_flight:
+		sync_student_progress()
+
 ## Pushes this device's current GameManager progress up for the teacher to
 ## see. The PIN travels over HTTPS; supabase_hardening.sql's version of
 ## this function hashes it with bcrypt before it touches disk, and refuses
@@ -507,7 +537,7 @@ func sync_student_progress() -> void:
 		return
 	_progress_sync_in_flight = true
 
-	_call_rpc("sync_student_progress", {
+	var body := JSON.stringify({
 		"p_device_id": gm.device_id,
 		"p_class_code": gm.class_code,
 		"p_player_name": gm.player_name if gm.player_name != "" else "Student",
@@ -516,11 +546,30 @@ func sync_student_progress() -> void:
 		"p_unlocked_level": gm.unlocked_level,
 		"p_player_coins": gm.player_coins,
 		"p_completed_levels": gm.completed_levels,
-	}, func(_r):
+	})
+	# Not _call_rpc(): that reports success and failure of a RETURNS VOID
+	# function the same way (null), and here we need to know which it was.
+	var http := _request("/rest/v1/rpc/sync_student_progress", HTTPClient.METHOD_POST, body)
+	http.request_completed.connect(func(result, response_code, _h, _resp_body):
+		http.queue_free()
 		_progress_sync_in_flight = false
 		if _progress_resync_pending:
+			# Progress changed while this upload was out - send the newer
+			# data, and leave pending_sync set until that one lands.
 			_progress_resync_pending = false
 			sync_student_progress()
+			return
+		var reached_server: bool = result == HTTPRequest.RESULT_SUCCESS
+		if reached_server and response_code >= 200 and response_code < 300:
+			gm.mark_synced()
+		elif reached_server and response_code >= 400 and response_code < 500 				and response_code != 408 and response_code != 429:
+			# The server answered and refused (e.g. PIN mismatch): retrying
+			# the same data would only be refused again. The progress stays
+			# on this phone and goes up with the next save.
+			push_warning("SyncManager: progress upload refused (http %s) - not retrying" % response_code)
+			gm.mark_synced()
+		# Otherwise (no internet, timeout, server error) pending_sync stays
+		# set and the retry timer tries again.
 	)
 
 ## --- CROSS-DEVICE STUDENT LOGIN ---
