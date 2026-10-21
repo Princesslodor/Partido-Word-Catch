@@ -38,8 +38,8 @@ func get_hint_image_path(original_level_num: int) -> String:
 ## with its clue/meaning/cultural_note as one unit, keeping them paired.
 var sentence_pools = {
 	21: {
-		"words": ["MAGANA", "NGUNYAN", "MAGKAKAN", "SI", "PAULO"],
-		"distractors": ["MAY", "SA", "DUMAN", "ANNA", "LANGOY", "ARIN", "HILING", "INI", "RAYO", "BAHAY"]
+		"words": ["MAGANA", "NGUNYAN", "MAGKAKAN", "SI", "MARCO"],
+		"distractors": ["PAULO", "MAY", "SA", "DUMAN", "ANNA", "LANGOY", "ARIN", "HILING", "INI", "RAYO", "BAHAY"]
 	},
 	22: {
 		"words": ["DAKUL", "AN", "DAKOP", "NI", "TIYO", "SAMMY"],
@@ -242,9 +242,9 @@ var levels = {
 	},
 	21: {
 		"unit": "Yunit 5: Mga Pangungusap",
-		"word": "MAGANA NGUNYAN MAGKAKAN SI PAULO",
-		"clue": "Malakas kumain si Paulo ngayon.",
-		"meaning": "Magana ngayon si Paulo.",
+		"word": "MAGANA NGUNYAN MAGKAKAN SI MARCO",
+		"clue": "Malakas ngayon kumain si Marco.",
+		"meaning": "Magana ngayon si Marco.",
 		"cultural_note": "Karaniwang ekspresyon sa pagkain o pag napaparami tayong kain.",
 		"audio": "21.mp3"
 	},
