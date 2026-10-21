@@ -292,26 +292,61 @@ func _handle_oauth_request(peer: StreamPeerTCP, request_text: String) -> void:
 
 	var code: String = params.get("code", "")
 	if code == "":
-		_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in. Bumalik sa Partido Word Catch at subukan muli.")
+		_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in.", "Bumalik sa Partido Word Catch at subukan muli.", false)
 		var reason: String = params.get("error_description", params.get("error", ""))
 		_finish_oauth(false, "Sign-in was cancelled." + (" (" + reason + ")" if reason != "" else ""))
 		return
 
-	_send_oauth_page(peer, "200 OK", "Naka-sign in ka na! Bumalik na sa Partido Word Catch.")
+	_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Bumalik na sa Partido Word Catch. Maaari mo nang isara ang tab na ito.", true)
 	var verifier := _oauth_verifier
 	# Stop listening but keep _oauth_on_result for _exchange_auth_code().
 	_close_oauth_server()
 	_exchange_auth_code(code, verifier)
 
-func _send_oauth_page(peer: StreamPeerTCP, status: String, message: String) -> void:
-	var html := "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width\">" \
-		+ "<title>Partido Word Catch</title></head><body style=\"font-family:sans-serif;text-align:center;padding:48px 16px\">" \
-		+ "<h2>" + message.xml_escape() + "</h2></body></html>"
+## The page the teacher's browser lands on after picking their Google
+## account. Styled like the game (cream card, green/red accents) with the
+## game logo inlined, since the browser can't load anything from res://.
+func _send_oauth_page(peer: StreamPeerTCP, status: String, title: String, detail: String = "", ok: bool = true) -> void:
+	var html := ""
+	if title != "":
+		var logo := _oauth_logo_data_uri()
+		var accent := "#4e7c38" if ok else "#b31c1c"
+		html = "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" \
+			+ "<title>Partido Word Catch</title><style>" \
+			+ "body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;" \
+			+ "font-family:Nunito,'Segoe UI',Roboto,sans-serif;background:linear-gradient(180deg,#8fd3f4 0%,#cdeccf 55%,#e9d6a3 100%)}" \
+			+ ".card{box-sizing:border-box;background:#fff8ee;border:3px solid #bd6213;border-radius:24px;box-shadow:0 10px 30px rgba(0,0,0,.18);" \
+			+ "max-width:420px;width:calc(100% - 32px);padding:28px 24px 32px;text-align:center;animation:pop .45s ease-out}" \
+			+ ".logo{width:80%;max-width:300px;height:auto}" \
+			+ ".badge{width:72px;height:72px;border-radius:50%;margin:8px auto 12px;display:flex;align-items:center;justify-content:center;" \
+			+ "color:#fff;font-size:42px;font-weight:800;background:" + accent + ";animation:pop .5s .2s ease-out both}" \
+			+ "h1{margin:0 0 8px;font-size:26px;color:" + accent + "}p{margin:0;font-size:17px;color:#7a6e65;line-height:1.4}" \
+			+ "@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}" \
+			+ "</style></head><body><div class=\"card\">" \
+			+ ("<img class=\"logo\" alt=\"Partido Word Catch\" src=\"" + logo + "\">" if logo != "" else "<h2>Partido Word Catch</h2>") \
+			+ "<div class=\"badge\">" + ("&#10003;" if ok else "!") + "</div>" \
+			+ "<h1>" + title.xml_escape() + "</h1><p>" + detail.xml_escape() + "</p></div></body></html>"
 	var body := html.to_utf8_buffer()
 	var head := "HTTP/1.1 %s\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: %d\r\nConnection: close\r\n\r\n" % [status, body.size()]
 	peer.put_data(head.to_utf8_buffer())
 	peer.put_data(body)
 	peer.disconnect_from_host()
+
+var _oauth_logo_uri: String = ""
+
+## logo2.png as a data: URI (scaled down, made once). Read through the
+## imported texture rather than the .png file, which isn't in exported builds.
+func _oauth_logo_data_uri() -> String:
+	if _oauth_logo_uri == "" and ResourceLoader.exists("res://logo2.png"):
+		var tex := load("res://logo2.png") as Texture2D
+		var img := tex.get_image() if tex else null
+		if img:
+			if img.is_compressed():
+				img.decompress()
+			if img.get_width() > 480:
+				img.resize(480, int(480.0 * img.get_height() / img.get_width()), Image.INTERPOLATE_LANCZOS)
+			_oauth_logo_uri = "data:image/png;base64," + Marshalls.raw_to_base64(img.save_png_to_buffer())
+	return _oauth_logo_uri
 
 func _exchange_auth_code(code: String, verifier: String) -> void:
 	var body := JSON.stringify({"auth_code": code, "code_verifier": verifier})

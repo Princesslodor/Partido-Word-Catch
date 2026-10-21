@@ -13,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://c61g3y8xbiy3x" path="res://TeacherBoard.png" id="10_hgb5e"]
 [ext_resource type="Texture2D" uid="uid://dilapiwanb33f" path="res://checkbagde.png" id="11_482kg"]
 [ext_resource type="Texture2D" uid="uid://58h630xls4fo" path="res://AvatarTeacherF.png" id="12_ce8hi"]
+[ext_resource type="Texture2D" uid="uid://dgsucf34ymid4" path="res://google_g.svg" id="13_google"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dpga7"]
 bg_color = Color(1, 1, 1, 0.26666668)
@@ -523,8 +524,11 @@ offset_right = 549.0
 offset_bottom = 370.0
 theme_override_fonts/font = ExtResource("6_wkk7v")
 theme_override_font_sizes/font_size = 30
+theme_override_constants/h_separation = 16
+theme_override_constants/icon_max_width = 56
 theme_override_styles/normal = SubResource("StyleBoxFlat_2s3ny")
 text = "CONTINUE WITH GOOGLE"
+icon = ExtResource("13_google")
 
 [node name="LoginStatusLabel" type="Label" parent="LoginFormContainer/MarginContainer/VBoxContainer/Spacer" unique_id=1944566928]
 visible = false
