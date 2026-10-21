@@ -223,9 +223,17 @@ func _show_teacher_login_screen():
 	if login_form: login_form.show()
 	if back_button: back_button.show()
 
+## Shown after a Google sign-in that has no class yet. The email is the
+## Google account's and can't be edited; the name starts as Google's too.
 func _show_teacher_register_screen():
 	_hide_all_screens()
 	if game_logo: game_logo.hide()
+	var sync = get_node_or_null("/root/SyncManager")
+	if sync and teacher_email_input:
+		teacher_email_input.text = sync.teacher_user_email
+		teacher_email_input.editable = false
+	if sync and teacher_name_input and teacher_name_input.text.strip_edges() == "":
+		teacher_name_input.text = sync.teacher_display_name
 	if teacher_register_form: teacher_register_form.show()
 	if back_button: back_button.show()
 
@@ -299,11 +307,16 @@ func _on_teacher_selected():
 	current_role = "TEACHER"
 
 	var gm = get_node_or_null("/root/GameManager")
+	var sync = get_node_or_null("/root/SyncManager")
+	# A Google sign-in is required too: a teacher saved on this phone from
+	# before Google sign-in existed has to sign in once before the
+	# dashboard can load their class.
 	var already_registered_here: bool = gm != null \
 		and gm.role == "TEACHER" \
 		and gm.player_name != "" \
 		and gm.class_code != "" \
-		and ("remember_teacher_login" not in gm or gm.remember_teacher_login)
+		and ("remember_teacher_login" not in gm or gm.remember_teacher_login) \
+		and sync != null and sync.has_method("has_teacher_session") and sync.has_teacher_session()
 
 	if already_registered_here:
 		# This device already has a completed teacher account on it - no
@@ -328,12 +341,13 @@ func _on_teacher_selected():
 	_show_teacher_login_screen()
 
 func _on_register_here_pressed():
-	_show_teacher_register_screen()
+	# New and returning teachers both start with Google sign-in; it decides
+	# whether to open the dashboard or the Create Account form.
+	_on_teacher_login_pressed()
 
 func _on_forgot_password_pressed():
-	# There's no real password check yet - Login only verifies the email
-	# against the teacher's account, so there's nothing to "reset" yet.
-	_show_login_status("No password needed - just use your email.")
+	# Teachers sign in with Google, so there's no password here to reset.
+	_show_login_status("No password needed - just continue with Google.")
 
 ## Persists immediately (not just on next save_game() elsewhere) so it takes
 ## effect even if the teacher closes the app right after toggling it.
@@ -418,6 +432,9 @@ func _on_student_login_pressed() -> void:
 			var reason: String = sync.last_error if "last_error" in sync and sync.last_error != "" else ""
 			_show_student_login_status("No internet connection. Try again." + (" (" + reason + ")" if reason != "" else ""))
 			return
+		if student_row is String and student_row == "locked":
+			_show_student_login_status("Too many wrong PINs. Please wait 15 minutes and try again, or ask your teacher.")
+			return
 		if student_row is String and student_row == "ambiguous":
 			_show_student_login_status("More than one account matches that name and PIN. Please use your class code to join instead.")
 			return
@@ -453,10 +470,12 @@ func _on_student_login_pressed() -> void:
 		# device_id was required).
 		var student_id: String = str(student_row.get("student_id", ""))
 		var existing_device_id: String = str(student_row.get("device_id", ""))
-		if existing_device_id != "":
+		if existing_device_id != "" and existing_device_id != "<null>":
 			gm.set("device_id", existing_device_id)
 		elif student_id != "" and sync.has_method("claim_student_account"):
-			sync.claim_student_account(student_id, gm.device_id, func(_ok): pass)
+			if gm.has_method("start_new_local_identity"):
+				gm.start_new_local_identity()
+			sync.claim_student_account(student_id, typed_pin, gm.device_id, func(_ok): pass)
 
 		# Also pull the class's teacher/section info for the "joined class"
 		# display fields, same as the normal join-by-code flow does.
@@ -489,41 +508,57 @@ func _change_to_avatar_selection():
 	var target = avatar_selection_scene if avatar_selection_scene != "" else "res://avatar_selection.tscn"
 	get_tree().change_scene_to_file(target)
 
+## "Continue with Google": opens Google sign-in in the browser (skipped
+## if this phone is already signed in), then opens the teacher's class, or
+## the Create Account form if they don't have one yet.
 func _on_teacher_login_pressed():
-	var typed_email: String = login_email_input.text.strip_edges() if login_email_input else ""
-	if typed_email == "":
-		_show_login_status("Enter your registered email.")
-		return
-
 	var sync = get_node_or_null("/root/SyncManager")
-	if not sync or not sync.has_method("find_class_by_email"):
+	if not sync or not sync.has_method("sign_in_with_google"):
 		_show_login_status("Login isn't available right now.")
 		return
 
-	_show_login_status("Checking...")
 	if login_button: login_button.disabled = true
+	if sync.has_teacher_session():
+		_open_signed_in_teacher_class()
+		return
 
-	sync.find_class_by_email(typed_email, func(class_row):
+	_show_login_status("Opening Google. Come back here after signing in.")
+	sync.sign_in_with_google(func(ok: bool, message: String):
+		if not ok:
+			if login_button: login_button.disabled = false
+			_show_login_status(message)
+			return
+		_open_signed_in_teacher_class()
+	)
+
+func _open_signed_in_teacher_class() -> void:
+	var sync = get_node_or_null("/root/SyncManager")
+	_show_login_status("Checking...")
+	sync.teacher_get_my_class(func(class_row):
 		if login_button: login_button.disabled = false
 
 		if class_row == null:
 			var reason: String = sync.last_error if "last_error" in sync and sync.last_error != "" else ""
 			_show_login_status("No internet connection. Try again." + (" (" + reason + ")" if reason != "" else ""))
 			return
+		_show_login_status("")
 		if not (class_row is Dictionary):
-			_show_login_status("No account found with that email.")
+			# Signed in, but no class yet: create one.
+			_show_teacher_register_screen()
 			return
 
-		_show_login_status("")
 		_save_role_to_gm("TEACHER")
 		var gm = get_node_or_null("/root/GameManager")
 		if gm:
 			gm.set("player_name", str(class_row.get("teacher_name", "")))
-			gm.set("teacher_email", typed_email)
+			gm.set("teacher_email", str(class_row.get("teacher_email", sync.teacher_user_email)))
 			gm.set("school_name", str(class_row.get("school_name", "")))
 			gm.set("grade_subject", str(class_row.get("grade_subject", "")))
 			gm.set("teacher_class_name", str(class_row.get("teacher_class_name", "")))
 			gm.set("class_code", str(class_row.get("class_code", "")))
+			var saved_avatar: String = str(class_row.get("avatar_id", ""))
+			if saved_avatar != "" and saved_avatar != "<null>":
+				gm.set("avatar_id", saved_avatar)
 			if gm.has_method("save_game"):
 				gm.save_game()
 		if teacher_dashboard_scene != "":
@@ -539,36 +574,49 @@ func _show_login_status(message: String) -> void:
 func _on_teacher_create_account_pressed():
 	if teacher_create_status_label: teacher_create_status_label.text = ""
 
+	var sync = get_node_or_null("/root/SyncManager")
+	if not sync or not sync.has_method("has_teacher_session") or not sync.has_teacher_session():
+		# The form is only reachable after Google sign-in; if that session
+		# is gone (e.g. signed out meanwhile), start over from Login.
+		_show_teacher_login_screen()
+		_show_login_status("Please continue with Google first.")
+		return
+
 	var name_text: String = teacher_name_input.text.strip_edges() if teacher_name_input else ""
-	var email_text: String = teacher_email_input.text.strip_edges() if teacher_email_input else ""
 	var school_text: String = teacher_school_input.text.strip_edges() if teacher_school_input else ""
 	var grade_subject_text: String = teacher_grade_subject_input.text.strip_edges() if teacher_grade_subject_input else ""
 	var class_name_text: String = teacher_class_name_input.text.strip_edges() if teacher_class_name_input else ""
 
-	if name_text == "" or email_text == "" or school_text == "" or grade_subject_text == "" or class_name_text == "":
+	if name_text == "" or school_text == "" or grade_subject_text == "" or class_name_text == "":
 		if teacher_create_status_label: teacher_create_status_label.text = "Please fill in all fields before continuing."
 		return
 
-	_save_role_to_gm("TEACHER")
-	var gm = get_node_or_null("/root/GameManager")
-	if gm:
-		gm.set("player_name", name_text)
-		gm.set("teacher_email", email_text)
-		gm.set("school_name", school_text)
-		gm.set("grade_subject", grade_subject_text)
-		gm.set("teacher_class_name", class_name_text)
-		# get_or_create_class_code() reuses whatever class_code is already
-		# saved locally - which could belong to a totally different account
-		# (e.g. a class a STUDENT previously joined on this same device).
-		# A brand-new teacher account must always get a genuinely new code.
-		gm.set("class_code", "")
-		if gm.has_method("get_or_create_class_code"):
-			gm.get_or_create_class_code()
-		if gm.has_method("save_game"):
-			gm.save_game()
-	# Same as the student flow: pick an avatar right after the account is
-	# created, rather than landing on the dashboard with no avatar chosen.
-	_change_to_avatar_selection()
+	if teacher_create_status_label: teacher_create_status_label.text = "Creating your class..."
+	# The database creates the class and picks its code, tied to this
+	# Google account - so no one else can claim or edit it.
+	sync.teacher_save_my_class(name_text, school_text, grade_subject_text, class_name_text, "", func(new_code):
+		if new_code == null:
+			var reason: String = sync.last_error if "last_error" in sync and sync.last_error != "" else ""
+			if teacher_create_status_label:
+				teacher_create_status_label.text = "Couldn't create your class. Check your internet and try again." + (" (" + reason + ")" if reason != "" else "")
+			return
+		if teacher_create_status_label: teacher_create_status_label.text = ""
+
+		_save_role_to_gm("TEACHER")
+		var gm = get_node_or_null("/root/GameManager")
+		if gm:
+			gm.set("player_name", name_text)
+			gm.set("teacher_email", sync.teacher_user_email)
+			gm.set("school_name", school_text)
+			gm.set("grade_subject", grade_subject_text)
+			gm.set("teacher_class_name", class_name_text)
+			gm.set("class_code", str(new_code))
+			if gm.has_method("save_game"):
+				gm.save_game()
+		# Same as the student flow: pick an avatar right after the account is
+		# created, rather than landing on the dashboard with no avatar chosen.
+		_change_to_avatar_selection()
+	)
 
 func _on_back_button_pressed():
 	if student_registration and student_registration.is_visible_in_tree():
