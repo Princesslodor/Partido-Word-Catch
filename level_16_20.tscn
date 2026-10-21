@@ -4372,9 +4372,9 @@ position = Vector2(127, 843)
 scale = Vector2(0.55, 0.53606)
 texture = ExtResource("13_v6ov3")
 
-[node name="Book" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect/Girl" unique_id=1524690250]
-position = Vector2(6.464081, -309.0669)
-scale = Vector2(0.23825336, 0.2760134)
+[node name="Book" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect" unique_id=1524690250]
+position = Vector2(140, 567)
+scale = Vector2(0.18428995, 0.20808159)
 texture = ExtResource("14_ay514")
 
 [node name="Wood" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect" unique_id=1061731385]

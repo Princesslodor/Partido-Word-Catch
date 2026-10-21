@@ -2364,7 +2364,7 @@ scale = Vector2(0.55, 0.55288)
 texture = ExtResource("11_hqns4")
 
 [node name="Book" type="Sprite2D" parent="CanvasLayer/VictoryPopup/ColorRect" unique_id=1524690250]
-position = Vector2(140, 610)
+position = Vector2(140, 567)
 scale = Vector2(0.18428995, 0.20808159)
 texture = ExtResource("10_nr8wp")
 
