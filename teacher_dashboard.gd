@@ -86,8 +86,10 @@ func _load_teacher_info() -> void:
 	if grade_subject != "" and grade_label:
 		grade_label.text = grade_subject
 
-	if class_code_edit and gm.has_method("get_or_create_class_code"):
-		class_code_edit.text = gm.get_or_create_class_code()
+	# The class code is created by the database when the teacher's class is
+	# first saved (see login_page.gd's _on_teacher_create_account_pressed).
+	if class_code_edit:
+		class_code_edit.text = gm.class_code
 
 	# Re-push this teacher's full info whenever the dashboard opens, so any
 	# fields that changed locally (or were missing from an earlier sync,
@@ -148,6 +150,9 @@ func _on_logout_confirmed() -> void:
 	gm.set("class_code", "")
 	if gm.has_method("save_game"):
 		gm.save_game()
+	var sync = get_node_or_null("/root/SyncManager")
+	if sync and sync.has_method("sign_out"):
+		sync.sign_out()
 
 func _hide_all_pages() -> void:
 	if dashboard: dashboard.hide()

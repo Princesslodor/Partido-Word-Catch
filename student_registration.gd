@@ -68,6 +68,10 @@ func _on_continue_pressed() -> void:
 	if sync and sync.has_method("find_student_in_class") and class_code != "" and student_pin != "":
 		if continue_button: continue_button.disabled = true
 		sync.find_student_in_class(class_code, student_name, student_pin, func(existing_row):
+			if existing_row is String and existing_row == "locked":
+				if continue_button: continue_button.disabled = false
+				if status_label: status_label.text = "Too many wrong PINs for this name. Please wait 15 minutes, or ask your teacher."
+				return
 			if existing_row is Dictionary:
 				_confirm_existing_account(gm, sync, student_name, student_pin, existing_row)
 			else:
@@ -116,9 +120,18 @@ func _finish_registration(gm, sync, student_name: String, student_pin: String, e
 			gm.set("completed_levels", completed if completed is Dictionary else {})
 			gm.set("player_hearts", 4)
 
+			# Adopt the account's own device_id when it has one (same as
+			# login_page.gd's student login); otherwise point the account at
+			# a fresh id for this phone. Never reuse whatever id this phone
+			# last had - it may belong to a different pupil's account.
 			var student_id: String = str(existing_row.get("student_id", ""))
-			if student_id != "" and sync and sync.has_method("claim_student_account"):
-				sync.claim_student_account(student_id, gm.device_id, func(_ok): pass)
+			var existing_device_id: String = str(existing_row.get("device_id", ""))
+			if existing_device_id != "" and existing_device_id != "<null>":
+				gm.set("device_id", existing_device_id)
+			elif student_id != "" and sync and sync.has_method("claim_student_account"):
+				if gm.has_method("start_new_local_identity"):
+					gm.start_new_local_identity()
+				sync.claim_student_account(student_id, student_pin, gm.device_id, func(_ok): pass)
 		else:
 			# Genuinely new student - a clean slate. Otherwise a new student
 			# on a device that previously had another student's progress

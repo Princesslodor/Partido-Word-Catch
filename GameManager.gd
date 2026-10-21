@@ -181,8 +181,10 @@ func save_game() -> void:
 	if sync:
 		if role == "STUDENT" and sync.has_method("sync_student_progress"):
 			sync.sync_student_progress()
-		elif role == "TEACHER" and class_code != "" and sync.has_method("upsert_class"):
-			sync.upsert_class(class_code, player_name, teacher_email, school_name, grade_subject, teacher_class_name, avatar_id)
+		elif role == "TEACHER" and class_code != "" and sync.has_method("teacher_save_my_class") and sync.has_teacher_session():
+			# Only updates the signed-in teacher's own class - the database
+			# ignores whatever class_code this device has saved.
+			sync.teacher_save_my_class(player_name, school_name, grade_subject, teacher_class_name, avatar_id, func(_code): pass)
 
 
 ## --- LOAD ---
@@ -244,10 +246,12 @@ func load_game() -> void:
 ## Generates a random per-install id (not tied to real hardware/account),
 ## used to tell players apart when syncing to the online leaderboard.
 func _generate_device_id() -> String:
+	# Cryptographically random: the database treats this id as proof that a
+	# sync really comes from this pupil's phone, so it mustn't be guessable.
 	var chars := "abcdefghijklmnopqrstuvwxyz0123456789"
 	var id := ""
-	for i in range(16):
-		id += chars[randi() % chars.length()]
+	for b in Crypto.new().generate_random_bytes(16):
+		id += chars[b % chars.length()]
 	return id
 
 ## Students sync via an upsert keyed on device_id (see SyncManager.
@@ -289,22 +293,6 @@ const AVATAR_TEXTURE_PATHS: Dictionary = {
 ## to a placeholder icon instead of crashing on a bad load().
 func get_avatar_texture_path(for_avatar_id: String) -> String:
 	return AVATAR_TEXTURE_PATHS.get(for_avatar_id, "")
-
-## Returns this teacher's permanent class code, generating one the first
-## time it's needed. A class only ever gets one code for its whole life.
-func get_or_create_class_code() -> String:
-	if class_code != "":
-		return class_code
-
-	const CODE_CHARS := "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-	const CODE_LENGTH := 6
-	var code := ""
-	for i in range(CODE_LENGTH):
-		code += CODE_CHARS[randi() % CODE_CHARS.length()]
-
-	class_code = code
-	save_game()
-	return class_code
 
 ## Adds coins to the player's total and saves immediately.
 ## Call this whenever a player earns coins (e.g. completing a level).

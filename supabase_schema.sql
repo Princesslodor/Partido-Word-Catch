@@ -9,6 +9,7 @@ create table if not exists classes (
   grade_subject text,
   teacher_class_name text,
   avatar_id text,
+  teacher_user_id uuid,
   created_at timestamptz default now()
 );
 
@@ -19,6 +20,11 @@ alter table classes add column if not exists teacher_email text;
 -- lets the "Class Joined!" popup show the teacher's own chosen avatar
 -- instead of a hardcoded placeholder.
 alter table classes add column if not exists avatar_id text;
+
+-- Safe to re-run: the Supabase Auth user (Continue with Google) who owns
+-- this class. Only that teacher can see the class's students.
+alter table classes add column if not exists teacher_user_id uuid;
+create unique index if not exists classes_teacher_user_id_key on classes (teacher_user_id);
 
 -- Supabase's REST API (PostgREST) caches the table schema and doesn't
 -- always notice a plain ALTER TABLE right away - this tells it to reload,
@@ -46,12 +52,13 @@ create table if not exists students (
 alter table students add column if not exists student_pin text;
 notify pgrst, 'reload schema';
 
--- No real accounts/login exist in the app yet (just class codes), so this
--- uses simple open policies scoped to the anon key rather than per-user auth.
--- Anyone with the anon key can read/write — acceptable for a classroom tool,
--- but note this if the app ever needs stronger data protection later.
+-- Row Level Security is ON with NO policies, so the anon/publishable key
+-- (which ships inside the app) cannot read or write either table directly.
+-- All access goes through the Postgres functions in supabase_hardening.sql -
+-- run that file right after this one. Never add a "using (true)" policy
+-- here: that would expose every pupil's name and progress and every
+-- teacher's email to anyone holding the public key.
 alter table classes enable row level security;
 alter table students enable row level security;
-
-create policy "anon full access" on classes for all using (true) with check (true);
-create policy "anon full access" on students for all using (true) with check (true);
+drop policy if exists "anon full access" on classes;
+drop policy if exists "anon full access" on students;
