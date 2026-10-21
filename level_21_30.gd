@@ -191,6 +191,42 @@ func setup_answer_slots():
 				slot.pressed.connect(Callable(self, "_on_answer_slot_pressed").bind(i))
 		else:
 			slot.visible = false
+	_widen_answer_slots(container, slots.size())
+
+# The answer boxes were made at 110px wide, too narrow for long words. Make
+# every box as wide as the fullest row allows so the words have room.
+const ANSWER_SLOT_MAX_WIDTH := 160.0
+# Bigger than the scene's 18/20 so short words are easy to read; long
+# words still shrink to fit (Global.fit_text_to_box).
+const WORD_FONT_SIZE := 24
+const WORD_FONT_FLOOR := 18
+func _widen_answer_slots(container: Node, total: int):
+	if container == null or total == 0:
+		return
+	var rows: Array = []
+	for child in container.get_children():
+		if child is HBoxContainer:
+			rows.append(child)
+	if rows.is_empty() and container is HBoxContainer:
+		rows.append(container)
+	var per_row := 0
+	for row in rows:
+		var n := 0
+		for s in row.get_children():
+			if s.visible: n += 1
+		per_row = max(per_row, n)
+	if per_row == 0:
+		return
+	var row_w: float = container.size.x
+	if row_w <= 0.0:
+		row_w = get_viewport_rect().size.x - 10.0
+	var sep: float = rows[0].get_theme_constant("separation")
+	var w: float = min(ANSWER_SLOT_MAX_WIDTH, floor((row_w - sep * (per_row - 1)) / per_row))
+	for slot in _get_all_answer_slots():
+		if slot is Control:
+			slot.custom_minimum_size.x = max(slot.custom_minimum_size.x, w)
+			# Re-check the font now that the box is wider.
+			if slot is Button: Global.fit_text_to_box(slot)
 
 func setup_scrambled_word_blocks():
 	var grid = _get_scrambled_grid()
@@ -230,7 +266,28 @@ func setup_scrambled_word_blocks():
 			# para hindi ito gumalaw o mawala kapag pinindot (dahil drag-and-drop ang laro).
 		else:
 			tile.visible = false
+	# The tray tile picture has a thicker rim than the answer box.
+	_match_word_font_sizes(tiles, words_pool, 0.15)
+	_match_word_font_sizes(_get_all_answer_slots(), words_pool, 0.10)
 	Global.pop_in_sequence(tiles)
+
+# One font size for a whole row of boxes: the biggest one at which even the
+# longest word of this level fits, so the boxes don't look mismatched. It
+# never drops below WORD_FONT_FLOOR though: one very long word (BUROBANGGI)
+# just shrinks on its own instead of making every word tiny.
+func _match_word_font_sizes(boxes: Array, words: Array, padding_share: float):
+	var buttons: Array = boxes.filter(func(b): return b is Button and b.visible)
+	if buttons.is_empty():
+		return
+	for b in buttons:
+		b.set_meta("_fit_padding_share", padding_share)
+	var fs: int = WORD_FONT_SIZE
+	for w in words:
+		fs = min(fs, Global.fitting_font_size(buttons[0], w, WORD_FONT_SIZE))
+	fs = max(fs, WORD_FONT_FLOOR)
+	for b in buttons:
+		b.set_meta("_fit_base_font_size", fs)
+		Global.fit_text_to_box(b)
 
 func _on_answer_slot_pressed(slot_index: int):
 	# Dito na lang nakakonekta kapag gusto nilang i-clear o tanggalin ang laman ng slot kung kinakailangan
