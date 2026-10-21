@@ -2,6 +2,10 @@ extends Button
 
 var cached_letter: String = ""
 
+func _ready():
+	# Grow a little with a highlight on hover, instead of the flat box.
+	Global.setup_tile_hover(self)
+
 func set_letter(new_letter: String):
 	text = new_letter
 	cached_letter = new_letter

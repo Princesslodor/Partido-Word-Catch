@@ -112,8 +112,12 @@ func _on_button_down(button: BaseButton) -> void:
 func _on_button_up(button: BaseButton) -> void:
 	if not button.has_meta("_base_scale") or button.has_meta("_pulse_tween"):
 		return
+	# Tiles that grow on hover spring back to their hover size if still hovered.
+	var target: Vector2 = button.get_meta("_base_scale")
+	if button.has_meta("_hover_grow") and button.is_hovered():
+		target *= HOVER_GROW
 	var tween := button.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
-	tween.tween_property(button, "scale", button.get_meta("_base_scale"), 0.18) \
+	tween.tween_property(button, "scale", target, 0.18) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 ## Moves the scaling centre to the middle without moving what's on screen.
@@ -277,6 +281,36 @@ func show_victory_stars(popup: Control, earned: int, texture: Texture2D, center:
 		var tween := star.create_tween().set_pause_mode(Tween.TWEEN_PAUSE_PROCESS)
 		tween.tween_interval(0.35 + i * 0.22)
 		tween.tween_property(star, "scale", Vector2.ONE, 0.32).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+## Letter tiles and answer slots: their .tscn hover style is a plain flat
+## box. Replace it with a slightly brighter copy of the tile's own texture,
+## and grow the tile a little while the mouse is over it.
+const HOVER_GROW := 1.07
+
+func setup_tile_hover(button: Button) -> void:
+	var normal := button.get_theme_stylebox("normal")
+	button.add_theme_stylebox_override("hover", _shaded_style(normal, 0.12))
+	button.add_theme_stylebox_override("hover_pressed", _shaded_style(normal, -0.06))
+	button.add_theme_stylebox_override("pressed", _shaded_style(normal, -0.06))
+	button.set_meta("_hover_grow", true)
+	button.mouse_entered.connect(func(): hover_grow(button, true))
+	button.mouse_exited.connect(func(): hover_grow(button, false))
+
+func hover_grow(control: Control, on: bool) -> void:
+	if not is_instance_valid(control) or control.has_meta("_pulse_tween"):
+		return
+	if on and control is BaseButton and control.disabled:
+		return
+	var base := _base_scale(control)
+	if control.scale.is_equal_approx(base):
+		_center_pivot(control)
+	if control.has_meta("_hover_tween"):
+		var old: Tween = control.get_meta("_hover_tween")
+		if old and old.is_valid():
+			old.kill()
+	var tween := control.create_tween()
+	tween.tween_property(control, "scale", base * (HOVER_GROW if on else 1.0), 0.12).set_ease(Tween.EASE_OUT)
+	control.set_meta("_hover_tween", tween)
 
 ## Gentle "tap me" pulse (the next level on the campaign map). Pass
 ## on = false to stop it and put the node back at its normal size.

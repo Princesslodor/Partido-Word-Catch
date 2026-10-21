@@ -3,6 +3,10 @@ extends Button
 var is_locked: bool = false
 var current_origin_button: Button = null
 
+func _ready():
+	# Grow a little with a highlight on hover, instead of the flat box.
+	Global.setup_tile_hover(self)
+
 func _can_drop_data(_at_position, data):
 	if is_locked:
 		return false
