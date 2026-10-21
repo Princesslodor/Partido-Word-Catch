@@ -53,6 +53,71 @@ func _ready():
 
 	_apply_saved_audio_settings()
 
+	get_tree().node_added.connect(_on_node_added)
+
+## --- BUTTON HOVER/PRESS LOOK ---
+## Most buttons only set a "normal" style in their .tscn, so on hover,
+## press, focus or disabled Godot fell back to its plain grey rectangle.
+## Every Button that appears gets those states made from its own normal
+## style instead: a lighter copy on hover, a darker one when pressed, a
+## faded one when disabled, and no focus box. Styles a scene or script
+## already set on purpose (e.g. the sound/music toggles) are left alone,
+## and the copies are remade whenever a script swaps the normal style
+## (e.g. the campaign map's "next level" highlight).
+const _AUTO_STATES_META := "_auto_button_states"
+
+func _on_node_added(node: Node) -> void:
+	if node is Button and not node.has_meta(_AUTO_STATES_META):
+		node.set_meta(_AUTO_STATES_META, {})
+		node.theme_changed.connect(_refresh_button_states.bind(node))
+		_refresh_button_states.call_deferred(node)
+
+func _refresh_button_states(button: Button) -> void:
+	if not is_instance_valid(button) or not button.has_theme_stylebox_override("normal"):
+		return
+	var normal := button.get_theme_stylebox("normal")
+	var auto: Dictionary = button.get_meta(_AUTO_STATES_META)
+	if auto.get("_source") == normal:
+		return
+	auto["_source"] = normal
+
+	var states := {
+		"hover": _shaded_style(normal, 0.15),
+		"pressed": _shaded_style(normal, -0.12),
+		"hover_pressed": _shaded_style(normal, -0.12),
+		"disabled": _shaded_style(normal, 0.0, 0.6),
+		"focus": StyleBoxEmpty.new(),
+	}
+	for state in states:
+		if button.has_theme_stylebox_override(state) and not auto.has(state):
+			continue
+		auto[state] = true
+		button.add_theme_stylebox_override(state, states[state])
+
+	# Keep the text colour too - otherwise it turns Godot's default white on hover/press.
+	if button.has_theme_color_override("font_color"):
+		var color := button.get_theme_color("font_color")
+		for key in ["font_hover_color", "font_pressed_color", "font_hover_pressed_color", "font_focus_color"]:
+			if not button.has_theme_color_override(key) or auto.has(key):
+				auto[key] = true
+				button.add_theme_color_override(key, color)
+
+## amount > 0 lightens, < 0 darkens; alpha scales the opacity.
+func _shaded_style(style: StyleBox, amount: float, alpha: float = 1.0) -> StyleBox:
+	if style is StyleBoxFlat:
+		var flat := style.duplicate() as StyleBoxFlat
+		flat.bg_color = flat.bg_color.lightened(amount) if amount >= 0.0 else flat.bg_color.darkened(-amount)
+		flat.border_color = flat.border_color.lightened(amount) if amount >= 0.0 else flat.border_color.darkened(-amount)
+		flat.bg_color.a *= alpha
+		flat.border_color.a *= alpha
+		return flat
+	if style is StyleBoxTexture:
+		var textured := style.duplicate() as StyleBoxTexture
+		var v := 1.0 + amount
+		textured.modulate_color = Color(v, v, v, alpha)
+		return textured
+	return style
+
 ## Applies the sound/music on-off state saved in GameManager, so a mute
 ## chosen in Settings is still in effect after the app is closed and
 ## reopened (not just for the rest of this session).

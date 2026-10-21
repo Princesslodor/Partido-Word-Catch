@@ -32,7 +32,7 @@ extends Node
 const SUPABASE_URL: String = "https://uufsrfizpvgjuipkpqzv.supabase.co"
 const SUPABASE_ANON_KEY: String = "sb_publishable_7rWRg70DOh-DPu6xUy5XWg_61DHfI7_"
 
-const REQUEST_TIMEOUT: float = 8.0
+const REQUEST_TIMEOUT: float = 15.0
 
 ## last_error is set to this when the database refuses a PIN check
 ## because of too many wrong tries (supabase_hardening.sql's
@@ -114,9 +114,13 @@ func _request(path: String, method: int, body: String = "", extra_headers: Array
 ## as_teacher = true sends the signed-in teacher's session instead of the
 ## anon key (refreshing it first if it's about to expire), and calls back
 ## with null if no teacher is signed in.
+##
+## Every callback in this file is only called if it's still valid: a reply
+## can arrive after the screen that asked has closed (e.g. the player already
+## moved on), and calling into a freed screen is an error.
 func _call_rpc(function_name: String, params: Dictionary, on_result: Callable, as_teacher: bool = false) -> void:
 	if not is_configured():
-		on_result.call(null)
+		if on_result.is_valid(): on_result.call(null)
 		return
 	if not as_teacher:
 		_send_rpc(function_name, params, on_result, "")
@@ -125,7 +129,7 @@ func _call_rpc(function_name: String, params: Dictionary, on_result: Callable, a
 		if not ok:
 			if last_error == "":
 				last_error = "not signed in"
-			on_result.call(null)
+			if on_result.is_valid(): on_result.call(null)
 			return
 		_send_rpc(function_name, params, on_result, _access_token)
 	)
@@ -140,15 +144,15 @@ func _send_rpc(function_name: String, params: Dictionary, on_result: Callable, b
 			# so this more specific reason wins.
 			if resp_body.get_string_from_utf8().contains(LOCKED_OUT):
 				last_error = LOCKED_OUT
-			on_result.call(null)
+			if on_result.is_valid(): on_result.call(null)
 			return
 		if resp_body.size() == 0:
 			# RETURNS VOID functions (e.g. sync_student_progress) reply 204
 			# with an empty body - nothing to decode, and no caller reads
 			# this value.
-			on_result.call(null)
+			if on_result.is_valid(): on_result.call(null)
 			return
-		on_result.call(JSON.parse_string(resp_body.get_string_from_utf8()))
+		if on_result.is_valid(): on_result.call(JSON.parse_string(resp_body.get_string_from_utf8()))
 	)
 
 ## --- GOOGLE SIGN-IN (teachers, via Supabase Auth) ---
@@ -221,7 +225,7 @@ func _base64url(bytes: PackedByteArray) -> String:
 ## to show the teacher.
 func sign_in_with_google(on_result: Callable) -> void:
 	if not is_configured():
-		on_result.call(false, "Sign-in isn't set up yet.")
+		if on_result.is_valid(): on_result.call(false, "Sign-in isn't set up yet.")
 		return
 	_stop_oauth_listener()
 
@@ -229,7 +233,7 @@ func sign_in_with_google(on_result: Callable) -> void:
 	var err := _oauth_server.listen(OAUTH_PORT, "127.0.0.1")
 	if err != OK:
 		_oauth_server = null
-		on_result.call(false, "Couldn't start sign-in (code " + str(err) + "). Close other apps and try again.")
+		if on_result.is_valid(): on_result.call(false, "Couldn't start sign-in (code " + str(err) + "). Close other apps and try again.")
 		return
 
 	_oauth_verifier = _base64url(Crypto.new().generate_random_bytes(32))
@@ -368,7 +372,7 @@ func _finish_oauth(ok: bool, message: String) -> void:
 	var callback := _oauth_on_result
 	_stop_oauth_listener()
 	if callback.is_valid():
-		callback.call(ok, message)
+		if callback.is_valid(): callback.call(ok, message)
 
 func _close_oauth_server() -> void:
 	for entry in _oauth_peers:
@@ -451,10 +455,10 @@ func sign_out() -> void:
 ## token on every use.
 func ensure_teacher_session(on_ready: Callable) -> void:
 	if _refresh_token == "":
-		on_ready.call(false)
+		if on_ready.is_valid(): on_ready.call(false)
 		return
 	if _access_token != "" and int(Time.get_unix_time_from_system()) < _expires_at - 60:
-		on_ready.call(true)
+		if on_ready.is_valid(): on_ready.call(true)
 		return
 	_refresh_waiters.append(on_ready)
 	if _refreshing:
@@ -477,7 +481,7 @@ func ensure_teacher_session(on_ready: Callable) -> void:
 		var waiters := _refresh_waiters.duplicate()
 		_refresh_waiters.clear()
 		for waiter in waiters:
-			(waiter as Callable).call(ok)
+			if (waiter as Callable).is_valid(): (waiter as Callable).call(ok)
 	)
 
 ## --- CLASS LOOKUPS ---
@@ -490,17 +494,17 @@ func ensure_teacher_session(on_ready: Callable) -> void:
 func _find_class_via_rpc(function_name: String, params: Dictionary, on_result: Callable, as_teacher: bool = false) -> void:
 	_call_rpc(function_name, params, func(parsed):
 		if parsed == null:
-			on_result.call(null)
+			if on_result.is_valid(): on_result.call(null)
 		elif parsed is Array and parsed.size() > 0:
-			on_result.call(parsed[0])
+			if on_result.is_valid(): on_result.call(parsed[0])
 		else:
-			on_result.call(false)
+			if on_result.is_valid(): on_result.call(false)
 	, as_teacher)
 
 ## Looks up a class by the code a student typed to join it.
 func find_class_by_code(class_code: String, on_result: Callable) -> void:
 	if not is_configured() or class_code.strip_edges() == "":
-		on_result.call(null)
+		if on_result.is_valid(): on_result.call(null)
 		return
 	_find_class_via_rpc("find_class_by_code", {"p_class_code": class_code.strip_edges()}, on_result)
 
@@ -524,7 +528,7 @@ func teacher_save_my_class(teacher_name: String, school_name: String, grade_subj
 		"p_teacher_class_name": teacher_class_name,
 		"p_avatar_id": avatar_id,
 	}, func(parsed):
-		on_result.call(parsed if parsed is String and parsed != "" else null)
+		if on_result.is_valid(): on_result.call(parsed if parsed is String and parsed != "" else null)
 	, true)
 
 ## --- STUDENT PROGRESS SYNC ---
@@ -617,7 +621,7 @@ func sync_student_progress() -> void:
 ## complete.
 func find_student_account(player_name: String, pin: String, on_result: Callable) -> void:
 	if not is_configured() or player_name.strip_edges() == "" or pin.strip_edges() == "":
-		on_result.call(null)
+		if on_result.is_valid(): on_result.call(null)
 		return
 
 	# No limit=1 here on purpose: name+PIN alone isn't guaranteed unique
@@ -628,17 +632,17 @@ func find_student_account(player_name: String, pin: String, on_result: Callable)
 		"p_pin": pin.strip_edges(),
 	}, func(parsed):
 		if parsed == null:
-			on_result.call("locked" if last_error == LOCKED_OUT else null)
+			if on_result.is_valid(): on_result.call("locked" if last_error == LOCKED_OUT else null)
 		elif parsed is Array and parsed.size() > 1:
 			# Same name + PIN matches more than one account (likely in
 			# different classes) - too ambiguous to safely log into one of
 			# them automatically. Caller should ask the student to join by
 			# class code instead, which scopes the lookup unambiguously.
-			on_result.call("ambiguous")
+			if on_result.is_valid(): on_result.call("ambiguous")
 		elif parsed is Array and parsed.size() > 0:
-			on_result.call(parsed[0])
+			if on_result.is_valid(): on_result.call(parsed[0])
 		else:
-			on_result.call(false)
+			if on_result.is_valid(): on_result.call(false)
 	)
 
 ## Looks up an existing student account scoped to ONE specific class (used
@@ -652,7 +656,7 @@ func find_student_account(player_name: String, pin: String, on_result: Callable)
 ## that name, or `null` if it couldn't complete.
 func find_student_in_class(class_code: String, player_name: String, pin: String, on_result: Callable) -> void:
 	if not is_configured() or class_code.strip_edges() == "" or player_name.strip_edges() == "" or pin.strip_edges() == "":
-		on_result.call(null)
+		if on_result.is_valid(): on_result.call(null)
 		return
 
 	_call_rpc("find_student_in_class", {
@@ -661,11 +665,11 @@ func find_student_in_class(class_code: String, player_name: String, pin: String,
 		"p_pin": pin.strip_edges(),
 	}, func(parsed):
 		if parsed == null:
-			on_result.call("locked" if last_error == LOCKED_OUT else null)
+			if on_result.is_valid(): on_result.call("locked" if last_error == LOCKED_OUT else null)
 		elif parsed is Array and parsed.size() > 0:
-			on_result.call(parsed[0])
+			if on_result.is_valid(): on_result.call(parsed[0])
 		else:
-			on_result.call(false)
+			if on_result.is_valid(): on_result.call(false)
 	)
 
 ## Re-points an existing student row at a NEW device_id, so logging into an
@@ -675,7 +679,7 @@ func find_student_in_class(class_code: String, player_name: String, pin: String,
 ## Calls back with true/false for whether the claim succeeded.
 func claim_student_account(student_id: String, pin: String, new_device_id: String, on_result: Callable) -> void:
 	if not is_configured() or student_id == "" or pin.strip_edges() == "":
-		on_result.call(false)
+		if on_result.is_valid(): on_result.call(false)
 		return
 
 	_call_rpc("claim_student_account", {
@@ -683,7 +687,7 @@ func claim_student_account(student_id: String, pin: String, new_device_id: Strin
 		"p_pin": pin.strip_edges(),
 		"p_new_device_id": new_device_id,
 	}, func(parsed):
-		on_result.call(parsed == true)
+		if on_result.is_valid(): on_result.call(parsed == true)
 	)
 
 ## --- TEACHER LEADERBOARD FETCH ---
@@ -693,12 +697,12 @@ func claim_student_account(student_id: String, pin: String, new_device_id: Strin
 ## class's own signed-in teacher gets rows back.
 func fetch_leaderboard(class_code: String, on_result: Callable) -> void:
 	if not is_configured() or class_code == "":
-		on_result.call([])
+		if on_result.is_valid(): on_result.call([])
 		return
 
 	_call_rpc("fetch_leaderboard", {"p_class_code": class_code}, func(parsed):
 		if parsed is Array:
-			on_result.call(parsed)
+			if on_result.is_valid(): on_result.call(parsed)
 		else:
-			on_result.call([])
+			if on_result.is_valid(): on_result.call([])
 	, true)

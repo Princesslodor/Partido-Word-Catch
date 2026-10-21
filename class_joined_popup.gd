@@ -67,13 +67,12 @@ func setup_and_show(p_class_name: String = "", p_teacher_name: String = "", avat
 	move_to_front()
 
 func _on_continue_pressed() -> void:
-	continue_pressed.emit()
-	
-	var tree = get_tree()
-	if tree:
-		tree.change_scene_to_file(next_scene_path)
-	else:
-		push_error("Error: Cannot change scene, SceneTree is null!")
+	# The login page listens for this and changes the scene itself - which
+	# takes this popup out of the tree, so changing it here too would fail.
+	if continue_pressed.get_connections().size() > 0:
+		continue_pressed.emit()
+		return
+	get_tree().change_scene_to_file(next_scene_path)
 
 func _on_back_pressed() -> void:
 	back_pressed.emit()

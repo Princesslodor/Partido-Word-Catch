@@ -74,6 +74,12 @@ func _on_continue_pressed() -> void:
 				return
 			if existing_row is Dictionary:
 				_confirm_existing_account(gm, sync, student_name, student_pin, existing_row)
+			elif existing_row == null:
+				# The lookup itself failed (no internet / timed out) - we can't
+				# tell a returning pupil from a new one, and guessing "new"
+				# would start them over at zero as a duplicate account.
+				if continue_button: continue_button.disabled = false
+				if status_label: status_label.text = "Hindi makakonekta. Tingnan ang internet at subukan muli."
 			else:
 				if continue_button: continue_button.disabled = false
 				_finish_registration(gm, sync, student_name, student_pin, null)
