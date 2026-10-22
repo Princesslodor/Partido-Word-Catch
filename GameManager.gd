@@ -55,7 +55,7 @@ var player_hearts: int = MAX_HEARTS   # Lives left; failing a level costs one (m
 var heart_refill_at: int = 0
 
 const MAX_HEARTS: int = 4
-const HEART_REFILL_SECONDS: int = 30 * 60
+const HEART_REFILL_SECONDS: int = 10 * 60
 
 ## --- PER-LEVEL COMPLETION DATA ---
 ## Dictionary structure: { level_num: { "completed": bool, "best_score": int } }
