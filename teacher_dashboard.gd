@@ -42,7 +42,6 @@ var _dynamic_student_nodes: Array = []
 @onready var empty_graph_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel/EmptyGraphMessage
 
 const MAX_EXTRA_ROWS := 5
-const MAX_GRAPH_BARS := 6
 var _dynamic_leaderboard_nodes: Array = []
 var _bold_font: FontFile = load("res://Nunito-Bold.ttf")
 var _star_icon: Texture2D = load("res://Partido Word Catch Game Pic/Star with fill.png")
@@ -78,9 +77,13 @@ func _load_teacher_info() -> void:
 
 	var display_name: String = gm.get("player_name") if "player_name" in gm else ""
 	if display_name != "":
-		if profile_name_label: profile_name_label.text = display_name
-		if greeting_name_label: greeting_name_label.text = display_name + "!"
-		if teacher_label: teacher_label.text = "Teacher: " + display_name
+		# Long names shrink to fit their box instead of running past it.
+		if profile_name_label:
+			profile_name_label.clip_text = true
+			profile_name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+			_fit_label_text(profile_name_label, display_name, profile_name_label.size.x, 30, 16)
+		if greeting_name_label: _fit_label_text(greeting_name_label, display_name + "!", greeting_name_label.size.x, 32, 18)
+		if teacher_label: _fit_label_text(teacher_label, "Teacher: " + display_name, teacher_label.size.x, 20, 13)
 
 	var grade_subject: String = gm.get("grade_subject") if "grade_subject" in gm else ""
 	if grade_subject != "" and grade_label:
@@ -298,7 +301,7 @@ func _render_students_list(students_data: Array) -> void:
 		_dynamic_student_nodes.append(name_label)
 
 		var level_label := Label.new()
-		level_label.text = "Level " + str(row.get("unlocked_level", 1))
+		level_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
 		level_label.add_theme_font_override("font", _bold_font)
 		level_label.add_theme_font_size_override("font_size", 22)
 		level_label.add_theme_color_override("font_color", Color(0.3, 0.3, 0.3, 1))
@@ -546,10 +549,13 @@ func _render_graph(students_data: Array) -> void:
 
 	if students_data.is_empty():
 		if empty_graph_message: empty_graph_message.show()
+		levels_graph_panel.size.y = 260.0
+		leaderboard_content.custom_minimum_size.y = 1420.0
 		return
 	if empty_graph_message: empty_graph_message.hide()
 
-	var bar_students: Array = students_data.slice(0, min(MAX_GRAPH_BARS, students_data.size()))
+	# Every student gets a bar; the page grows to fit them and scrolls.
+	var bar_students: Array = students_data
 	var max_level := 1
 	for row in bar_students:
 		max_level = max(max_level, int(row.get("unlocked_level", 1)))
@@ -557,6 +563,8 @@ func _render_graph(students_data: Array) -> void:
 	var top := 90.0
 	var row_height := 55.0
 	var bar_max_width := 360.0
+	levels_graph_panel.size.y = top + bar_students.size() * row_height + 20.0
+	leaderboard_content.custom_minimum_size.y = maxf(1420.0, levels_graph_panel.position.y + levels_graph_panel.size.y + 60.0)
 	for i in range(bar_students.size()):
 		var row: Dictionary = bar_students[i]
 		var level_value: int = int(row.get("unlocked_level", 1))
