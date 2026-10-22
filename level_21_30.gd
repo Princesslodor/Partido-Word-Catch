@@ -571,8 +571,34 @@ func _disable_tray_tile_for_word(word: String):
 			if tile is BaseButton: tile.disabled = true
 			break
 
+## Alisin (5 coins): hides one wrong word tile (a word that isn't in the
+## sentence) from the tray, like Alisin removes a wrong letter in levels 1-20.
 func _on_remove_letter_pressed():
-	pass
+	if player_coins < 5: return
+	var grid = _get_scrambled_grid()
+	if not grid: return
+
+	var answer_words: Array = []
+	for w in current_sentence_words:
+		answer_words.append(w.to_upper())
+
+	var wrong_tiles = []
+	for tile in grid.get_children():
+		if tile.visible:
+			var tile_text = _get_block_text(tile)
+			if tile_text != "" and not (tile_text in answer_words):
+				wrong_tiles.append(tile)
+
+	if wrong_tiles.size() == 0: return
+
+	wrong_tiles.shuffle()
+	var selected_tile = wrong_tiles[0]
+	selected_tile.visible = false
+	if selected_tile is BaseButton: selected_tile.disabled = true
+	player_coins -= 5
+	Global.play_coin_spend_sound()
+	if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
+	GameManager.save_game()
 
 func _on_shuffle_pressed():
 	load_current_level()

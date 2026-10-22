@@ -22,7 +22,6 @@
 [ext_resource type="Texture2D" uid="uid://7l6k2ebpp2tm" path="res://Partido Word Catch Game Pic/Quit Background.png" id="16_5ldww"]
 [ext_resource type="FontFile" uid="uid://b24xti7eu1i6b" path="res://font/Fredoka_SemiExpanded-SemiBold.ttf" id="16_t0v51"]
 [ext_resource type="Script" uid="uid://cqj0ntpljxhe8" path="res://speaker_button.gd" id="17_4trvk"]
-[ext_resource type="AudioStream" uid="uid://bovm7r7f2lq00" path="res://speechma_audio_Blessica_at_1_12_33 PM_on_July_27th_2026.mp3" id="18_m3ylr"]
 [ext_resource type="Texture2D" uid="uid://bmdmff2a0sti4" path="res://audio/confetti.png" id="19_jj1h5"]
 [ext_resource type="Texture2D" uid="uid://bsjdxhoksmgoe" path="res://Partido Word Catch Game Pic/Wood.png" id="19_ukqgk"]
 [ext_resource type="Texture2D" uid="uid://obhvidwsh0qx" path="res://Partido Word Catch Game Pic/Woods.png" id="20_5jjqu"]
@@ -4442,7 +4441,7 @@ theme_override_colors/font_color = Color(0.1764706, 0.39215687, 0.09411765, 1)
 theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("16_t0v51")
 theme_override_font_sizes/font_size = 25
-text = "Kahulogan:"
+text = "Kahulugan:"
 
 [node name="culturalnote _title" type="Label" parent="CanvasLayer/VictoryPopup" unique_id=1584224846]
 layout_mode = 0
@@ -4552,7 +4551,6 @@ script = ExtResource("17_4trvk")
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="CanvasLayer/VictoryPopup/SpeakerButton" unique_id=397537483]
 unique_name_in_owner = true
 position = Vector2(-311, -411)
-stream = ExtResource("18_m3ylr")
 volume_db = 24.0
 
 [node name="NextLevel" type="Button" parent="CanvasLayer/VictoryPopup" unique_id=656088702]
