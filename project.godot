@@ -25,6 +25,7 @@ LevelData="*uid://blju7gpqmr7tu"
 GameManager="*uid://btt20whkyb6yr"
 Global="*uid://beufhve7kspn2"
 SyncManager="*res://SyncManager.gd"
+ScreenFit="*res://ScreenFit.gd"
 
 [display]
 
@@ -34,6 +35,7 @@ window/size/mode=2
 window/size/window_width_override=576
 window/size/window_height_override=768
 window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
 window/handheld/orientation=1
 
 [physics]
