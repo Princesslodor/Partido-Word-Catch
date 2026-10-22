@@ -388,7 +388,7 @@ func _check_out_of_hearts() -> void:
 func _update_restore_heart_button() -> void:
 	if not out_of_hearts_restore_button:
 		return
-	out_of_hearts_restore_button.text = "Restore 1 Heart (%d Coins)" % RESTORE_HEART_COST
+	out_of_hearts_restore_button.text = "Ibalik ang 1 Buhay (%d Barya)" % RESTORE_HEART_COST
 	out_of_hearts_restore_button.disabled = player_coins < RESTORE_HEART_COST
 	out_of_hearts_restore_button.modulate = Color(1, 1, 1, 1) if player_coins >= RESTORE_HEART_COST else Color(1, 1, 1, 0.5)
 
@@ -439,7 +439,7 @@ func _ensure_out_of_hearts_modal() -> Control:
 	overlay.add_child(panel)
 
 	var title := Label.new()
-	title.text = "Out of Hearts!"
+	title.text = "Ubos na ang Buhay!"
 	title.add_theme_font_size_override("font_size", 32)
 	title.add_theme_color_override("font_color", Color(0.65, 0.1, 0.1, 1))
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -448,7 +448,7 @@ func _ensure_out_of_hearts_modal() -> Control:
 	panel.add_child(title)
 
 	var message := Label.new()
-	message.text = "You've run out of hearts. Wait for them to refill before you can play again."
+	message.text = "Naubos na ang iyong buhay. Hintayin itong mapuno ulit bago ka makapaglaro muli."
 	message.autowrap_mode = TextServer.AUTOWRAP_WORD
 	message.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	message.add_theme_color_override("font_color", Color(0.2, 0.2, 0.2, 1))
@@ -480,7 +480,7 @@ func _ensure_out_of_hearts_modal() -> Control:
 	panel.add_child(out_of_hearts_restore_button)
 
 	var back_btn := Button.new()
-	back_btn.text = "Back to Map"
+	back_btn.text = "Bumalik sa Mapa"
 	back_btn.position = Vector2(110, 240)
 	back_btn.size = Vector2(200, 45)
 	back_btn.add_theme_color_override("font_color", Color(0.1, 0.1, 0.1, 1))
