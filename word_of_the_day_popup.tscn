@@ -80,6 +80,19 @@ text = "IDO"
 horizontal_alignment = 1
 autowrap_mode = 2
 
+[node name="SyllableLabel" type="Label" parent="." unique_id=3001000015]
+layout_mode = 0
+offset_left = 73.0
+offset_top = 545.0
+offset_right = 645.0
+offset_bottom = 575.0
+theme_override_colors/font_color = Color(0.1764706, 0.39215687, 0.09411765, 1)
+theme_override_fonts/font = ExtResource("3_wotd")
+theme_override_font_sizes/font_size = 22
+text = "ba-dang (pangngaran)"
+horizontal_alignment = 1
+autowrap_mode = 2
+
 [node name="SpeakerButton" type="Button" parent="." unique_id=3001000008]
 layout_mode = 0
 offset_left = 110.0

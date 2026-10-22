@@ -1,6 +1,7 @@
 extends Control
 
 @onready var word_label: Label = $WordLabel if has_node("WordLabel") else null
+@onready var syllable_label: Label = $SyllableLabel if has_node("SyllableLabel") else null
 @onready var meaning_label: Label = $MeaningLabel if has_node("MeaningLabel") else null
 @onready var cultural_note_label: Label = $CulturalNoteLabel if has_node("CulturalNoteLabel") else null
 @onready var cultural_note_title_label: Control = $CulturalNoteTitleLabel if has_node("CulturalNoteTitleLabel") else null
@@ -38,6 +39,15 @@ func display_word(word_data: Dictionary) -> void:
 		word_label.text = str(word_data.get("word", ""))
 	if meaning_label:
 		meaning_label.text = str(word_data.get("meaning", ""))
+	# Syllables and part of speech as written in the Glosaryo, e.g.
+	# "ba-dang (pangngaran)". Hidden when an entry has neither.
+	if syllable_label:
+		var line: String = str(word_data.get("syllables", "")).strip_edges()
+		var pos: String = str(word_data.get("part_of_speech", "")).strip_edges()
+		if pos != "":
+			line = (line + " (" + pos + ")").strip_edges()
+		syllable_label.text = line
+		syllable_label.visible = line != ""
 
 	# Glossary words don't always have a cultural note or a recording - hide
 	# those parts instead of leaving an empty box / a speaker that does nothing.
@@ -82,6 +92,9 @@ func _place_sections(meaning_size: int, note_size: int) -> float:
 	if word_label:
 		word_label.position.y = y
 		y += _text_height(word_label, word_label.get_theme_font_size("font_size")) + 8.0
+	if syllable_label and syllable_label.visible:
+		syllable_label.position.y = y - 6.0
+		y += _text_height(syllable_label, syllable_label.get_theme_font_size("font_size")) + 4.0
 	if speaker_button and speaker_button.visible:
 		speaker_button.position.y = y - 4.0
 		if pakinggan_label:
