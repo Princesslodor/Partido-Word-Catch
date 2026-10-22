@@ -124,27 +124,3 @@ theme_override_fonts/font = ExtResource("3_wotd")
 theme_override_font_sizes/font_size = 30
 text = "Aso sa wikang Bikol."
 autowrap_mode = 2
-
-[node name="CulturalNoteTitleLabel" type="Label" parent="." unique_id=3001000012]
-layout_mode = 0
-offset_left = 123.0
-offset_top = 697.0
-offset_right = 380.0
-offset_bottom = 725.0
-theme_override_colors/font_color = Color(0.1764706, 0.39215687, 0.09411765, 1)
-theme_override_colors/font_shadow_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("3_wotd")
-theme_override_font_sizes/font_size = 25
-text = "Cultural Note:"
-
-[node name="CulturalNoteLabel" type="Label" parent="." unique_id=3001000013]
-layout_mode = 0
-offset_left = 123.0
-offset_top = 728.0
-offset_right = 614.0
-offset_bottom = 895.0
-theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
-theme_override_fonts/font = ExtResource("3_wotd")
-theme_override_font_sizes/font_size = 20
-text = "Ang 'ido' ay itinuturing na matalik na kaibigan at tagapag-bantay ng tahanan sa pamilyang Bikolano."
-autowrap_mode = 2

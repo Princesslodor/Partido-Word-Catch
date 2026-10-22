@@ -3,8 +3,6 @@ extends Control
 @onready var word_label: Label = $WordLabel if has_node("WordLabel") else null
 @onready var syllable_label: Label = $SyllableLabel if has_node("SyllableLabel") else null
 @onready var meaning_label: Label = $MeaningLabel if has_node("MeaningLabel") else null
-@onready var cultural_note_label: Label = $CulturalNoteLabel if has_node("CulturalNoteLabel") else null
-@onready var cultural_note_title_label: Control = $CulturalNoteTitleLabel if has_node("CulturalNoteTitleLabel") else null
 @onready var close_button: TextureButton = $FrameBoard/CloseButton if has_node("FrameBoard/CloseButton") else null
 @onready var salita_title_label: Control = $SalitaTitleLabel if has_node("SalitaTitleLabel") else null
 @onready var kahulugan_title_label: Control = $KahuluganTitleLabel if has_node("KahuluganTitleLabel") else null
@@ -16,9 +14,8 @@ const AREA_TOP: float = 458.0
 const AREA_BOTTOM: float = 830.0
 const AREA_LEFT: float = 123.0
 const AREA_RIGHT: float = 612.0
-# Largest and smallest font sizes for the meaning and the cultural note.
+# Largest and smallest font sizes for the meaning.
 const MEANING_FONT_MAX: int = 30
-const NOTE_FONT_MAX: int = 22
 const BODY_FONT_MIN: int = 15
 
 func _ready() -> void:
@@ -43,35 +40,21 @@ func display_word(word_data: Dictionary) -> void:
 		syllable_label.text = line
 		syllable_label.visible = line != ""
 
-	# Not every glossary word has a cultural note - hide that part instead of
-	# leaving an empty box.
-	var note: String = str(word_data.get("cultural_note", "")).strip_edges()
-	if cultural_note_label:
-		cultural_note_label.text = note
-		cultural_note_label.visible = note != ""
-	if cultural_note_title_label:
-		cultural_note_title_label.visible = note != ""
-
 	_layout()
 	show()
 	move_to_front()
 
 ## Stacks the sections from the top of the parchment, skipping hidden ones,
-## so there are no empty gaps. If a long meaning or note would run past the
-## bottom, both shrink a step at a time until everything fits inside.
+## so there are no empty gaps. If a long meaning would run past the bottom,
+## it shrinks a step at a time until everything fits inside.
 func _layout() -> void:
 	var meaning_size := MEANING_FONT_MAX
-	var note_size := NOTE_FONT_MAX
-	while true:
-		var bottom := _place_sections(meaning_size, note_size)
-		if bottom <= AREA_BOTTOM or (meaning_size <= BODY_FONT_MIN and note_size <= BODY_FONT_MIN):
-			break
-		meaning_size = maxi(meaning_size - 1, BODY_FONT_MIN)
-		note_size = maxi(note_size - 1, BODY_FONT_MIN)
+	while _place_sections(meaning_size) > AREA_BOTTOM and meaning_size > BODY_FONT_MIN:
+		meaning_size -= 1
 
-## Positions every section for the given font sizes and returns the y where
+## Positions every section for the given meaning font size and returns the y where
 ## the last one ends.
-func _place_sections(meaning_size: int, note_size: int) -> float:
+func _place_sections(meaning_size: int) -> float:
 	var y := AREA_TOP
 	if salita_title_label:
 		salita_title_label.position = Vector2(AREA_LEFT, y)
@@ -97,14 +80,6 @@ func _place_sections(meaning_size: int, note_size: int) -> float:
 			book_icon.position.y = y + first_line / 2.0 - book_icon.size.y / 2.0
 			h = maxf(h, book_icon.position.y + book_icon.size.y - y)
 		y += h + 10.0
-	if cultural_note_label and cultural_note_label.visible:
-		if cultural_note_title_label:
-			cultural_note_title_label.position = Vector2(AREA_LEFT, y)
-			y += 32.0
-		cultural_note_label.add_theme_font_size_override("font_size", note_size)
-		cultural_note_label.position = Vector2(AREA_LEFT, y)
-		cultural_note_label.size = Vector2(AREA_RIGHT - AREA_LEFT, 0)
-		y += _text_height(cultural_note_label, note_size)
 	return y
 
 ## Height of a word-wrapped label's text at the given font size.
