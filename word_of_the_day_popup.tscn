@@ -7,8 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://d3e7k8aj301xq" path="res://Red X Icon.png" id="5_wotd"]
 [ext_resource type="Texture2D" uid="uid://b4546hkibf83h" path="res://images/book.png" id="6_wotd"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_speaker"]
-
 [node name="WordOfTheDayPopup" type="Control" unique_id=3001000001]
 z_index = 25
 layout_mode = 3
@@ -91,31 +89,6 @@ theme_override_fonts/font = ExtResource("3_wotd")
 theme_override_font_sizes/font_size = 22
 text = "ba-dang (pangngaran)"
 horizontal_alignment = 1
-autowrap_mode = 2
-
-[node name="SpeakerButton" type="Button" parent="." unique_id=3001000008]
-layout_mode = 0
-offset_left = 110.0
-offset_top = 558.0
-offset_right = 170.0
-offset_bottom = 600.0
-theme_override_font_sizes/font_size = 40
-theme_override_styles/normal = SubResource("StyleBoxEmpty_speaker")
-theme_override_styles/hover = SubResource("StyleBoxEmpty_speaker")
-theme_override_styles/pressed = SubResource("StyleBoxEmpty_speaker")
-theme_override_styles/focus = SubResource("StyleBoxEmpty_speaker")
-text = "🔊"
-
-[node name="PakingganLabel" type="Label" parent="." unique_id=3001000009]
-layout_mode = 0
-offset_left = 191.0
-offset_top = 565.0
-offset_right = 614.0
-offset_bottom = 600.0
-theme_override_colors/font_color = Color(0.1764706, 0.11764706, 0.09411765, 1)
-theme_override_fonts/font = ExtResource("3_wotd")
-theme_override_font_sizes/font_size = 20
-text = "Pakinggan ang tamang pagbigkas"
 autowrap_mode = 2
 
 [node name="KahuluganTitleLabel" type="Label" parent="." unique_id=3001000010]
