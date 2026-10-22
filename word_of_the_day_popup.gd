@@ -7,11 +7,18 @@ extends Control
 @onready var salita_title_label: Control = $SalitaTitleLabel if has_node("SalitaTitleLabel") else null
 @onready var kahulugan_title_label: Control = $KahuluganTitleLabel if has_node("KahuluganTitleLabel") else null
 @onready var book_icon: Control = $BookIcon if has_node("BookIcon") else null
+@onready var frame_board: Control = $FrameBoard if has_node("FrameBoard") else null
 
 # Writing area on the parchment, on the 720x1280 canvas: below the title
-# ribbon and above the patterned strip and leaves at the bottom.
+# ribbon and above the patterned strip and leaves at the bottom. These are
+# for the tallest box; shorter words get a shorter box (see _fit_frame).
 const AREA_TOP: float = 458.0
 const AREA_BOTTOM: float = 830.0
+# Where the box starts at its tallest, and the room it needs under the text
+# for the patterned strip and leaves.
+const FRAME_TOP: float = 335.0
+const FRAME_BOTTOM_PAD: float = 100.0
+const SCREEN_HEIGHT: float = 1280.0
 const AREA_LEFT: float = 123.0
 const AREA_RIGHT: float = 612.0
 # Largest and smallest font sizes for the meaning.
@@ -51,11 +58,23 @@ func _layout() -> void:
 	var meaning_size := MEANING_FONT_MAX
 	while _place_sections(meaning_size) > AREA_BOTTOM and meaning_size > BODY_FONT_MIN:
 		meaning_size -= 1
+	_fit_frame(meaning_size)
 
-## Positions every section for the given meaning font size and returns the y where
-## the last one ends.
-func _place_sections(meaning_size: int) -> float:
-	var y := AREA_TOP
+## Shrinks the box to end just below the text (the box is a 9-slice, so the
+## ribbon and leafy bottom keep their shape) and centres it on the screen.
+func _fit_frame(meaning_size: int) -> void:
+	if not frame_board:
+		return
+	var height := _place_sections(meaning_size) - FRAME_TOP + FRAME_BOTTOM_PAD
+	var top := roundf((SCREEN_HEIGHT - height) / 2.0)
+	frame_board.position.y = top
+	frame_board.size.y = height
+	_place_sections(meaning_size, top - FRAME_TOP)
+
+## Positions every section for the given meaning font size, moved down by
+## shift, and returns the y where the last one ends.
+func _place_sections(meaning_size: int, shift: float = 0.0) -> float:
+	var y := AREA_TOP + shift
 	if salita_title_label:
 		salita_title_label.position = Vector2(AREA_LEFT, y)
 		y += 30.0

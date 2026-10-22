@@ -23,14 +23,17 @@ offset_right = 720.0
 offset_bottom = 1282.0
 color = Color(0, 0, 0, 0.43137255)
 
-[node name="FrameBoard" type="TextureRect" parent="." unique_id=3001000003]
+[node name="FrameBoard" type="NinePatchRect" parent="." unique_id=3001000003]
 layout_mode = 0
 offset_left = 59.0
 offset_top = 335.0
 offset_right = 665.0
 offset_bottom = 907.0
 texture = ExtResource("2_wotd")
-expand_mode = 1
+patch_margin_left = 40
+patch_margin_top = 130
+patch_margin_right = 40
+patch_margin_bottom = 120
 
 [node name="TitleLabel" type="Label" parent="FrameBoard" unique_id=3001000004]
 layout_mode = 0
