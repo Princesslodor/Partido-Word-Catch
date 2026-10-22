@@ -83,11 +83,11 @@ func _load_teacher_info() -> void:
 			profile_name_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 			_fit_label_text(profile_name_label, display_name, profile_name_label.size.x, 30, 16)
 		if greeting_name_label: _fit_label_text(greeting_name_label, display_name + "!", greeting_name_label.size.x, 32, 18)
-		if teacher_label: _fit_label_text(teacher_label, "Teacher: " + display_name, teacher_label.size.x, 20, 13)
+		if teacher_label: _fit_label_text(teacher_label, "Teacher: " + display_name, teacher_label.size.x, 18, 11)
 
 	var grade_subject: String = gm.get("grade_subject") if "grade_subject" in gm else ""
 	if grade_subject != "" and grade_label:
-		grade_label.text = grade_subject
+		_fit_label_text(grade_label, grade_subject, grade_label.size.x, 22, 14)
 
 	# The class code is created by the database when the teacher's class is
 	# first saved (see login_page.gd's _on_teacher_create_account_pressed).
