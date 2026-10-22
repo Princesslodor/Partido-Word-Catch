@@ -49,12 +49,12 @@ var joined_grade_subject: String = ""
 ## --- PROGRESS ---
 var unlocked_level: int = 1           # Highest level the player can currently play (default: level 1 only)
 var player_coins: int = 0             # Player's total coin balance
-var player_hearts: int = 5            # Lives left; failing a level costs one (max MAX_HEARTS)
+var player_hearts: int = MAX_HEARTS   # Lives left; failing a level costs one (max MAX_HEARTS)
 ## Unix time when the next heart comes back, or 0 while hearts are full.
 ## Wall-clock based, so hearts refill while the game is closed or offline.
 var heart_refill_at: int = 0
 
-const MAX_HEARTS: int = 5
+const MAX_HEARTS: int = 4
 const HEART_REFILL_SECONDS: int = 30 * 60
 
 ## --- PER-LEVEL COMPLETION DATA ---

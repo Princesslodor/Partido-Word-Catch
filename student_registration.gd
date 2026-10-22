@@ -124,7 +124,7 @@ func _finish_registration(gm, sync, student_name: String, student_pin: String, e
 			gm.set("player_coins", int(existing_row.get("player_coins", 0)))
 			var completed = existing_row.get("completed_levels", {})
 			gm.set("completed_levels", completed if completed is Dictionary else {})
-			gm.set("player_hearts", 5)
+			gm.set("player_hearts", GameManager.MAX_HEARTS)
 			gm.set("heart_refill_at", 0)
 
 			# Adopt the account's own device_id when it has one (same as
@@ -146,7 +146,7 @@ func _finish_registration(gm, sync, student_name: String, student_pin: String, e
 			# showing up as an "already unlocked" account.
 			gm.set("avatar_id", "")
 			gm.set("unlocked_level", 1)
-			gm.set("player_hearts", 5)
+			gm.set("player_hearts", GameManager.MAX_HEARTS)
 			gm.set("heart_refill_at", 0)
 			gm.set("completed_levels", {})
 			gm.set("player_coins", 20)   # Starting bonus for a newly-registered student

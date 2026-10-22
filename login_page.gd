@@ -292,7 +292,7 @@ func _on_welcome_back_not_you_pressed():
 		gm.set("joined_grade_subject", "")
 		gm.set("unlocked_level", 1)
 		gm.set("player_coins", 0)
-		gm.set("player_hearts", 5)
+		gm.set("player_hearts", GameManager.MAX_HEARTS)
 		gm.set("heart_refill_at", 0)
 		gm.set("completed_levels", {})
 		# The next pupil on this phone should still see today's Word of the Day.
@@ -459,7 +459,7 @@ func _on_student_login_pressed() -> void:
 		gm.set("player_coins", int(student_row.get("player_coins", 0)))
 		var completed = student_row.get("completed_levels", {})
 		gm.set("completed_levels", completed if completed is Dictionary else {})
-		gm.set("player_hearts", 5)
+		gm.set("player_hearts", GameManager.MAX_HEARTS)
 		gm.set("heart_refill_at", 0)
 
 		# This device may currently hold a DIFFERENT account's device_id
