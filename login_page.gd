@@ -566,7 +566,9 @@ func _open_signed_in_teacher_class() -> void:
 				gm.set("avatar_id", "")
 			if gm.has_method("save_game"):
 				gm.save_game()
-		_open_teacher_dashboard()
+		# After signing in with Google the teacher picks (or keeps) their
+		# avatar, then goes on to the dashboard.
+		_change_to_avatar_selection()
 	)
 
 ## A teacher who never picked an avatar (e.g. their class was made before

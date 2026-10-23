@@ -48,7 +48,8 @@ func _ready() -> void:
 	await get_tree().process_frame
 	_center_avatar_rows()
 
-## Changing an avatar later: the one picked before starts out selected.
+## A returning teacher (after Google sign-in) sees the avatar they picked
+## before already selected, and can keep it or pick the other one.
 func _select_saved_avatar(gm) -> void:
 	if not gm or not "avatar_id" in gm or gm.avatar_id == "":
 		return
@@ -165,14 +166,10 @@ func _on_confirm_pressed() -> void:
 		if gm.has_method("save_game"):
 			gm.save_game()
 
-	Global.remove_meta("avatar_return_scene")
 	if current_role == "TEACHER":
 		Global.change_scene("res://teacher_dashboard.tscn")
 	else:
 		Global.change_scene("res://campaign_map_screen.tscn")
 
 func _on_back_pressed() -> void:
-	# Opened from the dashboard to change the avatar: go back there.
-	var return_scene: String = Global.get_meta("avatar_return_scene", "")
-	Global.remove_meta("avatar_return_scene")
-	Global.change_scene(return_scene if return_scene != "" else "res://login_page.tscn")
+	Global.change_scene("res://login_page.tscn")

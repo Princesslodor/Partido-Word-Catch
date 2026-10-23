@@ -206,12 +206,16 @@ func _move_with_backgrounds(scene: Node) -> void:
 		node.position = base + (moved - centre)
 
 ## A scroll area as tall as the whole canvas (the leaderboard) also runs
-## down to the bottom of the phone, so it isn't cut off above the edge.
+## down to the bottom of the phone, so it isn't cut off above the edge, and
+## what scrolls up past its top keeps showing up to the top of the phone
+## instead of being cut off in a straight line.
 func _extend_scrolls(node: Node) -> void:
 	for child in node.get_children():
 		if child is ScrollContainer and child.size.y >= DESIGN.y - 1.0 and not child.has_meta("screen_fit_scroll"):
 			child.set_meta("screen_fit_scroll", true)
 			child.size.y += _offset.y
+			if _offset.y > 0.0:
+				child.clip_contents = false
 		_extend_scrolls(child)
 
 func _on_node_added(node: Node) -> void:

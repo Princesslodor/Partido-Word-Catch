@@ -50,7 +50,6 @@ var _star_icon: Texture2D = load("res://Partido Word Catch Game Pic/Star with fi
 func _ready() -> void:
 	_load_teacher_info()
 	_show_dashboard()
-	_setup_avatar_change()
 	_connect_signals()
 	# The class code is permanent once generated - there's nothing to regenerate.
 	if generate_new_code_button:
@@ -155,25 +154,6 @@ func _connect_signals() -> void:
 		if not logout_confirmation_popup.confirmed.is_connected(_on_logout_confirmed):
 			logout_confirmation_popup.confirmed.connect(_on_logout_confirmed)
 
-## Tapping the teacher's picture (top right) opens Choose Avatar to change
-## it; tapping their name still opens Settings.
-func _setup_avatar_change() -> void:
-	if not profile_avatar:
-		return
-	var picture: Control = profile_avatar.get_parent()
-	if profile_click_area:
-		profile_click_area.offset_left = picture.offset_right
-	var change_button := Button.new()
-	change_button.name = "ChangeAvatarButton"
-	change_button.flat = true
-	change_button.focus_mode = Control.FOCUS_NONE
-	change_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-	change_button.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	picture.add_child(change_button)
-	change_button.pressed.connect(func():
-		Global.set_meta("avatar_return_scene", "res://teacher_dashboard.tscn")
-		Global.change_scene("res://avatar_selection.tscn"))
-
 func _on_settings_button_pressed() -> void:
 	if settings_menu:
 		settings_menu.show()
@@ -204,6 +184,7 @@ func _hide_all_pages() -> void:
 	if create_classcode: create_classcode.hide()
 	if students: students.hide()
 	if leaderboard: leaderboard.hide()
+	if profile_click_area: profile_click_area.get_parent().show()
 
 func _show_dashboard() -> void:
 	_hide_all_pages()
@@ -226,6 +207,8 @@ func _on_leaderboard_button_pressed() -> void:
 	_hide_all_pages()
 	if leaderboard: leaderboard.show()
 	if back_button: back_button.show()
+	# The name bar would float over the podium as the leaderboard scrolls.
+	if profile_click_area: profile_click_area.get_parent().hide()
 	_refresh_leaderboard()
 
 func _on_back_pressed() -> void:
