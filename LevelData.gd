@@ -157,8 +157,8 @@ var levels = {
 		"word": "BADANG",
 		"clue": "Ito ay malawak na damuhan o parang.",
 		"audio": "BADANG.mp3",
-		"meaning": "Tulong o saklolo.",
-		"cultural_note": "Nagpapakita ng espiritu ng Bayanihan o pagtutulungan ng mga kapitbahay."
+		"meaning": "Kahiwasan o malawak na damuhan.",
+		"cultural_note": "Ang 'badang' o kahiwasan ay malawak na damuhan sa baryo kung saan nagpapastol ng kalabaw at baka at naglalaro ang mga bata."
 	},
 	11: {
 		"unit": "Yunit 3: Kultura at Tradisyon",
@@ -274,9 +274,9 @@ var levels = {
 	},
 	25: {
 		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
-		"word": "IGWA SA LUGAR NINDANG MAY HALABANG KAMAY",
+		"word": "IGWA SA LUGAR NINDANG MAY HALABANG KAMOT",
 		"clue": "Mayroon sa lugar nila na mahaba ang kamay.",
-		"meaning": "May taong mahaba ang kamot sa lugar nila.",
+		"meaning": "May taong mahaba ang kamay sa lugar nila.",
 		"cultural_note": "Idyoma para sa magnanakaw or mga taong nangunguha ng hindi sakanila.",
 		"audio": "25.mp3"
 	},
