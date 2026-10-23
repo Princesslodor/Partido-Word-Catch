@@ -43,6 +43,7 @@ var _dynamic_student_nodes: Array = []
 @onready var empty_graph_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel/EmptyGraphMessage
 
 const MAX_EXTRA_ROWS := 5
+const LAST_LEVEL := 30
 var _dynamic_leaderboard_nodes: Array = []
 var _bold_font: FontFile = load("res://Nunito-Bold.ttf")
 var _star_icon: Texture2D = load("res://Partido Word Catch Game Pic/Star with fill.png")
@@ -330,7 +331,7 @@ func _render_students_list(students_data: Array) -> void:
 		_dynamic_student_nodes.append(name_label)
 
 		var level_label := Label.new()
-		level_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
+		level_label.text = _level_text(row)
 		level_label.add_theme_font_override("font", _bold_font)
 		level_label.add_theme_font_size_override("font_size", 22)
 		level_label.add_theme_color_override("font_color", Color(0.3, 0.3, 0.3, 1))
@@ -360,6 +361,16 @@ func _render_leaderboard(students_data: Array) -> void:
 	_render_podium(students_data)
 	_render_extra_rows(students_data)
 	_render_graph(students_data)
+
+## unlocked_level is the next level to play, so a student who finished
+## all 30 has 31: show "Tapos na" for them instead of "Level 31".
+func _level_text(row: Dictionary) -> String:
+	var unlocked := int(row.get("unlocked_level", 1))
+	return "Tapos na" if unlocked > LAST_LEVEL else "Level " + str(unlocked)
+
+## The level reached, for the graph: at most 30.
+func _level_reached(row: Dictionary) -> int:
+	return mini(int(row.get("unlocked_level", 1)), LAST_LEVEL)
 
 ## Sets a label's text and shrinks its font size (down to min_font_size)
 ## until it fits within max_width. A name still too long at the smallest
@@ -459,7 +470,7 @@ func _render_podium(students_data: Array) -> void:
 			# Now that Level has its own full-width centered row (points
 			# moved to a separate row below it), there's room for the full
 			# word instead of the "Lvl" abbreviation.
-			if score_label: score_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
+			if score_label: score_label.text = _level_text(row)
 
 			if avatar_circle:
 				var initial_label := Label.new()
@@ -549,7 +560,7 @@ func _render_extra_rows(students_data: Array) -> void:
 
 		var level_label := Label.new()
 		level_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		level_label.text = "Level " + str(int(row.get("unlocked_level", 1)))
+		level_label.text = _level_text(row)
 		level_label.add_theme_font_override("font", _bold_font)
 		level_label.add_theme_font_size_override("font_size", 22)
 		level_label.add_theme_color_override("font_color", Color(0.096, 0.096, 0.096, 1))
@@ -595,7 +606,7 @@ func _render_graph(students_data: Array) -> void:
 	var bar_students: Array = students_data
 	var max_level := 1
 	for row in bar_students:
-		max_level = max(max_level, int(row.get("unlocked_level", 1)))
+		max_level = max(max_level, _level_reached(row))
 
 	var top := 90.0
 	var row_height := 55.0
@@ -604,7 +615,7 @@ func _render_graph(students_data: Array) -> void:
 	leaderboard_content.custom_minimum_size.y = maxf(1420.0, levels_graph_panel.position.y + levels_graph_panel.size.y + 60.0)
 	for i in range(bar_students.size()):
 		var row: Dictionary = bar_students[i]
-		var level_value: int = int(row.get("unlocked_level", 1))
+		var level_value: int = _level_reached(row)
 		var y := top + i * row_height
 		var bar_width: float = max(6.0, (float(level_value) / float(max_level)) * bar_max_width)
 
