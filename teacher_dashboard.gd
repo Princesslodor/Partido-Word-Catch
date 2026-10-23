@@ -54,6 +54,19 @@ func _ready() -> void:
 	if generate_new_code_button:
 		generate_new_code_button.hide()
 	_connect_sound_to_all_buttons(self)
+	if leaderboard_content:
+		_let_touch_scroll_through(leaderboard_content)
+
+## On a phone, a ScrollContainer only scrolls when the finger drag reaches it.
+## Panels and plain Controls default to MOUSE_FILTER_STOP, which swallows the
+## drag (the mouse wheel in the editor still worked, hiding the problem), so
+## every non-button node inside the leaderboard passes its input up instead.
+func _let_touch_scroll_through(node: Control) -> void:
+	if node.mouse_filter == Control.MOUSE_FILTER_STOP and not (node is BaseButton):
+		node.mouse_filter = Control.MOUSE_FILTER_PASS
+	for child in node.get_children():
+		if child is Control:
+			_let_touch_scroll_through(child)
 
 # --- AUDIO CLICK SYSTEM ---
 func _connect_sound_to_all_buttons(node: Node):
@@ -333,19 +346,27 @@ func _render_leaderboard(students_data: Array) -> void:
 	_render_graph(students_data)
 
 ## Sets a label's text and shrinks its font size (down to min_font_size)
-## until it fits within max_width, instead of silently truncating long
-## student names in the leaderboard's fixed-width name fields.
+## until it fits within max_width. A name still too long at the smallest
+## size is cut with "…" inside the label's box instead of spilling out of
+## the podium card or graph, and kept a little larger so it stays readable.
 func _fit_label_text(label: Label, text: String, max_width: float, base_font_size: int, min_font_size: int = 14) -> void:
 	label.text = text
+	label.clip_text = false
+	label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 	var font: Font = label.get_theme_font("font")
 	if not font:
 		font = _bold_font
 	var size := base_font_size
-	while size > min_font_size:
+	while size >= min_font_size:
 		var text_width: float = font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x
 		if text_width <= max_width:
 			break
 		size -= 1
+	if size < min_font_size:
+		size = mini(base_font_size, min_font_size + 4)
+		label.clip_text = true
+		label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		label.size.x = minf(label.size.x, max_width)
 	label.add_theme_font_size_override("font_size", size)
 
 ## Sums the 0-3 star rating earned on every level a student has completed
