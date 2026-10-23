@@ -48,6 +48,10 @@ var _bold_font: FontFile = load("res://Nunito-Bold.ttf")
 var _star_icon: Texture2D = load("res://Partido Word Catch Game Pic/Star with fill.png")
 
 func _ready() -> void:
+	# On a tall phone the leaderboard starts at the very top, so the back
+	# button goes up there too.
+	if back_button:
+		back_button.add_to_group(ScreenFit.TOP_GROUP)
 	_load_teacher_info()
 	_show_dashboard()
 	_connect_signals()

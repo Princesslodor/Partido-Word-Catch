@@ -11,12 +11,18 @@ extends Node
 ##     phone), so there are no bars or visible seams;
 ##   - moves things drawn on top of the picture (the level stones on the
 ##     campaign map, in ON_BACKGROUND_GROUP) along with it;
+##   - spreads the screen's parts over the phone's full height: the top bar
+##     goes up near the top edge, bottom buttons down near the bottom edge,
+##     and what's in the middle stays in the middle (_spread_vertically);
 ##   - stretches full-screen dimmers (popup overlays) over the whole phone.
 
 const DESIGN := Vector2(720, 1280)
 ## Controls in this group sit on a spot of the background picture and move
 ## with it when it is enlarged (they keep their size).
 const ON_BACKGROUND_GROUP := "screen_fit_on_background"
+## Controls in this group go to the top of the phone (below a notch), e.g.
+## a back button over a scroll area that starts at the very top.
+const TOP_GROUP := "screen_fit_top"
 
 var _scene: Node = null
 var _offset := Vector2.ZERO
@@ -70,6 +76,7 @@ func _fit_scene(scene: Node) -> void:
 	_extend_dims(scene)
 	_extend_scrolls(scene)
 	_move_with_backgrounds(scene)
+	_spread_vertically(scene)
 
 func _shift_layers(node: Node) -> void:
 	for child in node.get_children():
@@ -205,18 +212,165 @@ func _move_with_backgrounds(scene: Node) -> void:
 		var moved := rect.get_center() + (centre - rect.get_center()) * s
 		node.position = base + (moved - centre)
 
-## A scroll area as tall as the whole canvas (the leaderboard) also runs
-## down to the bottom of the phone, so it isn't cut off above the edge, and
-## what scrolls up past its top keeps showing up to the top of the phone
-## instead of being cut off in a straight line.
+## A scroll area as tall as the whole canvas (the leaderboard) runs from
+## the very top of the phone to the very bottom, so it starts high up
+## instead of below a band of empty sky and isn't cut off near the edges.
 func _extend_scrolls(node: Node) -> void:
 	for child in node.get_children():
 		if child is ScrollContainer and child.size.y >= DESIGN.y - 1.0 and not child.has_meta("screen_fit_scroll"):
 			child.set_meta("screen_fit_scroll", true)
-			child.size.y += _offset.y
-			if _offset.y > 0.0:
-				child.clip_contents = false
+			child.position.y -= _offset.y
+			child.size.y += _offset.y * 2.0
 		_extend_scrolls(child)
+
+## --- Using the phone's full height ---
+## On a phone taller than 720x1280 each part of the screen moves up or down
+## in proportion to how far it is from the middle, as if the layout were
+## stretched to the phone's height (parts keep their size). Top 0 lands on
+## the phone's top edge and 1280 on its bottom edge.
+##
+## A "part" is a child of the scene or of one of its CanvasLayers; a plain
+## Control/Node2D that only groups things is looked into instead. Things drawn on top of a bigger
+## part (the panels on the dashboard's wooden board, the Hint buttons on
+## their frame) move together with it. Left alone: popups (anything with a
+## full-screen dimmer), children of Containers, full-height scroll areas,
+## the backgrounds themselves and the map stones.
+func _spread_vertically(scene: Node) -> void:
+	if _offset.y <= 0.0:
+		return
+	_spread_children(scene)
+	var top_shift := _spread_shift(0.0)
+	for node in get_tree().get_nodes_in_group(TOP_GROUP):
+		if node is Control and scene.is_ancestor_of(node) and not node.has_meta("screen_fit_spread"):
+			node.set_meta("screen_fit_spread", true)
+			node.position.y += top_shift
+
+func _spread_children(parent: Node) -> void:
+	if parent is Container:
+		return
+	var parts: Array = []
+	_collect_parts(parent, parts)
+	if parts.is_empty():
+		return
+	var rects := {}
+	for part in parts:
+		rects[part] = _extent(part)
+	# A part drawn on top of a bigger one (its smallest bigger part that
+	# encloses it) moves with that one.
+	var holders := {}
+	for part in parts:
+		var rect: Rect2 = rects[part]
+		var holder_area := INF
+		for other in parts:
+			var big: Rect2 = rects[other]
+			if other != part and big.get_area() > rect.get_area() * 1.5 and big.get_area() < holder_area \
+					and big.encloses(rect.grow(-4.0)):
+				holder_area = big.get_area()
+				holders[part] = other
+	# The rest is grouped into rows: parts whose heights overlap (a top
+	# bar's sign, labels and buttons) move by the same amount.
+	var free: Array = parts.filter(func(p): return not holders.has(p))
+	free.sort_custom(func(x, y): return rects[x].position.y < rects[y].position.y)
+	var moves := {}
+	var row: Array = []
+	var row_rect := Rect2()
+	for part in free + [null]:
+		var rect: Rect2 = rects[part] if part != null else Rect2()
+		if part != null and not row.is_empty() and rect.position.y < row_rect.end.y:
+			row.append(part)
+			row_rect = row_rect.merge(rect)
+			continue
+		var move := _spread_shift(row_rect.get_center().y)
+		for done in row:
+			moves[done] = move
+		row = [part]
+		row_rect = rect
+	for part in parts:
+		var top = part
+		while holders.has(top):
+			top = holders[top]
+		if part.has_meta("screen_fit_spread"):
+			continue
+		part.set_meta("screen_fit_spread", true)
+		# position is in the parent's units (a scaled background picture's
+		# children move less per unit).
+		var parent_scale := 1.0
+		var holder_node: Node = part.get_parent()
+		if holder_node is CanvasItem:
+			parent_scale = holder_node.get_global_transform().get_scale().y
+		part.position.y += moves[top] / maxf(parent_scale, 0.01)
+
+func _collect_parts(parent: Node, parts: Array) -> void:
+	for child in parent.get_children():
+		if child is CanvasLayer:
+			if child.get_parent() != self:
+				_spread_children(child)
+			continue
+		if not (child is Control or child is Node2D):
+			continue
+		if child is ScrollContainer and child.has_meta("screen_fit_scroll"):
+			continue
+		if child.is_in_group(ON_BACKGROUND_GROUP) or child.is_in_group(TOP_GROUP) or _is_popup(child):
+			continue
+		if child in _backgrounds:
+			# The picture stays put; what is drawn on it is spread like
+			# everything else.
+			_collect_parts(child, parts)
+			continue
+		if _is_plain_group(child) and not (child is Container):
+			# Only holds other things: its pieces are parts of this screen.
+			_collect_parts(child, parts)
+			continue
+		parts.append(child)
+
+## Draws nothing itself, only holds other things.
+func _is_plain_group(node: Node) -> bool:
+	return node.get_class() == "Control" or node.get_class() == "Node2D"
+
+## A popup holds a full-screen dimmer (a ColorRect covering the canvas).
+func _is_popup(node: Node) -> bool:
+	for item in [node] + node.get_children():
+		if item is ColorRect and item.size.x >= DESIGN.x - 1.0 and item.size.y >= DESIGN.y - 1.0:
+			return true
+	return false
+
+## The part's rect on the 720x1280 canvas, together with everything inside
+## it (a plain group's own rect is often just a small box).
+func _extent(item: CanvasItem) -> Rect2:
+	var rect := Rect2()
+	var has_rect := false
+	if item is Control or (item is Sprite2D and item.texture):
+		rect = _canvas_rect(item)
+		has_rect = rect.size != Vector2.ZERO
+	for child in item.get_children():
+		if child is Control or child is Node2D:
+			var child_rect := _extent(child)
+			if child_rect.size == Vector2.ZERO:
+				continue
+			rect = rect.merge(child_rect) if has_rect else child_rect
+			has_rect = true
+	return rect
+
+## Where a point of the 720x1280 layout goes: 0 maps to just below the
+## phone's top edge (below a camera notch, if any) and 1280 to just above
+## its bottom edge, everything in between in proportion.
+func _spread_shift(centre_y: float) -> float:
+	var insets := _safe_insets()
+	var top := -_offset.y + minf(insets.x, _offset.y)
+	var bottom := DESIGN.y + _offset.y - minf(insets.y, _offset.y)
+	return top + centre_y * (bottom - top) / DESIGN.y - centre_y
+
+## The phone's notch/system bars at the top and bottom, in game pixels.
+func _safe_insets() -> Vector2:
+	var window := get_window()
+	var safe := DisplayServer.get_display_safe_area()
+	if window == null or safe.size.y <= 0 or window.size.y <= 0:
+		return Vector2.ZERO
+	var screen := DisplayServer.screen_get_size(window.current_screen)
+	if screen.y <= 0:
+		return Vector2.ZERO
+	var to_game := get_viewport().get_visible_rect().size.y / float(screen.y)
+	return Vector2(maxf(0.0, safe.position.y), maxf(0.0, screen.y - safe.end.y)) * to_game
 
 func _on_node_added(node: Node) -> void:
 	if node is ColorRect and _scene and _scene.is_ancestor_of(node):
