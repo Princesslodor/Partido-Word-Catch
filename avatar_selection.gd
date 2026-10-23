@@ -43,9 +43,19 @@ func _ready() -> void:
 	_setup_initial_ui()
 	_filter_avatars_by_role()
 	_connect_signals()
+	_select_saved_avatar(gm)
 	_connect_sound_to_all_buttons(self)
 	await get_tree().process_frame
 	_center_avatar_rows()
+
+## Changing an avatar later: the one picked before starts out selected.
+func _select_saved_avatar(gm) -> void:
+	if not gm or not "avatar_id" in gm or gm.avatar_id == "":
+		return
+	for card in _all_cards():
+		var data: Dictionary = avatar_data.get(card.name, {})
+		if data.get("id", "") == gm.avatar_id and data.get("role", "") == current_role:
+			card.button_pressed = true
 
 func _center_avatar_rows() -> void:
 	_center_one_row(student_container, student_grid)
@@ -155,10 +165,14 @@ func _on_confirm_pressed() -> void:
 		if gm.has_method("save_game"):
 			gm.save_game()
 
+	Global.remove_meta("avatar_return_scene")
 	if current_role == "TEACHER":
 		Global.change_scene("res://teacher_dashboard.tscn")
 	else:
 		Global.change_scene("res://campaign_map_screen.tscn")
 
 func _on_back_pressed() -> void:
-	Global.change_scene("res://login_page.tscn")
+	# Opened from the dashboard to change the avatar: go back there.
+	var return_scene: String = Global.get_meta("avatar_return_scene", "")
+	Global.remove_meta("avatar_return_scene")
+	Global.change_scene(return_scene if return_scene != "" else "res://login_page.tscn")

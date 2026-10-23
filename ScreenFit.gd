@@ -6,34 +6,38 @@ extends Node
 ## stretch aspect, so the game gets the phone's real shape instead of black
 ## bars. This autoload then:
 ##   - keeps each screen's 720x1280 layout centred, at its normal size;
-##   - fills the extra space around it with a mirrored copy of that screen's
-##     own background, so the scenery just carries on to the edges;
+##   - enlarges that screen's own background picture until it covers the
+##     whole phone, edge to edge (a little of its sides is cropped on a tall
+##     phone), so there are no bars or visible seams;
+##   - moves things drawn on top of the picture (the level stones on the
+##     campaign map, in ON_BACKGROUND_GROUP) along with it;
 ##   - stretches full-screen dimmers (popup overlays) over the whole phone.
 
 const DESIGN := Vector2(720, 1280)
+## Controls in this group sit on a spot of the background picture and move
+## with it when it is enlarged (they keep their size).
+const ON_BACKGROUND_GROUP := "screen_fit_on_background"
 
 var _scene: Node = null
 var _offset := Vector2.ZERO
 # Full-screen backgrounds in the current scene, in tree order; the first
-# visible one is mirrored into the edges.
+# visible one is drawn enlarged behind everything.
 var _backgrounds: Array = []
-var _bands_layer: CanvasLayer
-var _bands: Dictionary = {}
+var _cover_layer: CanvasLayer
+var _cover: TextureRect
+# The background currently drawn by _cover (its own drawing is hidden).
+var _covered_bg: CanvasItem = null
 
 func _ready() -> void:
-	_bands_layer = CanvasLayer.new()
-	_bands_layer.layer = -100
-	add_child(_bands_layer)
-	for side in ["top", "bottom", "left", "right"]:
-		var band := TextureRect.new()
-		band.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-		band.stretch_mode = TextureRect.STRETCH_SCALE
-		band.mouse_filter = Control.MOUSE_FILTER_IGNORE
-		band.flip_v = side == "top" or side == "bottom"
-		band.flip_h = side == "left" or side == "right"
-		band.hide()
-		_bands_layer.add_child(band)
-		_bands[side] = band
+	_cover_layer = CanvasLayer.new()
+	_cover_layer.layer = -100
+	add_child(_cover_layer)
+	_cover = TextureRect.new()
+	_cover.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	_cover.stretch_mode = TextureRect.STRETCH_SCALE
+	_cover.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_cover.hide()
+	_cover_layer.add_child(_cover)
 	get_tree().node_added.connect(_on_node_added)
 	get_viewport().size_changed.connect(func(): _scene = null)
 
@@ -43,7 +47,7 @@ func _process(_delta: float) -> void:
 		_scene = scene
 		if scene:
 			_fit_scene(scene)
-	_update_bands()
+	_update_cover()
 
 func _fit_scene(scene: Node) -> void:
 	var visible_size := get_viewport().get_visible_rect().size
@@ -65,6 +69,7 @@ func _fit_scene(scene: Node) -> void:
 	_shift_layers(scene)
 	_extend_dims(scene)
 	_extend_scrolls(scene)
+	_move_with_backgrounds(scene)
 
 func _shift_layers(node: Node) -> void:
 	for child in node.get_children():
@@ -132,32 +137,73 @@ func _current_root_offset(item: Node) -> Vector2:
 			return _offset if scene.has_meta("screen_fit_done") else Vector2.ZERO
 	return Vector2.ZERO
 
-func _update_bands() -> void:
+## How much a background must grow, around its own centre, to cover the
+## whole phone. Works on its rect on the 720x1280 canvas.
+func _cover_scale(rect: Rect2) -> float:
+	if _offset == Vector2.ZERO or rect.size.x <= 0.0 or rect.size.y <= 0.0:
+		return 1.0
+	var visible_size := get_viewport().get_visible_rect().size
+	var c := rect.get_center()
+	var half := rect.size / 2.0
+	# The phone's edges, in canvas coordinates.
+	var top_left := -_offset
+	var bottom_right := visible_size - _offset
+	return maxf(1.0, maxf(
+		maxf((c.x - top_left.x) / half.x, (bottom_right.x - c.x) / half.x),
+		maxf((c.y - top_left.y) / half.y, (bottom_right.y - c.y) / half.y)))
+
+func _update_cover() -> void:
 	var bg: CanvasItem = null
 	for item in _backgrounds:
 		if is_instance_valid(item) and item.is_visible_in_tree():
 			bg = item
 			break
-	if bg == null or _offset == Vector2.ZERO:
-		for band in _bands.values():
-			band.hide()
+	if bg != _covered_bg:
+		_show_own_drawing(_covered_bg)
+		_covered_bg = null
+	if bg == null or _offset == Vector2.ZERO or bg.get("texture") == null:
+		_cover.hide()
 		return
 	var rect := _canvas_rect(bg)
-	rect.position += _offset
-	var visible_size := get_viewport().get_visible_rect().size
-	_place_band("top", bg, rect, Vector2(0, -rect.size.y), rect.position.y > 0.0)
-	_place_band("bottom", bg, rect, Vector2(0, rect.size.y), rect.end.y < visible_size.y)
-	_place_band("left", bg, rect, Vector2(-rect.size.x, 0), rect.position.x > 0.0)
-	_place_band("right", bg, rect, Vector2(rect.size.x, 0), rect.end.x < visible_size.x)
+	var s := _cover_scale(rect)
+	_cover.texture = bg.texture
+	_cover.size = rect.size * s
+	_cover.position = rect.get_center() - _cover.size / 2.0 + _offset
+	_cover.modulate = bg.modulate
+	_cover.show()
+	if _covered_bg == null:
+		# Hide only the picture itself; anything inside it still shows.
+		_covered_bg = bg
+		if not bg.has_meta("screen_fit_self_modulate"):
+			bg.set_meta("screen_fit_self_modulate", bg.self_modulate)
+		bg.self_modulate.a = 0.0
 
-func _place_band(side: String, bg: CanvasItem, rect: Rect2, shift: Vector2, needed: bool) -> void:
-	var band: TextureRect = _bands[side]
-	band.visible = needed
-	if not needed:
-		return
-	band.texture = bg.texture
-	band.position = rect.position + shift
-	band.size = rect.size
+func _show_own_drawing(bg: CanvasItem) -> void:
+	if is_instance_valid(bg) and bg.has_meta("screen_fit_self_modulate"):
+		bg.self_modulate = bg.get_meta("screen_fit_self_modulate")
+
+## Keeps the level stones on their spot of the enlarged campaign map: each
+## one's centre is moved the way the picture grows around its centre.
+func _move_with_backgrounds(scene: Node) -> void:
+	for node in get_tree().get_nodes_in_group(ON_BACKGROUND_GROUP):
+		if not (node is Control) or not scene.is_ancestor_of(node):
+			continue
+		var bg: CanvasItem = null
+		for item in _backgrounds:
+			if is_instance_valid(item) and item.get_parent() == node.get_parent():
+				bg = item
+				break
+		if bg == null:
+			continue
+		if not node.has_meta("screen_fit_bg_position"):
+			node.set_meta("screen_fit_bg_position", node.position)
+		var base: Vector2 = node.get_meta("screen_fit_bg_position")
+		var rect := _canvas_rect(bg)
+		var s := _cover_scale(rect)
+		# The control's centre, on the canvas, before moving it.
+		var centre: Vector2 = _canvas_rect(node).get_center() - (node.position - base)
+		var moved := rect.get_center() + (centre - rect.get_center()) * s
+		node.position = base + (moved - centre)
 
 ## A scroll area as tall as the whole canvas (the leaderboard) also runs
 ## down to the bottom of the phone, so it isn't cut off above the edge.

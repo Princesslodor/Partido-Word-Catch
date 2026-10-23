@@ -6,6 +6,7 @@ extends Control
 @onready var leaderboard: Control = $Leaderboard
 @onready var back_button: TextureButton = $BackButton
 @onready var profile_click_area: Button = $TeacherProfilePanel/ProfileClickArea
+@onready var profile_avatar: TextureRect = $TeacherProfilePanel/Panel2/TextureRect
 @onready var settings_menu: Control = $SettingsMenu
 @onready var logout_confirmation_popup: Control = $LogoutConfirmationPopup
 
@@ -49,6 +50,7 @@ var _star_icon: Texture2D = load("res://Partido Word Catch Game Pic/Star with fi
 func _ready() -> void:
 	_load_teacher_info()
 	_show_dashboard()
+	_setup_avatar_change()
 	_connect_signals()
 	# The class code is permanent once generated - there's nothing to regenerate.
 	if generate_new_code_button:
@@ -98,6 +100,14 @@ func _load_teacher_info() -> void:
 		if greeting_name_label: _fit_label_text(greeting_name_label, display_name + "!", greeting_name_label.size.x, 32, 18)
 		if teacher_label: _fit_label_text(teacher_label, "Teacher: " + display_name, teacher_label.size.x, 18, 11)
 
+	# The avatar the teacher picked (the picture in the scene is only a
+	# placeholder).
+	if profile_avatar and gm.has_method("get_avatar_texture_path"):
+		var avatar_path: String = gm.get_avatar_texture_path(gm.avatar_id)
+		if avatar_path != "" and ResourceLoader.exists(avatar_path):
+			profile_avatar.texture = load(avatar_path)
+			profile_avatar.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+
 	var grade_subject: String = gm.get("grade_subject") if "grade_subject" in gm else ""
 	if grade_subject != "" and grade_label:
 		_fit_label_text(grade_label, grade_subject, grade_label.size.x, 22, 14)
@@ -144,6 +154,25 @@ func _connect_signals() -> void:
 	if logout_confirmation_popup and logout_confirmation_popup.has_signal("confirmed"):
 		if not logout_confirmation_popup.confirmed.is_connected(_on_logout_confirmed):
 			logout_confirmation_popup.confirmed.connect(_on_logout_confirmed)
+
+## Tapping the teacher's picture (top right) opens Choose Avatar to change
+## it; tapping their name still opens Settings.
+func _setup_avatar_change() -> void:
+	if not profile_avatar:
+		return
+	var picture: Control = profile_avatar.get_parent()
+	if profile_click_area:
+		profile_click_area.offset_left = picture.offset_right
+	var change_button := Button.new()
+	change_button.name = "ChangeAvatarButton"
+	change_button.flat = true
+	change_button.focus_mode = Control.FOCUS_NONE
+	change_button.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
+	change_button.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	picture.add_child(change_button)
+	change_button.pressed.connect(func():
+		Global.set_meta("avatar_return_scene", "res://teacher_dashboard.tscn")
+		Global.change_scene("res://avatar_selection.tscn"))
 
 func _on_settings_button_pressed() -> void:
 	if settings_menu:

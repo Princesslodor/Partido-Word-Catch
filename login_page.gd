@@ -323,8 +323,7 @@ func _on_teacher_selected():
 		# This device already has a completed teacher account on it - no
 		# need to go through Login (which requires an online lookup) just
 		# to get back into an account that's already sitting right here.
-		if teacher_dashboard_scene != "":
-			Global.change_scene(teacher_dashboard_scene)
+		_open_teacher_dashboard()
 		return
 
 	# _save_role_to_gm() flips role and immediately calls save_game(), which
@@ -561,11 +560,24 @@ func _open_signed_in_teacher_class() -> void:
 			var saved_avatar: String = str(class_row.get("avatar_id", ""))
 			if saved_avatar != "" and saved_avatar != "<null>":
 				gm.set("avatar_id", saved_avatar)
+			elif not str(gm.avatar_id).begins_with("teacher_"):
+				# None saved online, and the one on this phone (if any)
+				# belongs to a pupil: the teacher picks their own.
+				gm.set("avatar_id", "")
 			if gm.has_method("save_game"):
 				gm.save_game()
-		if teacher_dashboard_scene != "":
-			Global.change_scene(teacher_dashboard_scene)
+		_open_teacher_dashboard()
 	)
+
+## A teacher who never picked an avatar (e.g. their class was made before
+## the picker existed) picks one first, then goes on to the dashboard.
+func _open_teacher_dashboard() -> void:
+	var gm = get_node_or_null("/root/GameManager")
+	if gm and "avatar_id" in gm and gm.avatar_id == "":
+		_change_to_avatar_selection()
+		return
+	if teacher_dashboard_scene != "":
+		Global.change_scene(teacher_dashboard_scene)
 
 func _show_login_status(message: String) -> void:
 	if not login_status_label:

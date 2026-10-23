@@ -55,7 +55,7 @@ func setup_and_show(p_class_name: String = "", p_teacher_name: String = "", avat
 	if class_name_label:
 		class_name_label.text = p_class_name
 	if teacher_label:
-		teacher_label.text = "Teacher: " + p_teacher_name
+		_fit_teacher_name(p_teacher_name)
 		
 	if avatar_texture:
 		if teacher_avatar:
@@ -65,6 +65,16 @@ func setup_and_show(p_class_name: String = "", p_teacher_name: String = "", avat
 
 	show()
 	move_to_front()
+
+## "Teacher:" on one line and the name under it. A long name gets a smaller
+## font so it stays inside the box (and is cut with "…" if still too long).
+func _fit_teacher_name(teacher_name: String) -> void:
+	teacher_label.text = "Teacher:\n" + teacher_name
+	var font := teacher_label.get_theme_font("font")
+	var size := 24
+	while size > 16 and font and font.get_string_size(teacher_name, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x > teacher_label.size.x:
+		size -= 1
+	teacher_label.add_theme_font_size_override("font_size", size)
 
 func _on_continue_pressed() -> void:
 	# The login page listens for this and changes the scene itself - which

@@ -48,6 +48,14 @@ func _ready() -> void:
 		var seed_key := GameManager.class_code + "|" + GameManager.player_name + "|" + GameManager.student_pin
 		LevelData.apply_student_shuffle(seed_key)
 
+	# The level stones are drawn on the map picture; on a tall phone the
+	# picture is enlarged to fill the screen, and they move along with it.
+	for region in [coastal_levels, lagonoy_levels, isarog_levels]:
+		if region:
+			for child in region.get_children():
+				if child is BaseButton:
+					child.add_to_group(ScreenFit.ON_BACKGROUND_GROUP)
+
 	if settings_menu:
 		settings_menu.hide()
 
