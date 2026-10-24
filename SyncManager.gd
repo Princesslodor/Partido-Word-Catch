@@ -330,9 +330,7 @@ func _read_oauth_request(peer: StreamPeerTCP) -> String:
 			if chunk[0] == OK:
 				buf.append_array(chunk[1])
 			var text := buf.get_string_from_utf8()
-			if text.contains("
-
-"):
+			if text.contains("\r\n\r\n"):
 				return text
 		else:
 			OS.delay_msec(10)
@@ -342,8 +340,7 @@ func _read_oauth_request(peer: StreamPeerTCP) -> String:
 ## Returns the callback's query parameters, or null if this wasn't the
 ## callback (e.g. the browser asking for /favicon.ico).
 func _handle_oauth_request(peer: StreamPeerTCP, request_text: String):
-	var request_line := request_text.get_slice("
-", 0)
+	var request_line := request_text.get_slice("\r\n", 0)
 	var target := request_line.get_slice(" ", 1)
 	if not target.begins_with("/auth/callback"):
 		_send_oauth_page(peer, "404 Not Found", "")
@@ -386,11 +383,15 @@ func _send_oauth_page(peer: StreamPeerTCP, status: String, title: String, detail
 			+ ".badge{width:72px;height:72px;border-radius:50%;margin:8px auto 12px;display:flex;align-items:center;justify-content:center;" \
 			+ "color:#fff;font-size:42px;font-weight:800;background:" + accent + ";animation:pop .5s .2s ease-out both}" \
 			+ "h1{margin:0 0 8px;font-size:26px;color:" + accent + "}p{margin:0;font-size:17px;color:#7a6e65;line-height:1.4}" \
-			+ ".btn{display:inline-block;margin-top:20px;padding:14px 28px;border-radius:999px;background:" + accent + ";color:#fff;" 			+ "font-size:18px;font-weight:800;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,.2)}" 			+ "@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}" \
+			+ ".btn{display:inline-block;margin-top:20px;padding:14px 28px;border-radius:999px;background:" + accent + ";color:#fff;" \
+			+ "font-size:18px;font-weight:800;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,.2)}" \
+			+ "@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}" \
 			+ "</style></head><body><div class=\"card\">" \
 			+ ("<img class=\"logo\" alt=\"Partido Word Catch\" src=\"" + logo + "\">" if logo != "" else "<h2>Partido Word Catch</h2>") \
 			+ "<div class=\"badge\">" + ("&#10003;" if ok else "!") + "</div>" \
-			+ "<h1>" + title.xml_escape() + "</h1><p>" + detail.xml_escape() + "</p>" 			+ back 			+ "</div>" + script + "</body></html>"
+			+ "<h1>" + title.xml_escape() + "</h1><p>" + detail.xml_escape() + "</p>" \
+			+ back \
+			+ "</div>" + script + "</body></html>"
 	var body := html.to_utf8_buffer()
 	var head := "HTTP/1.1 %s\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: %d\r\nConnection: close\r\n\r\n" % [status, body.size()]
 	peer.put_data(head.to_utf8_buffer())
