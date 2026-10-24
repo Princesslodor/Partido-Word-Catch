@@ -29,7 +29,12 @@ extends Control
 
 # --- Students page (populated live from Supabase) ---
 @onready var students_panel: Panel = $Students/Panel
+@onready var view_all_label: Label = $Students/ViewAllLabel
 var _dynamic_student_nodes: Array = []
+var _students_scroll: ScrollContainer = null
+var _students_list: Control = null
+var _show_all_students := false
+var _last_students_data: Array = []
 
 # --- Leaderboard (populated live from Supabase) ---
 @onready var leaderboard_content: Control = $Leaderboard/LeaderboardScroll/LeaderboardContent
@@ -40,9 +45,15 @@ var _dynamic_student_nodes: Array = []
 ]
 @onready var empty_roster_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/EmptyRosterMessage
 @onready var levels_graph_panel: Panel = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel
+# The wooden board and the cream panel behind the rankings grow when there
+# are more students than fit, and the graph moves down below them.
+@onready var leaderboard_board: TextureRect = $Leaderboard/LeaderboardScroll/LeaderboardContent/TextureRect
+@onready var leaderboard_panel: Panel = $Leaderboard/LeaderboardScroll/LeaderboardContent/Panel
+const BOARD_HEIGHT := 1008.0
+const RANKING_PANEL_HEIGHT := 761.0
+const GRAPH_TOP := 1140.0
 @onready var empty_graph_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel/EmptyGraphMessage
 
-const MAX_EXTRA_ROWS := 5
 const LAST_LEVEL := 30
 var _dynamic_leaderboard_nodes: Array = []
 var _bold_font: FontFile = load("res://Nunito-Bold.ttf")
@@ -65,6 +76,9 @@ func _ready() -> void:
 	_connect_sound_to_all_buttons(self)
 	if leaderboard_content:
 		_let_touch_scroll_through(leaderboard_content)
+	if view_all_label:
+		view_all_label.mouse_filter = Control.MOUSE_FILTER_STOP
+		view_all_label.gui_input.connect(_on_view_all_input)
 
 ## On a phone, a ScrollContainer only scrolls when the finger drag reaches it.
 ## Panels and plain Controls default to MOUSE_FILTER_STOP, which swallows the
@@ -212,7 +226,18 @@ func _on_student_button_pressed() -> void:
 	_hide_all_pages()
 	if students: students.show()
 	if back_button: back_button.show()
+	_show_all_students = false
 	_refresh_students_list()
+
+## "View All" shows every student (the list scrolls); tapped again it goes
+## back to the first few.
+func _on_view_all_input(event: InputEvent) -> void:
+	var tapped: bool = (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed) \
+		or (event is InputEventScreenTouch and not event.pressed)
+	if not tapped:
+		return
+	_show_all_students = not _show_all_students
+	_render_students_list(_last_students_data)
 
 func _on_leaderboard_button_pressed() -> void:
 	_hide_all_pages()
@@ -296,6 +321,7 @@ func _render_students_list(students_data: Array) -> void:
 
 	if not students_panel:
 		return
+	_last_students_data = students_data
 
 	if total_students_label:
 		total_students_label.text = str(students_data.size())
@@ -325,15 +351,32 @@ func _render_students_list(students_data: Array) -> void:
 	var row_top := 100.0
 	var row_height := 64.0
 	var max_visible_rows: int = max(1, int((students_panel.size.y - row_top) / row_height))
-	for i in range(min(students_data.size(), max_visible_rows)):
+	var shown: int = students_data.size() if _show_all_students else min(students_data.size(), max_visible_rows)
+	if view_all_label:
+		view_all_label.visible = students_data.size() > max_visible_rows
+		view_all_label.text = "Show Less   <" if _show_all_students else "View All   >"
+
+	if _students_scroll == null:
+		_students_scroll = ScrollContainer.new()
+		_students_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+		_students_scroll.position = Vector2(0, row_top)
+		_students_scroll.size = Vector2(students_panel.size.x, students_panel.size.y - row_top - 10)
+		students_panel.add_child(_students_scroll)
+		_students_list = Control.new()
+		_students_list.mouse_filter = Control.MOUSE_FILTER_PASS
+		_students_scroll.add_child(_students_list)
+	_students_list.custom_minimum_size = Vector2(students_panel.size.x - 20, shown * row_height)
+	_students_scroll.scroll_vertical = 0
+
+	for i in range(shown):
 		var row: Dictionary = students_data[i]
 		var name_label := Label.new()
 		name_label.add_theme_font_override("font", _bold_font)
 		name_label.add_theme_color_override("font_color", Color(0.16, 0.38, 0.56, 1))
-		name_label.position = Vector2(20, row_top + i * row_height)
+		name_label.position = Vector2(20, i * row_height)
 		name_label.size = Vector2(330, 40)
 		_fit_label_text(name_label, str(row.get("player_name", "Student")), 320.0, 26, 16)
-		students_panel.add_child(name_label)
+		_students_list.add_child(name_label)
 		_dynamic_student_nodes.append(name_label)
 
 		var level_label := Label.new()
@@ -342,9 +385,9 @@ func _render_students_list(students_data: Array) -> void:
 		level_label.add_theme_font_size_override("font_size", 22)
 		level_label.add_theme_color_override("font_color", Color(0.3, 0.3, 0.3, 1))
 		level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-		level_label.position = Vector2(360, row_top + i * row_height)
+		level_label.position = Vector2(360, i * row_height)
 		level_label.size = Vector2(140, 40)
-		students_panel.add_child(level_label)
+		_students_list.add_child(level_label)
 		_dynamic_student_nodes.append(level_label)
 
 # --- LEADERBOARD (live data from Supabase, offline-safe) ---
@@ -524,14 +567,19 @@ func _render_extra_rows(students_data: Array) -> void:
 	if not empty_roster_message:
 		return
 
+	var row_top := 774.0
+	var row_height := 44.0
+	var extra: Array = students_data.slice(3) if students_data.size() > 3 else []
+	var grow: float = maxf(0.0, row_top + extra.size() * row_height + 20.0 - (leaderboard_panel.position.y + RANKING_PANEL_HEIGHT)) if leaderboard_panel else 0.0
+	if leaderboard_panel: leaderboard_panel.size.y = RANKING_PANEL_HEIGHT + grow
+	if leaderboard_board: leaderboard_board.size.y = BOARD_HEIGHT + grow
+	if levels_graph_panel: levels_graph_panel.position.y = GRAPH_TOP + grow
+
 	if students_data.size() <= 3:
 		empty_roster_message.visible = students_data.is_empty()
 		return
 
 	empty_roster_message.hide()
-	var extra: Array = students_data.slice(3, 3 + MAX_EXTRA_ROWS)
-	var row_top := 774.0
-	var row_height := 44.0
 	for i in range(extra.size()):
 		var row: Dictionary = extra[i]
 		var y := row_top + i * row_height

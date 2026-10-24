@@ -449,7 +449,7 @@ theme_override_constants/icon_max_width = 48
 theme_override_fonts/font = ExtResource("3_2jwbv")
 theme_override_font_sizes/font_size = 35
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w0kd")
-text = "Student"
+text = "Students"
 icon = ExtResource("6_48pe7")
 expand_icon = true
 
