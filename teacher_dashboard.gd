@@ -29,12 +29,12 @@ extends Control
 
 # --- Students page (populated live from Supabase) ---
 @onready var students_panel: Panel = $Students/Panel
-@onready var view_all_label: Label = $Students/ViewAllLabel
 var _dynamic_student_nodes: Array = []
-var _students_scroll: ScrollContainer = null
-var _students_list: Control = null
-var _show_all_students := false
-var _last_students_data: Array = []
+# The Students page first shows the students that fit in the panel;
+# "View All" switches to every student in a list that scrolls.
+var _students_data: Array = []
+var _show_all_students: bool = false
+var _view_all_button: Button = null
 
 # --- Leaderboard (populated live from Supabase) ---
 @onready var leaderboard_content: Control = $Leaderboard/LeaderboardScroll/LeaderboardContent
@@ -45,15 +45,12 @@ var _last_students_data: Array = []
 ]
 @onready var empty_roster_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/EmptyRosterMessage
 @onready var levels_graph_panel: Panel = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel
-# The wooden board and the cream panel behind the rankings grow when there
-# are more students than fit, and the graph moves down below them.
-@onready var leaderboard_board: TextureRect = $Leaderboard/LeaderboardScroll/LeaderboardContent/TextureRect
-@onready var leaderboard_panel: Panel = $Leaderboard/LeaderboardScroll/LeaderboardContent/Panel
-const BOARD_HEIGHT := 1008.0
-const RANKING_PANEL_HEIGHT := 761.0
-const GRAPH_TOP := 1140.0
 @onready var empty_graph_message: Label = $Leaderboard/LeaderboardScroll/LeaderboardContent/LevelsGraphPanel/EmptyGraphMessage
 
+## Rows below the podium that fit on the wooden board as drawn; with more
+## students the board grows taller so every student is listed.
+const MAX_EXTRA_ROWS := 5
+const EXTRA_ROW_HEIGHT := 44.0
 const LAST_LEVEL := 30
 var _dynamic_leaderboard_nodes: Array = []
 var _bold_font: FontFile = load("res://Nunito-Bold.ttf")
@@ -76,9 +73,26 @@ func _ready() -> void:
 	_connect_sound_to_all_buttons(self)
 	if leaderboard_content:
 		_let_touch_scroll_through(leaderboard_content)
-	if view_all_label:
-		view_all_label.mouse_filter = Control.MOUSE_FILTER_STOP
-		view_all_label.gui_input.connect(_on_view_all_input)
+	_setup_view_all_button()
+
+## "View All" in the scene is only a label; a flat button over it makes it
+## tappable.
+func _setup_view_all_button() -> void:
+	var view_all_label: Label = get_node_or_null("Students/ViewAllLabel") as Label
+	if not view_all_label:
+		return
+	_view_all_button = Button.new()
+	_view_all_button.flat = true
+	_view_all_button.focus_mode = Control.FOCUS_NONE
+	_view_all_button.position = view_all_label.position - Vector2(16, 14)
+	_view_all_button.size = view_all_label.size + Vector2(32, 28)
+	view_all_label.get_parent().add_child(_view_all_button)
+	_view_all_button.pressed.connect(func():
+		Global.play_click_sound()
+		_show_all_students = not _show_all_students
+		view_all_label.text = "Show Less   <" if _show_all_students else "View All   >"
+		_render_students_list(_students_data)
+	)
 
 ## On a phone, a ScrollContainer only scrolls when the finger drag reaches it.
 ## Panels and plain Controls default to MOUSE_FILTER_STOP, which swallows the
@@ -224,20 +238,12 @@ func _on_create_class_code_pressed() -> void:
 
 func _on_student_button_pressed() -> void:
 	_hide_all_pages()
+	_show_all_students = false
+	var view_all_label: Label = get_node_or_null("Students/ViewAllLabel") as Label
+	if view_all_label: view_all_label.text = "View All   >"
 	if students: students.show()
 	if back_button: back_button.show()
-	_show_all_students = false
 	_refresh_students_list()
-
-## "View All" shows every student (the list scrolls); tapped again it goes
-## back to the first few.
-func _on_view_all_input(event: InputEvent) -> void:
-	var tapped: bool = (event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and not event.pressed) \
-		or (event is InputEventScreenTouch and not event.pressed)
-	if not tapped:
-		return
-	_show_all_students = not _show_all_students
-	_render_students_list(_last_students_data)
 
 func _on_leaderboard_button_pressed() -> void:
 	_hide_all_pages()
@@ -318,10 +324,10 @@ func _render_students_list(students_data: Array) -> void:
 		if is_instance_valid(node):
 			node.queue_free()
 	_dynamic_student_nodes.clear()
+	_students_data = students_data
 
 	if not students_panel:
 		return
-	_last_students_data = students_data
 
 	if total_students_label:
 		total_students_label.text = str(students_data.size())
@@ -351,22 +357,24 @@ func _render_students_list(students_data: Array) -> void:
 	var row_top := 100.0
 	var row_height := 64.0
 	var max_visible_rows: int = max(1, int((students_panel.size.y - row_top) / row_height))
-	var shown: int = students_data.size() if _show_all_students else min(students_data.size(), max_visible_rows)
-	if view_all_label:
-		view_all_label.visible = students_data.size() > max_visible_rows
-		view_all_label.text = "Show Less   <" if _show_all_students else "View All   >"
+	var shown: int = students_data.size() if _show_all_students else mini(students_data.size(), max_visible_rows)
+	if _view_all_button:
+		_view_all_button.visible = students_data.size() > max_visible_rows
+		var view_all_label: Label = get_node_or_null("Students/ViewAllLabel") as Label
+		if view_all_label: view_all_label.visible = _view_all_button.visible
 
-	if _students_scroll == null:
-		_students_scroll = ScrollContainer.new()
-		_students_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-		_students_scroll.position = Vector2(0, row_top)
-		_students_scroll.size = Vector2(students_panel.size.x, students_panel.size.y - row_top - 10)
-		students_panel.add_child(_students_scroll)
-		_students_list = Control.new()
-		_students_list.mouse_filter = Control.MOUSE_FILTER_PASS
-		_students_scroll.add_child(_students_list)
-	_students_list.custom_minimum_size = Vector2(students_panel.size.x - 20, shown * row_height)
-	_students_scroll.scroll_vertical = 0
+	# The rows sit in a list that scrolls with the finger when there are
+	# more students than fit in the panel.
+	var scroll := ScrollContainer.new()
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.position = Vector2(0, row_top)
+	scroll.size = Vector2(students_panel.size.x, students_panel.size.y - row_top - 12)
+	students_panel.add_child(scroll)
+	_dynamic_student_nodes.append(scroll)
+	var list := Control.new()
+	list.mouse_filter = Control.MOUSE_FILTER_PASS
+	list.custom_minimum_size = Vector2(students_panel.size.x - 20, shown * row_height)
+	scroll.add_child(list)
 
 	for i in range(shown):
 		var row: Dictionary = students_data[i]
@@ -376,8 +384,7 @@ func _render_students_list(students_data: Array) -> void:
 		name_label.position = Vector2(20, i * row_height)
 		name_label.size = Vector2(330, 40)
 		_fit_label_text(name_label, str(row.get("player_name", "Student")), 320.0, 26, 16)
-		_students_list.add_child(name_label)
-		_dynamic_student_nodes.append(name_label)
+		list.add_child(name_label)
 
 		var level_label := Label.new()
 		level_label.text = _level_text(row)
@@ -387,8 +394,7 @@ func _render_students_list(students_data: Array) -> void:
 		level_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 		level_label.position = Vector2(360, i * row_height)
 		level_label.size = Vector2(140, 40)
-		_students_list.add_child(level_label)
-		_dynamic_student_nodes.append(level_label)
+		list.add_child(level_label)
 
 # --- LEADERBOARD (live data from Supabase, offline-safe) ---
 
@@ -567,19 +573,17 @@ func _render_extra_rows(students_data: Array) -> void:
 	if not empty_roster_message:
 		return
 
-	var row_top := 774.0
-	var row_height := 44.0
-	var extra: Array = students_data.slice(3) if students_data.size() > 3 else []
-	var grow: float = maxf(0.0, row_top + extra.size() * row_height + 20.0 - (leaderboard_panel.position.y + RANKING_PANEL_HEIGHT)) if leaderboard_panel else 0.0
-	if leaderboard_panel: leaderboard_panel.size.y = RANKING_PANEL_HEIGHT + grow
-	if leaderboard_board: leaderboard_board.size.y = BOARD_HEIGHT + grow
-	if levels_graph_panel: levels_graph_panel.position.y = GRAPH_TOP + grow
+	var extra_count: int = maxi(0, students_data.size() - 3)
+	_grow_leaderboard_board(maxi(0, extra_count - MAX_EXTRA_ROWS) * EXTRA_ROW_HEIGHT)
 
 	if students_data.size() <= 3:
 		empty_roster_message.visible = students_data.is_empty()
 		return
 
 	empty_roster_message.hide()
+	var extra: Array = students_data.slice(3)
+	var row_top := 774.0
+	var row_height := EXTRA_ROW_HEIGHT
 	for i in range(extra.size()):
 		var row: Dictionary = extra[i]
 		var y := row_top + i * row_height
@@ -644,6 +648,64 @@ func _render_extra_rows(students_data: Array) -> void:
 		points_label.size = Vector2(50, row_height)
 		leaderboard_content.add_child(points_label)
 		_dynamic_leaderboard_nodes.append(points_label)
+
+var _board_base: Dictionary = {}
+var _board_pieces: Array = []
+
+## Makes the leaderboard's wooden board `extra_height` taller (0 = as drawn)
+## and moves the graph below it down to match. The board picture is cut
+## into top, middle and bottom strips; only the plain middle strip is
+## stretched, so the leaves and corners keep their shape.
+func _grow_leaderboard_board(extra_height: float) -> void:
+	var frame: TextureRect = leaderboard_content.get_node_or_null("TextureRect") as TextureRect if leaderboard_content else null
+	var cream: Control = leaderboard_content.get_node_or_null("Panel") as Control if leaderboard_content else null
+	if not frame or not cream or not levels_graph_panel or not frame.texture:
+		return
+	if _board_base.is_empty():
+		_board_base = {
+			"frame_pos": frame.position, "frame_size": frame.size,
+			"cream_h": cream.size.y, "graph_y": levels_graph_panel.position.y,
+		}
+	cream.size.y = _board_base.cream_h + extra_height
+	levels_graph_panel.position.y = _board_base.graph_y + extra_height
+
+	if extra_height <= 0.0:
+		frame.show()
+		for piece in _board_pieces:
+			piece.hide()
+		return
+
+	var tex_size: Vector2 = frame.texture.get_size()
+	var cut_top: float = round(tex_size.y * 0.27)
+	var cut_bottom: float = round(tex_size.y * 0.82)
+	var regions := [
+		Rect2(0, 0, tex_size.x, cut_top),
+		Rect2(0, cut_top, tex_size.x, cut_bottom - cut_top),
+		Rect2(0, cut_bottom, tex_size.x, tex_size.y - cut_bottom),
+	]
+	if _board_pieces.is_empty():
+		for region in regions:
+			var atlas := AtlasTexture.new()
+			atlas.atlas = frame.texture
+			atlas.region = region
+			var piece := TextureRect.new()
+			piece.texture = atlas
+			piece.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+			piece.stretch_mode = TextureRect.STRETCH_SCALE
+			piece.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			leaderboard_content.add_child(piece)
+			leaderboard_content.move_child(piece, frame.get_index() + 1 + _board_pieces.size())
+			_board_pieces.append(piece)
+	frame.hide()
+	var scale_y: float = _board_base.frame_size.y / tex_size.y
+	var y: float = _board_base.frame_pos.y
+	for i in 3:
+		var piece: TextureRect = _board_pieces[i]
+		var h: float = regions[i].size.y * scale_y + (extra_height if i == 1 else 0.0)
+		piece.position = Vector2(_board_base.frame_pos.x, y)
+		piece.size = Vector2(_board_base.frame_size.x, h)
+		piece.show()
+		y += h
 
 func _render_graph(students_data: Array) -> void:
 	if not levels_graph_panel:
