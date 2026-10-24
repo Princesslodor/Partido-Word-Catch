@@ -168,9 +168,12 @@ func _send_rpc(function_name: String, params: Dictionary, on_result: Callable, b
 ##      swapped for a session (access token + refresh token).
 ## On Android the game is paused while the browser is in front, so the
 ## loopback address is served from its own thread: the browser gets its
-## page right away instead of loading until the teacher switches back,
-## and that page sends the teacher straight back to the app. The code is
-## swapped for a session once the game is running again.
+## page right away instead of loading until the teacher switches back.
+## The page tells the teacher to press the phone's Back button, which
+## closes the tab and returns to the game. (A link that opens the app from
+## the browser would need a deep-link intent filter in the Android
+## manifest, i.e. a Gradle build.) The code is swapped for a session once
+## the game is running again.
 ##
 ## Supabase dashboard setup is listed at the top of supabase_hardening.sql
 ## (enable the Google provider, and allow OAUTH_REDIRECT_URL as a
@@ -345,9 +348,9 @@ func _handle_oauth_request(peer: StreamPeerTCP, request_text: String):
 		params[pair.get_slice("=", 0)] = pair.get_slice("=", 1).replace("+", " ").uri_decode()
 
 	if str(params.get("code", "")) == "":
-		_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in.", "Bumalik sa Partido Word Catch at subukan muli.", false)
+		_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in.", "Pindutin ang Back ng phone para bumalik sa Partido Word Catch, at subukan muli.", false)
 	else:
-		_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Isara na ito at bumalik sa Partido Word Catch.", true)
+		_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Pindutin ang Back ng phone para bumalik sa Partido Word Catch.", true)
 	return params
 
 ## The page the teacher's browser lands on after picking their Google
@@ -358,8 +361,6 @@ func _send_oauth_page(peer: StreamPeerTCP, status: String, title: String, detail
 	if title != "":
 		var logo := _oauth_logo_uri
 		var accent := "#4e7c38" if ok else "#b31c1c"
-		# No "back to app" link: Chrome only opens apps that are marked
-		# browsable, so an intent: link landed on Play Store "Item not found".
 		html = "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" \
 			+ "<title>Partido Word Catch</title><style>" \
 			+ "body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;" \
@@ -370,11 +371,14 @@ func _send_oauth_page(peer: StreamPeerTCP, status: String, title: String, detail
 			+ ".badge{width:72px;height:72px;border-radius:50%;margin:8px auto 12px;display:flex;align-items:center;justify-content:center;" \
 			+ "color:#fff;font-size:42px;font-weight:800;background:" + accent + ";animation:pop .5s .2s ease-out both}" \
 			+ "h1{margin:0 0 8px;font-size:26px;color:" + accent + "}p{margin:0;font-size:17px;color:#7a6e65;line-height:1.4}" \
+			+ ".back{display:inline-block;margin-top:18px;padding:10px 22px;border-radius:999px;border:2px dashed " + accent + ";color:" + accent + ";" \
+			+ "font-size:18px;font-weight:800}" \
 			+ "@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}" \
 			+ "</style></head><body><div class=\"card\">" \
 			+ ("<img class=\"logo\" alt=\"Partido Word Catch\" src=\"" + logo + "\">" if logo != "" else "<h2>Partido Word Catch</h2>") \
 			+ "<div class=\"badge\">" + ("&#10003;" if ok else "!") + "</div>" \
 			+ "<h1>" + title.xml_escape() + "</h1><p>" + detail.xml_escape() + "</p>" \
+			+ "<div class=\"back\">&#9664; Back</div>" \
 			+ "</div></body></html>"
 	var body := html.to_utf8_buffer()
 	var head := "HTTP/1.1 %s\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: %d\r\nConnection: close\r\n\r\n" % [status, body.size()]
