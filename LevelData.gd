@@ -66,7 +66,7 @@ var sentence_pools = {
 		"distractors": ["MAGAYON", "KAPALIGIRAN", "BANWAAN", "TIYO", "IGWA", "KAMI", "HILING"]
 	},
 	28: {
-		"words": ["URO-UTRO", "NIYANG", "TIGSABI", "AN", "SAKUYANG", "PANGARAN"],
+		"words": ["URO-UTRO", "NIYANG", "TIGSASABI", "AN", "SAKUYANG", "PANGARAN"],
 		"distractors": ["NAGLALAKAD", "DALAN", "MAHAMIS", "TINAPAY", "ANNA", "ASIN", "ARIN", "INI", "SA"]
 	},
 	29: {
@@ -298,7 +298,7 @@ var levels = {
 	},
 	28: {
 		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
-		"word": "URO-UTRO NIYANG TIGSABI AN SAKUYANG PANGARAN",
+		"word": "URO-UTRO NIYANG TIGSASABI AN SAKUYANG PANGARAN",
 		"clue": "Paulit-ulit niyang sinasabi ang aking pangalan.",
 		"meaning": "Paulit-ulit niyang binabanggit ang pangalan ko.",
 		"cultural_note": "Uro-utro ay ibig sabihin paulit-ulit na lagi nating ginagawa.",

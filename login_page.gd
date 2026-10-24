@@ -83,6 +83,9 @@ func _connect_signals():
 		teacher_card.pressed.connect(_on_teacher_selected)
 
 	if back_button:
+		# On a tall phone the back button stays near the top, at the same
+		# height as on the other screens.
+		back_button.add_to_group(ScreenFit.TOP_GROUP)
 		if back_button.pressed.is_connected(_on_back_button_pressed):
 			back_button.pressed.disconnect(_on_back_button_pressed)
 		back_button.pressed.connect(_on_back_button_pressed)
@@ -309,6 +312,11 @@ func _on_teacher_selected():
 
 	var gm = get_node_or_null("/root/GameManager")
 	var sync = get_node_or_null("/root/SyncManager")
+	# "Remember Me" off: the Google sign-in isn't kept between visits, so
+	# the teacher signs in with Google again.
+	if gm and "remember_teacher_login" in gm and not gm.remember_teacher_login \
+			and sync and sync.has_method("has_teacher_session") and sync.has_teacher_session():
+		sync.sign_out()
 	# A Google sign-in is required too: a teacher saved on this phone from
 	# before Google sign-in existed has to sign in once before the
 	# dashboard can load their class.

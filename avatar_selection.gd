@@ -117,6 +117,10 @@ func _filter_avatars_by_role() -> void:
 		teacher_container.visible = (current_role == "TEACHER")
 
 func _connect_signals() -> void:
+	# On a tall phone the back button stays near the top, at the same
+	# height as on the other screens.
+	if back_button:
+		back_button.add_to_group(ScreenFit.TOP_GROUP)
 	if back_button and not back_button.pressed.is_connected(_on_back_pressed):
 		back_button.pressed.connect(_on_back_pressed)
 	if confirm_button and not confirm_button.pressed.is_connected(_on_confirm_pressed):

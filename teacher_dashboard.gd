@@ -53,6 +53,9 @@ func _ready() -> void:
 	# button goes up there too.
 	if back_button:
 		back_button.add_to_group(ScreenFit.TOP_GROUP)
+	# The teacher's name and picture sit at the top too, level with it.
+	if profile_click_area:
+		profile_click_area.get_parent().add_to_group(ScreenFit.TOP_GROUP)
 	_load_teacher_info()
 	_show_dashboard()
 	_connect_signals()
@@ -180,8 +183,11 @@ func _on_logout_confirmed() -> void:
 	gm.set("class_code", "")
 	if gm.has_method("save_game"):
 		gm.save_game()
+	# With "Remember Me" on, the Google sign-in stays on this phone, so the
+	# next "Continue with Google" goes straight in without the browser.
 	var sync = get_node_or_null("/root/SyncManager")
-	if sync and sync.has_method("sign_out"):
+	var remember: bool = "remember_teacher_login" in gm and gm.remember_teacher_login
+	if sync and sync.has_method("sign_out") and not remember:
 		sync.sign_out()
 
 func _hide_all_pages() -> void:
