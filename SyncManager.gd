@@ -167,7 +167,10 @@ func _send_rpc(function_name: String, params: Dictionary, on_result: Callable, b
 ##   4. The code plus the secret verifier that never left this phone are
 ##      swapped for a session (access token + refresh token).
 ## On Android the game is paused while the browser is in front, so the
-## browser's request is picked up as soon as the teacher switches back.
+## loopback address is served from its own thread: the browser gets its
+## page right away instead of loading until the teacher switches back,
+## and that page sends the teacher straight back to the app. The code is
+## swapped for a session once the game is running again.
 ##
 ## Supabase dashboard setup is listed at the top of supabase_hardening.sql
 ## (enable the Google provider, and allow OAUTH_REDIRECT_URL as a
@@ -176,6 +179,9 @@ const AUTH_SESSION_PATH: String = "user://auth_session.json"
 const OAUTH_PORT: int = 43821
 const OAUTH_REDIRECT_URL: String = "http://127.0.0.1:43821/auth/callback"
 const OAUTH_TIMEOUT_MS: int = 5 * 60 * 1000
+## Must match package/unique_name in the Android export preset - the
+## sign-in page uses it to bring this app back to the front.
+const ANDROID_PACKAGE: String = "com.partido.wordcatch"
 
 var _access_token: String = ""
 var _refresh_token: String = ""
@@ -185,7 +191,11 @@ var teacher_user_email: String = ""
 var teacher_display_name: String = ""
 
 var _oauth_server: TCPServer = null
-var _oauth_peers: Array = []             # [{"peer": StreamPeerTCP, "buf": PackedByteArray}]
+var _oauth_thread: Thread = null
+var _oauth_mutex: Mutex = Mutex.new()
+var _oauth_stop: bool = false            # guarded by _oauth_mutex
+var _oauth_params = null                 # guarded by _oauth_mutex; the callback's query once it arrives
+var _oauth_return_url: String = ""       # where the sign-in page sends the browser back to
 var _oauth_verifier: String = ""
 var _oauth_on_result: Callable = Callable()
 var _oauth_deadline_ms: int = 0
@@ -240,6 +250,15 @@ func sign_in_with_google(on_result: Callable) -> void:
 	var challenge := _base64url(_oauth_verifier.sha256_buffer())
 	_oauth_on_result = on_result
 	_oauth_deadline_ms = Time.get_ticks_msec() + OAUTH_TIMEOUT_MS
+	# Built here because the server thread can't load resources.
+	_oauth_logo_data_uri()
+	_oauth_return_url = ""
+	if OS.get_name() == "Android":
+		_oauth_return_url = "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=" + ANDROID_PACKAGE + ";end"
+	_oauth_stop = false
+	_oauth_params = null
+	_oauth_thread = Thread.new()
+	_oauth_thread.start(_oauth_serve)
 	set_process(true)
 
 	var url := SUPABASE_URL + "/auth/v1/authorize?provider=google" \
@@ -256,56 +275,90 @@ func _process(_delta: float) -> void:
 		_finish_oauth(false, "Sign-in timed out. Please try again.")
 		return
 
-	while _oauth_server.is_connection_available():
-		_oauth_peers.append({"peer": _oauth_server.take_connection(), "buf": PackedByteArray()})
+	_oauth_mutex.lock()
+	var params = _oauth_params
+	_oauth_mutex.unlock()
+	if params == null:
+		return
 
-	for entry in _oauth_peers.duplicate():
-		var peer: StreamPeerTCP = entry["peer"]
+	var code: String = params.get("code", "")
+	if code == "":
+		var reason: String = params.get("error_description", params.get("error", ""))
+		_finish_oauth(false, "Sign-in was cancelled." + (" (" + reason + ")" if reason != "" else ""))
+		return
+	var verifier := _oauth_verifier
+	# Stop listening but keep _oauth_on_result for _exchange_auth_code().
+	_close_oauth_server()
+	_exchange_auth_code(code, verifier)
+
+## Runs on _oauth_thread: answers the browser on the loopback address,
+## even while the game itself is paused in the background, and hands the
+## callback's query to _process() through _oauth_params.
+func _oauth_serve() -> void:
+	while true:
+		_oauth_mutex.lock()
+		var stop := _oauth_stop
+		_oauth_mutex.unlock()
+		if stop:
+			return
+		if not _oauth_server.is_connection_available():
+			OS.delay_msec(50)
+			continue
+		var peer := _oauth_server.take_connection()
+		var request_text := _read_oauth_request(peer)
+		if request_text == "":
+			peer.disconnect_from_host()
+			continue
+		var params = _handle_oauth_request(peer, request_text)
+		if params != null:
+			_oauth_mutex.lock()
+			_oauth_params = params
+			_oauth_mutex.unlock()
+			return
+
+## Reads one HTTP request head from the browser (gives up after 5 s).
+func _read_oauth_request(peer: StreamPeerTCP) -> String:
+	var buf := PackedByteArray()
+	var deadline := Time.get_ticks_msec() + 5000
+	while Time.get_ticks_msec() < deadline:
 		peer.poll()
 		if peer.get_status() != StreamPeerTCP.STATUS_CONNECTED:
-			_oauth_peers.erase(entry)
-			continue
+			return ""
 		var available := peer.get_available_bytes()
 		if available > 0:
 			var chunk: Array = peer.get_data(available)
 			if chunk[0] == OK:
-				var buf: PackedByteArray = entry["buf"]
 				buf.append_array(chunk[1])
-				entry["buf"] = buf
-		var text: String = (entry["buf"] as PackedByteArray).get_string_from_utf8()
-		if not text.contains("\r\n\r\n"):
-			continue
-		_oauth_peers.erase(entry)
-		_handle_oauth_request(peer, text)
-		if _oauth_server == null:
-			return
+			var text := buf.get_string_from_utf8()
+			if text.contains("
+
+"):
+				return text
+		else:
+			OS.delay_msec(10)
+	return ""
 
 ## Handles one HTTP request the browser sent to the loopback address.
-func _handle_oauth_request(peer: StreamPeerTCP, request_text: String) -> void:
-	var request_line := request_text.get_slice("\r\n", 0)
+## Returns the callback's query parameters, or null if this wasn't the
+## callback (e.g. the browser asking for /favicon.ico).
+func _handle_oauth_request(peer: StreamPeerTCP, request_text: String):
+	var request_line := request_text.get_slice("
+", 0)
 	var target := request_line.get_slice(" ", 1)
 	if not target.begins_with("/auth/callback"):
-		# e.g. the browser asking for /favicon.ico - not ours to answer.
 		_send_oauth_page(peer, "404 Not Found", "")
-		return
+		return null
 
 	var params := {}
 	var query := target.get_slice("?", 1) if target.contains("?") else ""
 	for pair in query.split("&", false):
 		params[pair.get_slice("=", 0)] = pair.get_slice("=", 1).replace("+", " ").uri_decode()
 
-	var code: String = params.get("code", "")
-	if code == "":
+	if str(params.get("code", "")) == "":
 		_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in.", "Bumalik sa Partido Word Catch at subukan muli.", false)
-		var reason: String = params.get("error_description", params.get("error", ""))
-		_finish_oauth(false, "Sign-in was cancelled." + (" (" + reason + ")" if reason != "" else ""))
-		return
-
-	_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Bumalik na sa Partido Word Catch. Maaari mo nang isara ang tab na ito.", true)
-	var verifier := _oauth_verifier
-	# Stop listening but keep _oauth_on_result for _exchange_auth_code().
-	_close_oauth_server()
-	_exchange_auth_code(code, verifier)
+	else:
+		_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Babalik ka na sa Partido Word Catch...", true)
+	return params
 
 ## The page the teacher's browser lands on after picking their Google
 ## account. Styled like the game (cream card, green/red accents) with the
@@ -313,8 +366,16 @@ func _handle_oauth_request(peer: StreamPeerTCP, request_text: String) -> void:
 func _send_oauth_page(peer: StreamPeerTCP, status: String, title: String, detail: String = "", ok: bool = true) -> void:
 	var html := ""
 	if title != "":
-		var logo := _oauth_logo_data_uri()
+		var logo := _oauth_logo_uri
 		var accent := "#4e7c38" if ok else "#b31c1c"
+		# On Android: a button back to the app, and on success go back on
+		# our own after a moment so the teacher sees the confirmation first.
+		var back := ""
+		var script := ""
+		if _oauth_return_url != "":
+			back = "<a class=\"btn\" href=\"" + _oauth_return_url + "\">Bumalik sa App</a>"
+			if ok:
+				script = "<script>setTimeout(function(){location.href=\"" + _oauth_return_url + "\"},1200)</script>"
 		html = "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" \
 			+ "<title>Partido Word Catch</title><style>" \
 			+ "body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;" \
@@ -325,11 +386,11 @@ func _send_oauth_page(peer: StreamPeerTCP, status: String, title: String, detail
 			+ ".badge{width:72px;height:72px;border-radius:50%;margin:8px auto 12px;display:flex;align-items:center;justify-content:center;" \
 			+ "color:#fff;font-size:42px;font-weight:800;background:" + accent + ";animation:pop .5s .2s ease-out both}" \
 			+ "h1{margin:0 0 8px;font-size:26px;color:" + accent + "}p{margin:0;font-size:17px;color:#7a6e65;line-height:1.4}" \
-			+ "@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}" \
+			+ ".btn{display:inline-block;margin-top:20px;padding:14px 28px;border-radius:999px;background:" + accent + ";color:#fff;" 			+ "font-size:18px;font-weight:800;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,.2)}" 			+ "@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}" \
 			+ "</style></head><body><div class=\"card\">" \
 			+ ("<img class=\"logo\" alt=\"Partido Word Catch\" src=\"" + logo + "\">" if logo != "" else "<h2>Partido Word Catch</h2>") \
 			+ "<div class=\"badge\">" + ("&#10003;" if ok else "!") + "</div>" \
-			+ "<h1>" + title.xml_escape() + "</h1><p>" + detail.xml_escape() + "</p></div></body></html>"
+			+ "<h1>" + title.xml_escape() + "</h1><p>" + detail.xml_escape() + "</p>" 			+ back 			+ "</div>" + script + "</body></html>"
 	var body := html.to_utf8_buffer()
 	var head := "HTTP/1.1 %s\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: %d\r\nConnection: close\r\n\r\n" % [status, body.size()]
 	peer.put_data(head.to_utf8_buffer())
@@ -375,9 +436,13 @@ func _finish_oauth(ok: bool, message: String) -> void:
 		if callback.is_valid(): callback.call(ok, message)
 
 func _close_oauth_server() -> void:
-	for entry in _oauth_peers:
-		(entry["peer"] as StreamPeerTCP).disconnect_from_host()
-	_oauth_peers.clear()
+	if _oauth_thread != null:
+		_oauth_mutex.lock()
+		_oauth_stop = true
+		_oauth_mutex.unlock()
+		_oauth_thread.wait_to_finish()
+		_oauth_thread = null
+	_oauth_params = null
 	if _oauth_server != null:
 		_oauth_server.stop()
 		_oauth_server = null

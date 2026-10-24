@@ -531,7 +531,7 @@ func _on_teacher_login_pressed():
 		_open_signed_in_teacher_class()
 		return
 
-	_show_login_status("Opening Google. Come back here after signing in.")
+	_show_login_status("Opening Google. Pick your account and you will come right back here.")
 	sync.sign_in_with_google(func(ok: bool, message: String):
 		if not ok:
 			if login_button: login_button.disabled = false
