@@ -330,9 +330,9 @@ const AVATAR_TEXTURE_PATHS: Dictionary = {
 func get_avatar_texture_path(for_avatar_id: String) -> String:
 	return AVATAR_TEXTURE_PATHS.get(for_avatar_id, "")
 
-## Gives back every heart that has refilled since heart_refill_at, one per
-## HEART_REFILL_SECONDS, up to MAX_HEARTS. Cheap enough to call every
-## frame. Returns true when the heart count changed.
+## When the countdown that started with the first lost heart runs out,
+## all hearts come back at once (up to MAX_HEARTS). Cheap enough to call
+## every frame. Returns true when the heart count changed.
 func refresh_hearts() -> bool:
 	var now := int(Time.get_unix_time_from_system())
 	var before := player_hearts
@@ -343,24 +343,22 @@ func refresh_hearts() -> bool:
 	# No countdown yet (older save), or the phone's clock was set back.
 	if heart_refill_at <= 0 or heart_refill_at - now > HEART_REFILL_SECONDS:
 		heart_refill_at = now + HEART_REFILL_SECONDS
-	while now >= heart_refill_at and player_hearts < MAX_HEARTS:
-		player_hearts += 1
-		heart_refill_at += HEART_REFILL_SECONDS
-	if player_hearts >= MAX_HEARTS:
+	if now >= heart_refill_at:
+		player_hearts = MAX_HEARTS
 		heart_refill_at = 0
 	if player_hearts != before:
 		save_game()
 		return true
 	return false
 
-## Seconds until the next heart comes back, or 0 while hearts are full.
+## Seconds until all hearts come back, or 0 while hearts are full.
 func seconds_to_next_heart() -> int:
 	if player_hearts >= MAX_HEARTS or heart_refill_at <= 0:
 		return 0
 	return maxi(heart_refill_at - int(Time.get_unix_time_from_system()), 0)
 
 ## Failing a level costs one heart. Starts the refill countdown if hearts
-## were full. Saves immediately.
+## were full; a countdown already running keeps going. Saves immediately.
 func lose_heart() -> void:
 	refresh_hearts()
 	if player_hearts >= MAX_HEARTS:
