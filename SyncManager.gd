@@ -179,9 +179,6 @@ const AUTH_SESSION_PATH: String = "user://auth_session.json"
 const OAUTH_PORT: int = 43821
 const OAUTH_REDIRECT_URL: String = "http://127.0.0.1:43821/auth/callback"
 const OAUTH_TIMEOUT_MS: int = 5 * 60 * 1000
-## Must match package/unique_name in the Android export preset - the
-## sign-in page uses it to bring this app back to the front.
-const ANDROID_PACKAGE: String = "com.partido.wordcatch"
 
 var _access_token: String = ""
 var _refresh_token: String = ""
@@ -195,7 +192,6 @@ var _oauth_thread: Thread = null
 var _oauth_mutex: Mutex = Mutex.new()
 var _oauth_stop: bool = false            # guarded by _oauth_mutex
 var _oauth_params = null                 # guarded by _oauth_mutex; the callback's query once it arrives
-var _oauth_return_url: String = ""       # where the sign-in page sends the browser back to
 var _oauth_verifier: String = ""
 var _oauth_on_result: Callable = Callable()
 var _oauth_deadline_ms: int = 0
@@ -252,9 +248,6 @@ func sign_in_with_google(on_result: Callable) -> void:
 	_oauth_deadline_ms = Time.get_ticks_msec() + OAUTH_TIMEOUT_MS
 	# Built here because the server thread can't load resources.
 	_oauth_logo_data_uri()
-	_oauth_return_url = ""
-	if OS.get_name() == "Android":
-		_oauth_return_url = "intent:#Intent;action=android.intent.action.MAIN;category=android.intent.category.LAUNCHER;package=" + ANDROID_PACKAGE + ";end"
 	_oauth_stop = false
 	_oauth_params = null
 	_oauth_thread = Thread.new()
@@ -354,7 +347,7 @@ func _handle_oauth_request(peer: StreamPeerTCP, request_text: String):
 	if str(params.get("code", "")) == "":
 		_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in.", "Bumalik sa Partido Word Catch at subukan muli.", false)
 	else:
-		_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Babalik ka na sa Partido Word Catch...", true)
+		_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Isara na ito at bumalik sa Partido Word Catch.", true)
 	return params
 
 ## The page the teacher's browser lands on after picking their Google
@@ -365,14 +358,8 @@ func _send_oauth_page(peer: StreamPeerTCP, status: String, title: String, detail
 	if title != "":
 		var logo := _oauth_logo_uri
 		var accent := "#4e7c38" if ok else "#b31c1c"
-		# On Android: a button back to the app, and on success go back on
-		# our own after a moment so the teacher sees the confirmation first.
-		var back := ""
-		var script := ""
-		if _oauth_return_url != "":
-			back = "<a class=\"btn\" href=\"" + _oauth_return_url + "\">Bumalik sa App</a>"
-			if ok:
-				script = "<script>setTimeout(function(){location.href=\"" + _oauth_return_url + "\"},1200)</script>"
+		# No "back to app" link: Chrome only opens apps that are marked
+		# browsable, so an intent: link landed on Play Store "Item not found".
 		html = "<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" \
 			+ "<title>Partido Word Catch</title><style>" \
 			+ "body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;" \
@@ -383,15 +370,12 @@ func _send_oauth_page(peer: StreamPeerTCP, status: String, title: String, detail
 			+ ".badge{width:72px;height:72px;border-radius:50%;margin:8px auto 12px;display:flex;align-items:center;justify-content:center;" \
 			+ "color:#fff;font-size:42px;font-weight:800;background:" + accent + ";animation:pop .5s .2s ease-out both}" \
 			+ "h1{margin:0 0 8px;font-size:26px;color:" + accent + "}p{margin:0;font-size:17px;color:#7a6e65;line-height:1.4}" \
-			+ ".btn{display:inline-block;margin-top:20px;padding:14px 28px;border-radius:999px;background:" + accent + ";color:#fff;" \
-			+ "font-size:18px;font-weight:800;text-decoration:none;box-shadow:0 4px 0 rgba(0,0,0,.2)}" \
 			+ "@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.06);opacity:1}100%{transform:scale(1)}}" \
 			+ "</style></head><body><div class=\"card\">" \
 			+ ("<img class=\"logo\" alt=\"Partido Word Catch\" src=\"" + logo + "\">" if logo != "" else "<h2>Partido Word Catch</h2>") \
 			+ "<div class=\"badge\">" + ("&#10003;" if ok else "!") + "</div>" \
 			+ "<h1>" + title.xml_escape() + "</h1><p>" + detail.xml_escape() + "</p>" \
-			+ back \
-			+ "</div>" + script + "</body></html>"
+			+ "</div></body></html>"
 	var body := html.to_utf8_buffer()
 	var head := "HTTP/1.1 %s\r\nContent-Type: text/html; charset=utf-8\r\nContent-Length: %d\r\nConnection: close\r\n\r\n" % [status, body.size()]
 	peer.put_data(head.to_utf8_buffer())
