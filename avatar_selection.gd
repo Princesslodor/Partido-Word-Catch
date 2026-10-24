@@ -171,6 +171,11 @@ func _on_confirm_pressed() -> void:
 			gm.save_game()
 
 	if current_role == "TEACHER":
+		# Save it on the teacher's class too, so students see the new one
+		# (blank fields keep what the class already has).
+		var sync = get_node_or_null("/root/SyncManager")
+		if sync and sync.has_method("has_teacher_session") and sync.has_teacher_session():
+			sync.teacher_save_my_class("", "", "", "", selected_avatar_id, Callable())
 		Global.change_scene("res://teacher_dashboard.tscn")
 	else:
 		Global.change_scene("res://campaign_map_screen.tscn")
