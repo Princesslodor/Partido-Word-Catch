@@ -318,39 +318,16 @@ as $$
   order by s.unlocked_level desc, s.player_coins desc;
 $$;
 
--- Removes one student from the signed-in teacher's own class.
-create or replace function public.delete_student_account(p_student_id uuid, p_class_code text)
-returns boolean
-language plpgsql
-security definer
-set search_path = public, pg_temp
-as $$
-declare
-  affected int;
-begin
-  if auth.uid() is null or p_student_id is null then
-    return false;
-  end if;
-  delete from students s
-  using classes c
-  where s.student_id = p_student_id
-    and s.class_code = btrim(p_class_code)
-    and c.class_code = s.class_code
-    and c.teacher_user_id = auth.uid();
-  get diagnostics affected = row_count;
-  return affected > 0;
-end;
-$$;
+-- delete_student_account was removed: no app screen used it.
+drop function if exists public.delete_student_account(uuid, text);
 
 -- Teacher functions: signed-in users only, never the anon key.
 revoke execute on function public.teacher_get_my_class() from public, anon;
 revoke execute on function public.teacher_save_my_class(text, text, text, text, text) from public, anon;
 revoke execute on function public.fetch_leaderboard(text) from public, anon;
-revoke execute on function public.delete_student_account(uuid, text) from public, anon;
 grant execute on function public.teacher_get_my_class() to authenticated;
 grant execute on function public.teacher_save_my_class(text, text, text, text, text) to authenticated;
 grant execute on function public.fetch_leaderboard(text) to authenticated;
-grant execute on function public.delete_student_account(uuid, text) to authenticated;
 
 -- ============================================
 -- PUPIL FUNCTIONS (anon key)
