@@ -62,7 +62,7 @@ var sentence_pools = {
 		"distractors": ["NAGBIBISITA", "MARIA", "HARONG", "KADAKUL", "TAWO", "FIESTA", "ASIN", "RAYO", "INI", "ANNA"]
 	},
 	27: {
-		"words": ["NAGDADALAN", "SI", "MARCO", "NIN", "TELENOVELA", "SA", "TELEBISYON"],
+		"words": ["NAGDADALAN", "SI", "MARCO", "NIN", "TELENOBELA", "SA", "TELEBISYON"],
 		"distractors": ["MAGAYON", "KAPALIGIRAN", "BANWAAN", "TIYO", "IGWA", "KAMI", "HILING"]
 	},
 	28: {
@@ -291,7 +291,7 @@ var levels = {
 	27: {
 		"unit": "Yunit 4: Kwentong Bayan at Idyoma",
 		"word": "NAGDADALAN SI MARCO NIN TELENOBELA SA TELEBISYON",
-		"clue": "Nanood si Marco ng telenovela sa telebisyon.",
+		"clue": "Nanood si Marco ng telenobela sa telebisyon.",
 		"meaning": "Nanood si Marco ng telenobela.",
 		"cultural_note": "Nakagawian na natin ang panonood ng telenobela sa telebisyon.",
 		"audio": "27.mp3"
