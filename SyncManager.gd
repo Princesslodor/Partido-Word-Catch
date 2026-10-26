@@ -624,6 +624,13 @@ func sync_student_progress() -> void:
 	var gm = get_node_or_null("/root/GameManager")
 	if not gm or gm.role != "STUDENT" or gm.class_code == "" or gm.device_id == "":
 		return
+	# No upload until this phone holds a whole pupil account. Between
+	# accounts (after a teacher logs out on this phone, or while a new
+	# pupil is still typing their name) the name is blank but the old
+	# pupil's PIN and device_id can still be here, and uploading then
+	# renamed that old account to "Student" so it could no longer log in.
+	if str(gm.player_name).strip_edges() == "" or str(gm.student_pin).strip_edges() == "":
+		return
 
 	if _progress_sync_in_flight:
 		_progress_resync_pending = true
@@ -633,7 +640,7 @@ func sync_student_progress() -> void:
 	var body := JSON.stringify({
 		"p_device_id": gm.device_id,
 		"p_class_code": gm.class_code,
-		"p_player_name": gm.player_name if gm.player_name != "" else "Student",
+		"p_player_name": gm.player_name,
 		"p_pin": gm.student_pin,
 		"p_avatar_id": gm.avatar_id,
 		"p_unlocked_level": gm.unlocked_level,

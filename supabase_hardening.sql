@@ -385,6 +385,11 @@ begin
   if p_device_id is null or btrim(p_device_id) = '' then
     return;
   end if;
+  -- A blank name means the phone is between accounts (older app versions
+  -- uploaded then). Never rename or create an account from that.
+  if p_player_name is null or btrim(p_player_name) = '' then
+    return;
+  end if;
   if p_class_code is null or not exists (select 1 from classes where class_code = btrim(p_class_code)) then
     return;
   end if;

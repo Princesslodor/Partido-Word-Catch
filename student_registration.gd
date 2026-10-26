@@ -100,9 +100,15 @@ func _confirm_existing_account(gm, sync, student_name: String, student_pin: Stri
 	dialog.get_cancel_button().text = "Hindi, ako'y bago"
 	add_child(dialog)
 
+	# A second account with the same name + PIN in one class could never be
+	# told apart again: logging in would match both, so neither could log
+	# in. A new pupil has to pick a different PIN (or add a surname).
 	var _resolve := func(use_existing: bool):
 		if continue_button: continue_button.disabled = false
-		_finish_registration(gm, sync, student_name, student_pin, existing_row if use_existing else null)
+		if use_existing:
+			_finish_registration(gm, sync, student_name, student_pin, existing_row)
+		elif status_label:
+			status_label.text = "May gumagamit na ng pangalan at PIN na ito. Pumili ng ibang PIN, o idagdag ang apelyido mo."
 		dialog.queue_free()
 
 	dialog.confirmed.connect(func(): _resolve.call(true))
