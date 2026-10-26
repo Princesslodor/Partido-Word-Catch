@@ -62,6 +62,24 @@ func _ready():
 	_show_role_selection_screen()
 	_connect_signals()
 	_connect_sound_to_all_buttons(self)
+	# Android sometimes closes the game while a teacher is signing in with
+	# Google in the browser. The sign-in still finished, so carry on to the
+	# teacher's class instead of making them start over.
+	var sync = get_node_or_null("/root/SyncManager")
+	if sync and sync.has_method("take_pending_teacher_sign_in") and sync.take_pending_teacher_sign_in():
+		call_deferred("_resume_teacher_sign_in")
+
+func _resume_teacher_sign_in() -> void:
+	current_role = "TEACHER"
+	# Same as _on_teacher_selected(): no stale class_code may be saved as
+	# this teacher's class.
+	var gm = get_node_or_null("/root/GameManager")
+	if gm:
+		gm.set("class_code", "")
+	_save_role_to_gm("TEACHER")
+	_show_teacher_login_screen()
+	if login_button: login_button.disabled = true
+	_open_signed_in_teacher_class()
 
 # --- AUDIO CLICK SYSTEM ---
 func _connect_sound_to_all_buttons(node: Node):

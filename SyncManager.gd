@@ -198,6 +198,9 @@ var _oauth_params = null                 # guarded by _oauth_mutex; the callback
 var _oauth_verifier: String = ""
 var _oauth_on_result: Callable = Callable()
 var _oauth_deadline_ms: int = 0
+## True after a restart when the last Google sign-in finished while the app
+## was in the background - see take_pending_teacher_sign_in().
+var _pending_teacher_sign_in: bool = false
 
 var _refreshing: bool = false
 var _refresh_waiters: Array = []
@@ -277,15 +280,17 @@ func _process(_delta: float) -> void:
 	if params == null:
 		return
 
-	var code: String = params.get("code", "")
-	if code == "":
-		var reason: String = params.get("error_description", params.get("error", ""))
-		_finish_oauth(false, "Sign-in was cancelled." + (" (" + reason + ")" if reason != "" else ""))
+	var session = params.get("session", null)
+	if session is Dictionary:
+		_close_oauth_server()
+		_apply_session(session)
+		_finish_oauth(true, "")
 		return
-	var verifier := _oauth_verifier
-	# Stop listening but keep _oauth_on_result for _exchange_auth_code().
-	_close_oauth_server()
-	_exchange_auth_code(code, verifier)
+	if str(params.get("code", "")) != "":
+		_finish_oauth(false, "Couldn't finish signing in. Please try again.")
+		return
+	var reason: String = params.get("error_description", params.get("error", ""))
+	_finish_oauth(false, "Sign-in was cancelled." + (" (" + reason + ")" if reason != "" else ""))
 
 ## Runs on _oauth_thread: answers the browser on the loopback address,
 ## even while the game itself is paused in the background, and hands the
@@ -306,11 +311,27 @@ func _oauth_serve() -> void:
 			peer.disconnect_from_host()
 			continue
 		var params = _handle_oauth_request(peer, request_text)
-		if params != null:
-			_oauth_mutex.lock()
-			_oauth_params = params
-			_oauth_mutex.unlock()
-			return
+		if params == null:
+			continue
+		# Android can close the game while the teacher is in the browser
+		# (a big app in the background is the first to go), so the code is
+		# exchanged and the session saved to disk here, before the page
+		# says "signed in". If the game restarts, it finds the saved
+		# session and opens the dashboard (take_pending_teacher_sign_in).
+		var code: String = str(params.get("code", ""))
+		var session := _exchange_auth_code_blocking(code, _oauth_verifier) if code != "" else {}
+		if not session.is_empty():
+			_write_session_file(_session_record(session, true))
+			params["session"] = session
+			_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Pindutin ang Back ng phone para bumalik sa Partido Word Catch.", true)
+		elif code != "":
+			_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in.", "Tingnan ang internet. Pindutin ang Back ng phone para bumalik sa Partido Word Catch, at subukan muli.", false)
+		else:
+			_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in.", "Pindutin ang Back ng phone para bumalik sa Partido Word Catch, at subukan muli.", false)
+		_oauth_mutex.lock()
+		_oauth_params = params
+		_oauth_mutex.unlock()
+		return
 
 ## Reads one HTTP request head from the browser (gives up after 5 s).
 func _read_oauth_request(peer: StreamPeerTCP) -> String:
@@ -333,8 +354,9 @@ func _read_oauth_request(peer: StreamPeerTCP) -> String:
 	return ""
 
 ## Handles one HTTP request the browser sent to the loopback address.
-## Returns the callback's query parameters, or null if this wasn't the
-## callback (e.g. the browser asking for /favicon.ico).
+## Returns the callback's query parameters (the caller answers the
+## browser), or null if this wasn't the callback (e.g. the browser asking
+## for /favicon.ico).
 func _handle_oauth_request(peer: StreamPeerTCP, request_text: String):
 	var request_line := request_text.get_slice("\r\n", 0)
 	var target := request_line.get_slice(" ", 1)
@@ -347,10 +369,6 @@ func _handle_oauth_request(peer: StreamPeerTCP, request_text: String):
 	for pair in query.split("&", false):
 		params[pair.get_slice("=", 0)] = pair.get_slice("=", 1).replace("+", " ").uri_decode()
 
-	if str(params.get("code", "")) == "":
-		_send_oauth_page(peer, "200 OK", "Hindi natuloy ang pag-sign in.", "Pindutin ang Back ng phone para bumalik sa Partido Word Catch, at subukan muli.", false)
-	else:
-		_send_oauth_page(peer, "200 OK", "Naka-sign in ka na!", "Pindutin ang Back ng phone para bumalik sa Partido Word Catch.", true)
 	return params
 
 ## The page the teacher's browser lands on after picking their Google
@@ -402,21 +420,52 @@ func _oauth_logo_data_uri() -> String:
 			_oauth_logo_uri = "data:image/png;base64," + Marshalls.raw_to_base64(img.save_png_to_buffer())
 	return _oauth_logo_uri
 
-func _exchange_auth_code(code: String, verifier: String) -> void:
+## Runs on _oauth_thread: trades the sign-in code for a session with a
+## plain HTTPClient (HTTPRequest nodes only work on the main thread, which
+## Android may have paused). Returns {} if it failed.
+func _exchange_auth_code_blocking(code: String, verifier: String) -> Dictionary:
+	var client := HTTPClient.new()
+	var deadline := Time.get_ticks_msec() + int(REQUEST_TIMEOUT * 1000)
+	var use_tls := SUPABASE_URL.begins_with("https://")
+	var host := SUPABASE_URL.trim_prefix("https://").trim_prefix("http://")
+	var port := -1
+	if host.contains(":"):
+		port = int(host.get_slice(":", 1))
+		host = host.get_slice(":", 0)
+	if client.connect_to_host(host, port, TLSOptions.client() if use_tls else null) != OK:
+		return {}
+	while client.get_status() == HTTPClient.STATUS_RESOLVING or client.get_status() == HTTPClient.STATUS_CONNECTING:
+		if Time.get_ticks_msec() > deadline:
+			return {}
+		client.poll()
+		OS.delay_msec(20)
+	if client.get_status() != HTTPClient.STATUS_CONNECTED:
+		return {}
 	var body := JSON.stringify({"auth_code": code, "code_verifier": verifier})
-	var http := _request("/auth/v1/token?grant_type=pkce", HTTPClient.METHOD_POST, body)
-	http.request_completed.connect(func(result, response_code, _h, resp_body: PackedByteArray):
-		http.queue_free()
-		if result != HTTPRequest.RESULT_SUCCESS or response_code < 200 or response_code >= 300:
-			_finish_oauth(false, "Couldn't finish signing in (" + last_error + "). Please try again.")
-			return
-		var parsed = JSON.parse_string(resp_body.get_string_from_utf8())
-		if not (parsed is Dictionary) or str(parsed.get("refresh_token", "")) == "":
-			_finish_oauth(false, "Couldn't finish signing in. Please try again.")
-			return
-		_apply_session(parsed)
-		_finish_oauth(true, "")
-	)
+	if client.request(HTTPClient.METHOD_POST, "/auth/v1/token?grant_type=pkce", _headers(), body) != OK:
+		return {}
+	while client.get_status() == HTTPClient.STATUS_REQUESTING:
+		if Time.get_ticks_msec() > deadline:
+			return {}
+		client.poll()
+		OS.delay_msec(20)
+	if not client.has_response() or client.get_response_code() < 200 or client.get_response_code() >= 300:
+		return {}
+	var bytes := PackedByteArray()
+	while client.get_status() == HTTPClient.STATUS_BODY:
+		if Time.get_ticks_msec() > deadline:
+			return {}
+		client.poll()
+		var chunk := client.read_response_body_chunk()
+		if chunk.is_empty():
+			OS.delay_msec(20)
+		else:
+			bytes.append_array(chunk)
+	client.close()
+	var parsed = JSON.parse_string(bytes.get_string_from_utf8())
+	if not (parsed is Dictionary) or str(parsed.get("refresh_token", "")) == "":
+		return {}
+	return parsed
 
 func _finish_oauth(ok: bool, message: String) -> void:
 	var callback := _oauth_on_result
@@ -444,29 +493,49 @@ func _stop_oauth_listener() -> void:
 
 ## Stores a session returned by /auth/v1/token (sign-in or refresh).
 func _apply_session(data: Dictionary) -> void:
-	_access_token = str(data.get("access_token", ""))
-	_refresh_token = str(data.get("refresh_token", ""))
-	_expires_at = int(Time.get_unix_time_from_system()) + int(data.get("expires_in", 3600))
-	var user = data.get("user", {})
-	if user is Dictionary:
-		teacher_user_email = str(user.get("email", ""))
-		var meta = user.get("user_metadata", {})
-		if meta is Dictionary:
-			teacher_display_name = str(meta.get("full_name", meta.get("name", "")))
+	var record := _session_record(data)
+	_access_token = record["access_token"]
+	_refresh_token = record["refresh_token"]
+	_expires_at = record["expires_at"]
+	teacher_user_email = record["email"]
+	teacher_display_name = record["name"]
 	_save_session()
 
 func _save_session() -> void:
-	var file := FileAccess.open(AUTH_SESSION_PATH, FileAccess.WRITE)
-	if file == null:
-		push_warning("SyncManager: couldn't save the teacher sign-in session.")
-		return
-	file.store_string(JSON.stringify({
+	_write_session_file({
 		"access_token": _access_token,
 		"refresh_token": _refresh_token,
 		"expires_at": _expires_at,
 		"email": teacher_user_email,
 		"name": teacher_display_name,
-	}))
+	})
+
+## What auth_session.json holds for a /auth/v1/token reply. pending_open
+## marks a sign-in the game hasn't opened the dashboard for yet.
+func _session_record(data: Dictionary, pending_open: bool = false) -> Dictionary:
+	var record := {
+		"access_token": str(data.get("access_token", "")),
+		"refresh_token": str(data.get("refresh_token", "")),
+		"expires_at": int(Time.get_unix_time_from_system()) + int(data.get("expires_in", 3600)),
+		"email": "",
+		"name": "",
+	}
+	var user = data.get("user", {})
+	if user is Dictionary:
+		record["email"] = str(user.get("email", ""))
+		var meta = user.get("user_metadata", {})
+		if meta is Dictionary:
+			record["name"] = str(meta.get("full_name", meta.get("name", "")))
+	if pending_open:
+		record["pending_open"] = true
+	return record
+
+func _write_session_file(record: Dictionary) -> void:
+	var file := FileAccess.open(AUTH_SESSION_PATH, FileAccess.WRITE)
+	if file == null:
+		push_warning("SyncManager: couldn't save the teacher sign-in session.")
+		return
+	file.store_string(JSON.stringify(record))
 
 func _load_session() -> void:
 	if not FileAccess.file_exists(AUTH_SESSION_PATH):
@@ -482,6 +551,16 @@ func _load_session() -> void:
 	_expires_at = int(parsed.get("expires_at", 0))
 	teacher_user_email = str(parsed.get("email", ""))
 	teacher_display_name = str(parsed.get("name", ""))
+	_pending_teacher_sign_in = _refresh_token != "" and bool(parsed.get("pending_open", false))
+
+## True once, after the game restarted in the middle of a Google sign-in
+## that did finish: the login page then opens the teacher's class.
+func take_pending_teacher_sign_in() -> bool:
+	if not _pending_teacher_sign_in:
+		return false
+	_pending_teacher_sign_in = false
+	_save_session()
+	return true
 
 func _clear_session() -> void:
 	_access_token = ""
