@@ -64,6 +64,9 @@ func _ready() -> void:
 	# The teacher's name and picture sit at the top too, level with it.
 	if profile_click_area:
 		profile_click_area.get_parent().add_to_group(ScreenFit.TOP_GROUP)
+		_profile_home = profile_click_area.get_parent().position
+		get_viewport().size_changed.connect(_place_profile)
+		_place_profile()
 	_load_teacher_info()
 	_show_dashboard()
 	_connect_signals()
@@ -217,6 +220,19 @@ func _on_logout_confirmed() -> void:
 	var remember: bool = "remember_teacher_login" in gm and gm.remember_teacher_login
 	if sync and sync.has_method("sign_out") and not remember:
 		sync.sign_out()
+
+## In a window wider than it is tall (the game run on a computer, e.g.
+## for screen recording) the name and picture would sit on top of the
+## "Teacher Dashboard" sign, so they move beside the board instead. Phones
+## keep the normal spot.
+var _profile_home := Vector2.ZERO
+
+func _place_profile() -> void:
+	if not profile_click_area:
+		return
+	var panel := profile_click_area.get_parent() as Control
+	var visible_size := get_viewport().get_visible_rect().size
+	panel.position = Vector2(760, 70) if visible_size.x > visible_size.y else _profile_home
 
 func _hide_all_pages() -> void:
 	if dashboard: dashboard.hide()
