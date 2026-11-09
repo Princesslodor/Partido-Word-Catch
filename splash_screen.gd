@@ -93,18 +93,16 @@ func _start_logo_animation():
 
 	# The boy in the red cap looks around with his telescope.
 	var look := cap_boy.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	look.tween_property(cap_boy, "rotation", deg_to_rad(-6.0), 0.9)
-	look.tween_interval(0.25)
-	look.tween_property(cap_boy, "rotation", deg_to_rad(6.0), 1.2)
-	look.tween_interval(0.25)
+	look.tween_property(cap_boy, "rotation", deg_to_rad(-2.5), 1.6)
+	look.tween_property(cap_boy, "rotation", deg_to_rad(2.5), 1.6)
 
 	# The small boy scoops with his net to catch the letters.
 	var scoop := net.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	scoop.tween_property(net, "rotation", deg_to_rad(-12.0), 0.5)
-	scoop.tween_property(net, "rotation", deg_to_rad(6.0), 0.5)
+	scoop.tween_property(net, "rotation", deg_to_rad(-7.0), 1.2)
+	scoop.tween_property(net, "rotation", deg_to_rad(3.0), 1.2)
 	var lean := net_boy.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	lean.tween_property(net_boy, "rotation", deg_to_rad(-2.5), 0.5)
-	lean.tween_property(net_boy, "rotation", deg_to_rad(2.5), 0.5)
+	lean.tween_property(net_boy, "rotation", deg_to_rad(-1.2), 1.2)
+	lean.tween_property(net_boy, "rotation", deg_to_rad(1.2), 1.2)
 
 func _add_logo_part(part_name: String, pivot: Vector2, parent: Control) -> TextureRect:
 	var part := TextureRect.new()
@@ -122,16 +120,16 @@ func _place_logo_block(block: TextureRect, centre: Vector2, girl: TextureRect, d
 	var logo_scale: float = character.size.x / LOGO_WIDTH
 	block.modulate.a = 0.0
 	block.position = (GIRL_HAND - centre) * logo_scale
-	block.scale = Vector2.ONE * 0.5
+	block.scale = Vector2.ONE * 0.6
 	var tween := block.create_tween()
 	tween.tween_interval(delay)
-	tween.tween_callback(func(): block.modulate.a = 1.0)
-	tween.tween_property(block, "position", Vector2.ZERO, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(block, "scale", Vector2.ONE, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(block, "modulate:a", 1.0, 0.2)
+	tween.parallel().tween_property(block, "position", Vector2.ZERO, 0.75).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.parallel().tween_property(block, "scale", Vector2.ONE, 0.75).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	var reach := girl.create_tween()
 	reach.tween_interval(delay)
-	reach.tween_property(girl, "rotation", deg_to_rad(5.0), 0.25).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	reach.tween_property(girl, "rotation", 0.0, 0.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	reach.tween_property(girl, "rotation", deg_to_rad(3.5), 0.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	reach.tween_property(girl, "rotation", 0.0, 0.5).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 
 func _start_loading_process():
 	if loading_bar:
