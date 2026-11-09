@@ -261,15 +261,17 @@ func light_tray(grid: Node) -> void:
 
 ## A letter (or word) tile bursts apart when Alisin removes it. Works on copies
 ## placed above the game, so the real tile can be emptied right after this.
-func burst_tile(tile: Control) -> void:
+func burst_tile(tile: Control, colours: Array[Color] = [Color("#F5D28A"), Color("#D99A45"), Color("#FFF3D0")], pieces: int = 14) -> void:
 	if not is_instance_valid(tile) or not tile.is_visible_in_tree():
 		return
 	var layer: Node = tile.get_parent()
 	while layer != null and not layer is CanvasLayer:
 		layer = layer.get_parent()
-	if layer == null:
-		return
 	var rect := tile.get_global_rect()
+	if layer == null:
+		# No CanvasLayer on this screen: draw on top of the whole screen.
+		layer = get_tree().current_scene
+		rect.position -= (layer as CanvasItem).get_global_transform().origin
 
 	var ghost := tile.duplicate(0) as Control
 	ghost.set_script(null)
@@ -284,8 +286,6 @@ func burst_tile(tile: Control) -> void:
 	ghost_tween.tween_property(ghost, "modulate:a", 0.0, 0.22)
 	ghost_tween.chain().tween_callback(ghost.queue_free)
 
-	var colours: Array[Color] = [Color("#F5D28A"), Color("#D99A45"), Color("#FFF3D0")]
-	var pieces := 14
 	for i in pieces:
 		var piece := ColorRect.new()
 		piece.size = Vector2.ONE * randf_range(8.0, 16.0)
@@ -301,6 +301,35 @@ func burst_tile(tile: Control) -> void:
 		tween.tween_property(piece, "rotation", randf_range(-6.0, 6.0), 0.45)
 		tween.tween_property(piece, "modulate:a", 0.0, 0.3).set_delay(0.15)
 		tween.chain().tween_callback(piece.queue_free)
+
+## A level circle on the map explodes when pressed: it bursts into pieces with a
+## ring spreading out, then comes back. Wait for this before opening the popup.
+func burst_level_circle(circle: Control) -> void:
+	if not is_instance_valid(circle):
+		return
+	burst_tile(circle, [Color("#F5E7C8"), Color("#8A5A2B"), Color("#FFD34D"), Color("#FF8A2B")] as Array[Color], 22)
+	var rect := circle.get_global_rect()
+	var layer: CanvasItem = get_tree().current_scene
+	var style := StyleBoxFlat.new()
+	style.draw_center = false
+	style.border_color = Color(1.0, 0.85, 0.3)
+	style.set_border_width_all(8)
+	style.set_corner_radius_all(int(rect.size.x))
+	var ring := Panel.new()
+	ring.add_theme_stylebox_override("panel", style)
+	ring.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(ring)
+	ring.size = rect.size
+	ring.position = rect.position - layer.get_global_transform().origin
+	ring.pivot_offset = rect.size / 2.0
+	var tween := ring.create_tween().set_parallel()
+	tween.tween_property(ring, "scale", Vector2.ONE * 2.4, 0.35).set_ease(Tween.EASE_OUT)
+	tween.tween_property(ring, "modulate:a", 0.0, 0.35)
+	tween.chain().tween_callback(ring.queue_free)
+	circle.modulate.a = 0.0
+	await get_tree().create_timer(0.32).timeout
+	if is_instance_valid(circle):
+		circle.modulate.a = 1.0
 
 ## Wrong answer in a level: shake the answer row and pop away the star
 ## that's being lost. Call before player_stars is reduced.

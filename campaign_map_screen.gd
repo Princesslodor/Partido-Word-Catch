@@ -265,7 +265,7 @@ func _update_level_locks(container: Control, offset: int, visible_range: Vector2
 				btn.get_node(lock_icon_name).hide()
 
 			if not btn.pressed.is_connected(_on_level_button_pressed):
-				btn.pressed.connect(_on_level_button_pressed.bind(global_level_num))
+				btn.pressed.connect(_on_level_button_pressed.bind(global_level_num, btn))
 		elif global_level_num == unlocked_limit:
 			# The one level the student should play next - make it stand out.
 			btn.disabled = false
@@ -276,7 +276,7 @@ func _update_level_locks(container: Control, offset: int, visible_range: Vector2
 				btn.get_node(lock_icon_name).hide()
 
 			if not btn.pressed.is_connected(_on_level_button_pressed):
-				btn.pressed.connect(_on_level_button_pressed.bind(global_level_num))
+				btn.pressed.connect(_on_level_button_pressed.bind(global_level_num, btn))
 		else:
 			# Still locked.
 			btn.disabled = true
@@ -306,9 +306,14 @@ func _get_next_level_highlight_style() -> StyleBoxFlat:
 	style.shadow_size = 10
 	return style
 
-func _on_level_button_pressed(level_num: int) -> void:
-	if not level_info_popup:
+var _circle_bursting := false
+
+func _on_level_button_pressed(level_num: int, btn: Control) -> void:
+	if not level_info_popup or _circle_bursting:
 		return
+	_circle_bursting = true
+	await Global.burst_level_circle(btn)
+	_circle_bursting = false
 	var lesson_title := _unit_label_for_level(level_num)
 	if level_info_popup.has_method("display_level_info"):
 		level_info_popup.display_level_info(level_num, lesson_title)
