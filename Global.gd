@@ -577,6 +577,8 @@ func _on_node_added(node: Node) -> void:
 	if node is BaseButton:
 		node.button_down.connect(_on_button_down.bind(node))
 		node.button_up.connect(_on_button_up.bind(node))
+		if POWER_BUTTON_GLOW.has(String(node.name)):
+			node.button_down.connect(_light_power_button.bind(String(node.name)))
 	elif node is Control and node.name.ends_with("Popup") and node.get_class() == "Control":
 		_watch_popup(node)
 	elif node is Sprite2D and node.name == "Boy":
@@ -585,6 +587,44 @@ func _on_node_added(node: Node) -> void:
 		node.set_meta(_AUTO_STATES_META, {})
 		node.theme_changed.connect(_refresh_button_states.bind(node))
 		_refresh_button_states.call_deferred(node)
+
+## The Hint, Alisin and Haluin buttons are one picture (hint_shuffle_remove.png)
+## behind invisible Buttons. Each entry is that button's part of the picture
+## and the colour it lights up in when pressed.
+const POWER_BUTTON_GLOW := {
+	"RevealHintButton": [Rect2(11, 61, 234, 113), Color(0.8, 0.35, 1.0)],
+	"RemoveLetterButton": [Rect2(262, 61, 234, 113), Color(0.25, 0.65, 1.0)],
+	"ShuffleButton": [Rect2(512, 61, 234, 113), Color(0.4, 1.0, 0.2)],
+}
+
+func _light_power_button(button_name: String) -> void:
+	var scene := get_tree().current_scene
+	if scene == null:
+		return
+	var art: Sprite2D = null
+	for found in scene.find_children("HintShuffleRemove*", "Sprite2D", true, false):
+		if found.is_visible_in_tree():
+			art = found
+			break
+	if art == null:
+		return
+	var part: Rect2 = POWER_BUTTON_GLOW[button_name][0]
+	var colour: Color = POWER_BUTTON_GLOW[button_name][1]
+	var additive := CanvasItemMaterial.new()
+	additive.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+	var glow := Sprite2D.new()
+	glow.texture = art.texture
+	glow.region_enabled = true
+	glow.region_rect = part
+	glow.material = additive
+	glow.scale = art.scale * 1.08
+	glow.position = art.position + (part.get_center() - art.texture.get_size() / 2.0) * art.scale
+	glow.modulate = Color(colour, 0.0)
+	art.add_sibling(glow)
+	var tween := glow.create_tween()
+	tween.tween_property(glow, "modulate:a", 1.0, 0.1)
+	tween.tween_property(glow, "modulate:a", 0.0, 0.4).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(glow.queue_free)
 
 ## The boy beside the level buttons tilts slowly from side to side and pauses,
 ## as if he is thinking about the word.
