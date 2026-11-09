@@ -487,6 +487,7 @@ func _on_reveal_hint_pressed():
 					%CoinsLabel.text = str(player_coins)
 				GameManager.save_game()
 				_set_block_text(slot, target_word)
+				Global.flash_box(slot, Global.HINT_GLOW)
 				selected_word_blocks[i] = target_word
 				if "is_locked" in slot: slot.is_locked = true
 				_disable_tray_tile_for_word(target_word)
@@ -534,6 +535,7 @@ func _on_remove_letter_pressed():
 
 func _on_shuffle_pressed():
 	load_current_level()
+	Global.light_tray(_get_scrambled_grid())
 
 func play_audio(audio_filename: String):
 	var audio_path = "res://audio/" + audio_filename

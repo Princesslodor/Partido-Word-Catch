@@ -416,6 +416,7 @@ func _on_reveal_hint_pressed():
 			if has_node("%CoinsLabel"): %CoinsLabel.text = str(player_coins)
 			GameManager.save_game()
 			_set_tile_text(slot, target_char)
+			Global.flash_box(slot, Global.HINT_GLOW)
 			current_placed_letters[i] = target_char
 			if "is_locked" in slot: slot.is_locked = true
 			break
@@ -453,6 +454,7 @@ func _on_remove_letter_pressed():
 
 func _on_shuffle_pressed():
 	setup_scrambled_letters(current_word)
+	Global.light_tray(_get_scrambled_grid())
 # --------------------
 
 func play_audio(audio_filename: String):

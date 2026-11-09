@@ -225,6 +225,40 @@ func pop_away(item: CanvasItem) -> void:
 	tween.tween_property(ghost, "modulate:a", 0.0, 0.35)
 	tween.chain().tween_callback(ghost.queue_free)
 
+const HINT_GLOW := Color(1.0, 0.85, 0.2)
+const SHUFFLE_GLOW := Color(0.4, 1.0, 0.2)
+
+## A box lights up in the given colour, then fades (a Hint filling an answer box).
+func flash_box(box: Control, colour: Color, delay: float = 0.0) -> void:
+	if not is_instance_valid(box):
+		return
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(colour, 0.45)
+	style.shadow_color = Color(colour, 0.9)
+	style.shadow_size = 18
+	style.set_corner_radius_all(12)
+	var glow := Panel.new()
+	glow.add_theme_stylebox_override("panel", style)
+	glow.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	glow.modulate.a = 0.0
+	box.add_child(glow)
+	glow.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	var tween := glow.create_tween()
+	tween.tween_interval(delay)
+	tween.tween_property(glow, "modulate:a", 1.0, 0.1)
+	tween.tween_property(glow, "modulate:a", 0.0, 0.45).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(glow.queue_free)
+
+## The tiles in the tray light up one after another while they are shuffled.
+func light_tray(grid: Node) -> void:
+	if grid == null:
+		return
+	var delay := 0.0
+	for tile in grid.get_children():
+		if tile is Control and tile.visible:
+			flash_box(tile, SHUFFLE_GLOW, delay)
+			delay += 0.05
+
 ## A letter (or word) tile bursts apart when Alisin removes it. Works on copies
 ## placed above the game, so the real tile can be emptied right after this.
 func burst_tile(tile: Control) -> void:
