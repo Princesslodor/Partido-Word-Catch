@@ -36,6 +36,7 @@ window/size/window_width_override=576
 window/size/window_height_override=768
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+window/stretch/aspect.pc="keep"
 window/handheld/orientation=1
 
 [physics]
