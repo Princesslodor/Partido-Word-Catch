@@ -347,6 +347,38 @@ func set_result_texts(level: Node, failed: bool, last_level: bool = false, level
 	if title: title.text = title_text
 	if next_label: next_label.text = next_text
 
+## The girl on the results card laughs and claps after a win. After a failed
+## try she stays as she is drawn in girl.png.
+func _set_girl_cheering(popup: Control, cheering: bool) -> void:
+	var girl := popup.get_node_or_null("ColorRect/Girl") as Sprite2D
+	if girl == null:
+		return
+	if girl.has_meta("_cheer_tweens"):
+		for old in girl.get_meta("_cheer_tweens"):
+			if old and old.is_valid():
+				old.kill()
+		girl.remove_meta("_cheer_tweens")
+	if not girl.has_meta("_calm_texture"):
+		girl.set_meta("_calm_texture", girl.texture)
+	girl.texture = girl.get_meta("_calm_texture")
+	girl.rotation = 0.0
+	const TOGETHER := "res://images/girl_laugh_together.png"
+	const APART := "res://images/girl_laugh_apart.png"
+	if not cheering or not ResourceLoader.exists(TOGETHER) or not ResourceLoader.exists(APART):
+		return
+	var hands_together: Texture2D = load(TOGETHER)
+	var hands_apart: Texture2D = load(APART)
+	girl.texture = hands_together
+	var clap := girl.create_tween().set_loops()
+	clap.tween_interval(0.15)
+	clap.tween_callback(girl.set.bind("texture", hands_apart))
+	clap.tween_interval(0.15)
+	clap.tween_callback(girl.set.bind("texture", hands_together))
+	var rock := girl.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	rock.tween_property(girl, "rotation", deg_to_rad(-3.0), 0.3)
+	rock.tween_property(girl, "rotation", deg_to_rad(3.0), 0.3)
+	girl.set_meta("_cheer_tweens", [clap, rock])
+
 ## Levels per unit, in order: Yunit 1-3 have 5 levels, Yunit 4 has 15.
 const UNIT_LEVEL_COUNTS: Array = [5, 5, 5, 15]
 
@@ -367,6 +399,7 @@ const _WORD_CARD_NODES: Array = ["salita_title", "kahulugan_title", "culturalnot
 ## screen: "HINDI NAKAPASA!", three empty stars, a broken heart and a
 ## centred "Subukan Ulit" button. Positions are on the 720x1280 canvas.
 func _set_fail_card(popup: Control, failed: bool) -> void:
+	_set_girl_cheering(popup, not failed)
 	for path in _WORD_CARD_NODES:
 		var node := popup.get_node_or_null(path) as CanvasItem
 		if node:
