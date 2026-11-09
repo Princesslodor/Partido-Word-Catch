@@ -599,6 +599,21 @@ func _start_thinking(boy: Sprite2D) -> void:
 	tween.tween_interval(0.7)
 	tween.tween_property(boy, "rotation", 0.0, 0.9)
 	tween.tween_interval(1.0)
+	_start_winking(boy)
+
+## boy.png is the picture with one eye shut, so he keeps both eyes open and
+## shows that picture for a moment to wink.
+func _start_winking(boy: Sprite2D) -> void:
+	if not ResourceLoader.exists("res://images/boy_open.png"):
+		return
+	var eyes_open: Texture2D = load("res://images/boy_open.png")
+	var eye_shut: Texture2D = boy.texture
+	boy.texture = eyes_open
+	var wink := boy.create_tween().set_loops()
+	wink.tween_interval(2.2)
+	wink.tween_callback(boy.set.bind("texture", eye_shut))
+	wink.tween_interval(0.35)
+	wink.tween_callback(boy.set.bind("texture", eyes_open))
 
 func _refresh_button_states(button: Button) -> void:
 	if not is_instance_valid(button) or not button.has_theme_stylebox_override("normal"):
