@@ -443,7 +443,8 @@ func _on_remove_letter_pressed():
 	wrong_indices.shuffle()
 	var selected_index = wrong_indices[0]
 	var selected_tile = tiles[selected_index]
-	
+
+	Global.burst_tile(selected_tile)
 	_clear_tile_text(selected_tile)
 	player_coins -= 5
 	Global.play_coin_spend_sound()

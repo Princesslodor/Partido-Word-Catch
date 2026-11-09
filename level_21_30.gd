@@ -524,6 +524,7 @@ func _on_remove_letter_pressed():
 
 	wrong_tiles.shuffle()
 	var selected_tile = wrong_tiles[0]
+	Global.burst_tile(selected_tile)
 	selected_tile.visible = false
 	if selected_tile is BaseButton: selected_tile.disabled = true
 	player_coins -= 5

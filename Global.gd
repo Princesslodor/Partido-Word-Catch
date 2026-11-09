@@ -225,6 +225,49 @@ func pop_away(item: CanvasItem) -> void:
 	tween.tween_property(ghost, "modulate:a", 0.0, 0.35)
 	tween.chain().tween_callback(ghost.queue_free)
 
+## A letter (or word) tile bursts apart when Alisin removes it. Works on copies
+## placed above the game, so the real tile can be emptied right after this.
+func burst_tile(tile: Control) -> void:
+	if not is_instance_valid(tile) or not tile.is_visible_in_tree():
+		return
+	var layer: Node = tile.get_parent()
+	while layer != null and not layer is CanvasLayer:
+		layer = layer.get_parent()
+	if layer == null:
+		return
+	var rect := tile.get_global_rect()
+
+	var ghost := tile.duplicate(0) as Control
+	ghost.set_script(null)
+	ghost.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	layer.add_child(ghost)
+	ghost.scale = Vector2.ONE
+	ghost.position = rect.position
+	ghost.size = rect.size
+	ghost.pivot_offset = rect.size / 2.0
+	var ghost_tween := ghost.create_tween().set_parallel()
+	ghost_tween.tween_property(ghost, "scale", Vector2.ONE * 1.6, 0.22).set_ease(Tween.EASE_OUT)
+	ghost_tween.tween_property(ghost, "modulate:a", 0.0, 0.22)
+	ghost_tween.chain().tween_callback(ghost.queue_free)
+
+	var colours: Array[Color] = [Color("#F5D28A"), Color("#D99A45"), Color("#FFF3D0")]
+	var pieces := 14
+	for i in pieces:
+		var piece := ColorRect.new()
+		piece.size = Vector2.ONE * randf_range(8.0, 16.0)
+		piece.color = colours.pick_random()
+		piece.pivot_offset = piece.size / 2.0
+		piece.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		layer.add_child(piece)
+		piece.position = rect.get_center() - piece.size / 2.0
+		var angle := TAU * i / pieces + randf_range(-0.2, 0.2)
+		var target := piece.position + Vector2.from_angle(angle) * randf_range(60.0, 130.0) + Vector2(0.0, 25.0)
+		var tween := piece.create_tween().set_parallel()
+		tween.tween_property(piece, "position", target, 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tween.tween_property(piece, "rotation", randf_range(-6.0, 6.0), 0.45)
+		tween.tween_property(piece, "modulate:a", 0.0, 0.3).set_delay(0.15)
+		tween.chain().tween_callback(piece.queue_free)
+
 ## Wrong answer in a level: shake the answer row and pop away the star
 ## that's being lost. Call before player_stars is reduced.
 func wrong_answer_effects(level: Node, answer_row: Node, stars_before: int) -> void:
