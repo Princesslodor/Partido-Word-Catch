@@ -14,6 +14,41 @@ func _process(_delta):
 	if text != _fitted_text:
 		_fitted_text = text
 		Global.fit_text_to_box(self)
+	_update_answer_light()
+
+# The box lights up yellow when its letter (or word) is right, red when wrong.
+const LIGHT_CORRECT := Color(1.0, 0.86, 0.15)
+const LIGHT_WRONG := Color(1.0, 0.36, 0.32)
+var _lit_for: String = ""
+
+func _update_answer_light():
+	var scene = get_tree().current_scene
+	if scene == null:
+		return
+	# A new level can leave the same letter in a box, so the level counts too.
+	var key := text + "|" + str(scene.get("current_level"))
+	if key == _lit_for:
+		return
+	_lit_for = key
+	var shown := text.strip_edges().to_upper()
+	if shown == "":
+		self_modulate = Color.WHITE
+	elif shown == _expected_answer(scene):
+		self_modulate = LIGHT_CORRECT
+	else:
+		self_modulate = LIGHT_WRONG
+
+func _expected_answer(scene) -> String:
+	if "current_sentence_words" in scene:
+		var words: Array = scene.current_sentence_words
+		var index: int = scene._get_all_answer_slots().find(self)
+		if index >= 0 and index < words.size():
+			return str(words[index]).strip_edges().to_upper()
+	elif "current_word" in scene:
+		var word: String = scene.current_word
+		if get_index() < word.length():
+			return word[get_index()]
+	return ""
 
 func _can_drop_data(_at_position, data):
 	if is_locked:
