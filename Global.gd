@@ -579,10 +579,26 @@ func _on_node_added(node: Node) -> void:
 		node.button_up.connect(_on_button_up.bind(node))
 	elif node is Control and node.name.ends_with("Popup") and node.get_class() == "Control":
 		_watch_popup(node)
+	elif node is Sprite2D and node.name == "Boy":
+		_start_thinking.call_deferred(node)
 	if node is Button and not node.has_meta(_AUTO_STATES_META):
 		node.set_meta(_AUTO_STATES_META, {})
 		node.theme_changed.connect(_refresh_button_states.bind(node))
 		_refresh_button_states.call_deferred(node)
+
+## The boy beside the level buttons tilts slowly from side to side and pauses,
+## as if he is thinking about the word.
+func _start_thinking(boy: Sprite2D) -> void:
+	if not is_instance_valid(boy) or not boy.is_inside_tree():
+		return
+	var tilt := deg_to_rad(4.0)
+	var tween := boy.create_tween().set_loops().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(boy, "rotation", -tilt, 0.9)
+	tween.tween_interval(0.7)
+	tween.tween_property(boy, "rotation", tilt, 1.4)
+	tween.tween_interval(0.7)
+	tween.tween_property(boy, "rotation", 0.0, 0.9)
+	tween.tween_interval(1.0)
 
 func _refresh_button_states(button: Button) -> void:
 	if not is_instance_valid(button) or not button.has_theme_stylebox_override("normal"):
