@@ -19,7 +19,6 @@ func _ready():
 		
 	_apply_loading_label_styles()
 	_apply_loading_bar_styles()
-	_start_character_animation()
 	_start_loading_process()
 	_connect_sound_to_all_buttons(self)
 
@@ -62,14 +61,6 @@ func _apply_loading_bar_styles():
 	loading_bar.add_theme_stylebox_override("background", bg_style)
 	loading_bar.add_theme_stylebox_override("fill", fill_style)
 
-func _start_character_animation():
-	if character:
-		var tween = create_tween().set_loops()
-		tween.tween_property(character, "position:y", character.position.y - 15, 1.0)\
-			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-		tween.tween_property(character, "position:y", character.position.y + 15, 1.0)\
-			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-			
 func _start_loading_process():
 	if loading_bar:
 		loading_bar.value = 0
