@@ -14,6 +14,8 @@ config/name="Partido_word_catch"
 run/main_scene="uid://bkx1m8smwlr7u"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://app_icon/icon_512.png"
+boot_splash/show_image=false
+boot_splash/bg_color=Color(0, 0, 0, 1)
 
 [audio]
 
